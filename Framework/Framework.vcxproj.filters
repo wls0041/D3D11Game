@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="Framework.h" />
+    <ClInclude Include="Core\Subsystem\Graphics.h" />
+    <ClInclude Include="Core\Settings.h" />
+    <ClInclude Include="Core\Window.h" />
+    <ClInclude Include="Core\Subsystem\ISubsystem.h" />
+    <ClInclude Include="Core\Context.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Framework.cpp" />
+    <ClCompile Include="Core\Subsystem\Graphics.cpp" />
+  </ItemGroup>
+</Project>
