@@ -7,9 +7,15 @@
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Core\Subsystem\ISubsystem.h" />
     <ClInclude Include="Core\Context.h" />
+    <ClInclude Include="Core\Engine.h" />
+    <ClInclude Include="Scene\Component\Camera.h" />
+    <ClInclude Include="Core\Subsystem\Input.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="Core\Subsystem\Graphics.cpp" />
+    <ClCompile Include="Core\Engine.cpp" />
+    <ClCompile Include="Scene\Component\Camera.cpp" />
+    <ClCompile Include="Core\Subsystem\Input.cpp" />
   </ItemGroup>
 </Project>

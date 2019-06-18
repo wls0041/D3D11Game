@@ -5,7 +5,10 @@
 #include <assert.h>
 
 //STL
+#include <typeinfo>
 #include <vector>
+#include <memory>
+#include <functional>
 
 //DirectX
 #include <dxgi1_2.h>
@@ -32,5 +35,12 @@ typedef unsigned int uint;
 #define SAFE_DELETE(p)          { if(p) { delete (p);       (p) = nullptr; } }
 #define SAFE_DELETE_ARRAY(p)    { if(p) { delete[] (p);     (p) = nullptr; } }
 
-//
+//main system
 #include "./Core/Settings.h"
+#include "./Core/Context.h"
+#include "./Core/Engine.h"
+
+//Subsystem
+#include "./Core/Subsystem/Graphics.h"
+#include "./Core/Subsystem/Input.h"
+

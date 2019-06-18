@@ -10,8 +10,23 @@ public:
     Context() = default;
     ~Context()
     {
+		for (int i = static_cast<int>(subsystems.size() - 1); i >= 0; i--) SAFE_DELETE(subsystems[i]); //规过1
+		//for (auto iter = subsystems.rbegin(); iter != subsystems.rend(); iter++) SAFE_DELETE(*iter); //规过2
+	}
 
-    }
+	auto InitializeSubsystems() -> const bool
+	{
+		for (auto subsystem : subsystems)
+		{
+			if (!subsystem->Initialize())
+			{
+				assert(false);
+				return false;
+			}
+		}
+
+		return true;
+	}
 
     template <typename T>
     auto RegisterSubsystem() -> T*;
@@ -27,7 +42,7 @@ template<typename T>
 inline auto Context::RegisterSubsystem() -> T *
 {
     static_assert(std::is_base_of<ISubsystem, T>::value, "Provided type does not implement ISubsystem");
-    return static_cast<T*>(subsystems.emplace_back(new T(this))));
+    return static_cast<T*>(subsystems.emplace_back(new T(this)));
 }
 
 template<typename T>

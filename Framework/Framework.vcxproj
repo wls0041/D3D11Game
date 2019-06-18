@@ -160,17 +160,23 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\Context.h" />
+    <ClInclude Include="Core\Engine.h" />
     <ClInclude Include="Core\Settings.h" />
     <ClInclude Include="Core\Subsystem\Graphics.h" />
+    <ClInclude Include="Core\Subsystem\Input.h" />
     <ClInclude Include="Core\Subsystem\ISubsystem.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Framework.h" />
+    <ClInclude Include="Scene\Component\Camera.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\Engine.cpp" />
     <ClCompile Include="Core\Subsystem\Graphics.cpp" />
+    <ClCompile Include="Core\Subsystem\Input.cpp" />
     <ClCompile Include="Framework.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Scene\Component\Camera.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

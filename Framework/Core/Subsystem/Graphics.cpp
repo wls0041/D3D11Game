@@ -1,8 +1,9 @@
 #include "Framework.h"
 #include "Graphics.h"
 
-Graphics::Graphics()
-    : device(nullptr)
+Graphics::Graphics(class Context *context)
+    : ISubsystem(context)
+	, device(nullptr)
     , device_context(nullptr)
     , swap_chain(nullptr)
     , rtv(nullptr)
@@ -21,7 +22,7 @@ Graphics::~Graphics()
     SAFE_RELEASE(swap_chain);
 }
 
-void Graphics::Initialize()
+auto Graphics::Initialize() -> const bool
 {
     DXGI_SWAP_CHAIN_DESC desc;
     ZeroMemory(&desc, sizeof(DXGI_SWAP_CHAIN_DESC));
@@ -42,7 +43,7 @@ void Graphics::Initialize()
 
     std::vector<D3D_FEATURE_LEVEL> feature_levels
     {
-        D3D_FEATURE_LEVEL_11_1,
+        //D3D_FEATURE_LEVEL_11_1,
         D3D_FEATURE_LEVEL_11_0,
         D3D_FEATURE_LEVEL_10_1,
         D3D_FEATURE_LEVEL_10_0,
@@ -73,6 +74,8 @@ void Graphics::Initialize()
         static_cast<uint>(Settings::Get().GetWidth()),
         static_cast<uint>(Settings::Get().GetHeight())
     );
+
+	return true;
 }
 
 void Graphics::Begin()
