@@ -40,6 +40,10 @@ typedef unsigned int uint;
 #include "./Core/Context.h"
 #include "./Core/Engine.h"
 
+//Basic Data
+#include "./Core/D3D11/BasicData/D3D11_Config.h"
+#include "./Core/D3D11/BasicData/Vertex.h"
+
 //Subsystem
 #include "./Core/Subsystem/Graphics.h"
 #include "./Core/Subsystem/Input.h"

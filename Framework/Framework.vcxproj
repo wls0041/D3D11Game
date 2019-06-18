@@ -160,6 +160,9 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Core\Context.h" />
+    <ClInclude Include="Core\D3D11\BasicData\D3D11_Config.h" />
+    <ClInclude Include="Core\D3D11\BasicData\Geomery.h" />
+    <ClInclude Include="Core\D3D11\BasicData\Vertex.h" />
     <ClInclude Include="Core\Engine.h" />
     <ClInclude Include="Core\Settings.h" />
     <ClInclude Include="Core\Subsystem\Graphics.h" />
@@ -168,8 +171,10 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="Scene\Component\Camera.h" />
+    <ClInclude Include="Scene\Scene.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\D3D11\BasicData\Vertex.cpp" />
     <ClCompile Include="Core\Engine.cpp" />
     <ClCompile Include="Core\Subsystem\Graphics.cpp" />
     <ClCompile Include="Core\Subsystem\Input.cpp" />
@@ -177,6 +182,12 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Scene\Component\Camera.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\D3D11\BasicData\Geomery.inl">
+      <FileType>Document</FileType>
+    </ClInclude>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

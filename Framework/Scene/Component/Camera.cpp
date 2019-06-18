@@ -28,8 +28,8 @@ void Camera::Update()
 	if (input->KeyPress(KeyCode::KEY_W)) position += forward;
 	else if (input->KeyPress(KeyCode::KEY_S)) position -= forward;
 	
-	if (input->KeyPress(KeyCode::KEY_A)) position += right;
-	else if (input->KeyPress(KeyCode::KEY_D)) position -= right;
+	if (input->KeyPress(KeyCode::KEY_A)) position -= right;
+	else if (input->KeyPress(KeyCode::KEY_D)) position += right;
 
 	if (input->KeyPress(KeyCode::KEY_E)) position += up;
 	else if (input->KeyPress(KeyCode::KEY_Q)) position -= up;
@@ -37,8 +37,8 @@ void Camera::Update()
 	if (input->BtnPress(KeyCode::CLICK_RIGHT)) {
 		auto delta = input->GetMouseMoveValue();
 
-		rotation.x = delta.y * 0.005f;
-		rotation.y = delta.x * 0.005f;
+		rotation.x += delta.y * 0.005f;
+		rotation.y += delta.x * 0.005f;
 	}
 
 	UpdateViewMatrix();

@@ -10,6 +10,11 @@
     <ClInclude Include="Core\Engine.h" />
     <ClInclude Include="Scene\Component\Camera.h" />
     <ClInclude Include="Core\Subsystem\Input.h" />
+    <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Core\D3D11\BasicData\Vertex.h" />
+    <ClInclude Include="Core\D3D11\BasicData\D3D11_Config.h" />
+    <ClInclude Include="Core\D3D11\BasicData\Geomery.h" />
+    <ClInclude Include="Core\D3D11\BasicData\Geomery.inl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -17,5 +22,7 @@
     <ClCompile Include="Core\Engine.cpp" />
     <ClCompile Include="Scene\Component\Camera.cpp" />
     <ClCompile Include="Core\Subsystem\Input.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Core\D3D11\BasicData\Vertex.cpp" />
   </ItemGroup>
 </Project>

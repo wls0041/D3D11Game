@@ -14,4 +14,6 @@ public:
 private:
 	class Context *context;
 	class Input *input;
+	class Scene *scene;
+
 };
