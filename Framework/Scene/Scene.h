@@ -14,11 +14,10 @@ private:
 	class Graphics *graphics;
 	class Camera *camera;
 	
-	std::vector<VertexColor> vertices;
-	std::vector<uint> indices;
+	Geometry<VertexColor> geometry;
 	
-	ID3D11Buffer *vertex_buffer;
-	ID3D11Buffer *index_buffer;
+	VertexBuffer *vertex_buffer;
+	IndexBuffer *index_buffer;
 
 	ID3D11VertexShader *vertex_shader;
 	ID3DBlob *vs_blob;

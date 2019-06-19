@@ -2,11 +2,11 @@
 #include "Framework.h"
 
 template <class T>
-class Geomery final
+class Geometry final
 {
 public:
-	Geomery() = default;
-	~Geomery();
+	Geometry() = default;
+	~Geometry();
 
 	//========================Vertex========================
 	auto GetVertexCount() const -> const uint { return vertices.size(); }
@@ -23,10 +23,10 @@ public:
 	auto GetIndexCount() const -> const uint { return indices.size(); }
 	auto GetIndexByteWidth() const -> const uint { return indices.size() * sizeof(uint); }
 	auto GetIndexData() -> uint* { return indices.data(); }
-	auto GetIndicess() const -> const std::vector<uint>& { return indices; }
+	auto GetIndices() const -> const std::vector<uint>& { return indices; }
 	auto GetIndices(const uint &offset, const uint &count) -> const std::vector<uint>;
 		   
-	void AddIndex(const T &index);
+	void AddIndex(const uint &index);
 	void AddIndices(const std::vector<uint> &indices);
 	void SetIndices(const std::vector<uint> &indices);
 
@@ -37,4 +37,4 @@ private:
 	std::vector<uint> indices;
 };
 
-#include "Geomery.inl"
+#include "Geometry.inl"

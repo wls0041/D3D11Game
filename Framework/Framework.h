@@ -43,8 +43,15 @@ typedef unsigned int uint;
 //Basic Data
 #include "./Core/D3D11/BasicData/D3D11_Config.h"
 #include "./Core/D3D11/BasicData/Vertex.h"
+#include "./Core/D3D11/BasicData/Geometry.h"
 
 //Subsystem
 #include "./Core/Subsystem/Graphics.h"
 #include "./Core/Subsystem/Input.h"
+
+//DirectX Pipeline Wrapper
+#include "./Core/D3D11/IAStage/VertexBuffer.h"
+#include "./Core/D3D11/IAStage/IndexBuffer.h"
+
+
 

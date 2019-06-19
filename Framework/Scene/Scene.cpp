@@ -8,49 +8,20 @@ Scene::Scene(Context * context) : context(context)
 	camera = new Camera(context);
 
 	//create vertex data
-	{ 
-		vertices.reserve(4);
-		vertices.resize(4);
 
-		vertices[0].position = D3DXVECTOR3(-0.5f, -0.5f, 0.0f);
-		vertices[0].color = D3DXCOLOR(0.5f, 0.5f, 0.0f, 1.0f);
 
-		vertices[1].position = D3DXVECTOR3(-0.5f, +0.5f, 0.0f);
-		vertices[1].color = D3DXCOLOR(0.5f, 0.5f, 0.0f, 1.0f);
 
-		vertices[2].position = D3DXVECTOR3(+0.5f, -0.5f, 0.0f);
-		vertices[2].color = D3DXCOLOR(0.5f, 0.5f, 0.0f, 1.0f);
+	geometry.AddVertex(VertexColor(D3DXVECTOR3(-0.5f, -0.5f, 0.0f), D3DXCOLOR(0.5f, 0.5f, 0.0f, 1.0f)));
+	geometry.AddVertex(VertexColor(D3DXVECTOR3(-0.5f, +0.5f, 0.0f), D3DXCOLOR(0.5f, 0.5f, 0.0f, 1.0f)));
+	geometry.AddVertex(VertexColor(D3DXVECTOR3(+0.5f, -0.5f, 0.0f), D3DXCOLOR(0.5f, 0.5f, 0.0f, 1.0f)));
+	geometry.AddVertex(VertexColor(D3DXVECTOR3(+0.5f, +0.5f, 0.0f), D3DXCOLOR(0.5f, 0.5f, 0.0f, 1.0f)));
 
-		vertices[3].position = D3DXVECTOR3(+0.5f, +0.5f, 0.0f);
-		vertices[3].color = D3DXCOLOR(0.5f, 0.5f, 0.0f, 1.0f);
-	}
 
-	//Create Vertex Buffer
-	{
-		D3D11_BUFFER_DESC desc;
-		ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
-		desc.Usage = D3D11_USAGE_IMMUTABLE;
-		desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		desc.ByteWidth = sizeof(VertexColor) * vertices.size();
+	vertex_buffer = new VertexBuffer(context);
+	vertex_buffer->Create(geometry.GetVertices(), D3D11_USAGE_IMMUTABLE);
 
-		D3D11_SUBRESOURCE_DATA sub_data;
-		ZeroMemory(&sub_data, sizeof(D3D11_SUBRESOURCE_DATA));
-		sub_data.pSysMem = vertices.data();
-
-		auto hr = graphics->GetDevice()->CreateBuffer(&desc, &sub_data, &vertex_buffer);
-		assert(SUCCEEDED(hr));
-	}
-
-	//Create index data
-	{
-		indices.emplace_back(0);
-		indices.emplace_back(1);
-		indices.emplace_back(2);
-		indices.emplace_back(2);
-		indices.emplace_back(1);
-		indices.emplace_back(3);
-	}
-
+	index_buffer = new IndexBuffer(context);
+	index_buffer->Create(geometry.GetIndices(), D3D11_USAGE_DEFAULT);
 
 	//Create Index buffer
 	{
@@ -58,11 +29,11 @@ Scene::Scene(Context * context) : context(context)
 		ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));
 		desc.Usage = D3D11_USAGE_IMMUTABLE;
 		desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-		desc.ByteWidth = sizeof(uint) * indices.size();
+		desc.ByteWidth = sizeof(uint) * geometry.GetIndexByteWidth();
 
 		D3D11_SUBRESOURCE_DATA sub_data;
 		ZeroMemory(&sub_data, sizeof(D3D11_SUBRESOURCE_DATA));
-		sub_data.pSysMem = indices.data();
+		sub_data.pSysMem = geometry.GetIndexData();
 
 		auto hr = graphics->GetDevice()->CreateBuffer(&desc, &sub_data, &index_buffer);
 		assert(SUCCEEDED(hr));
@@ -79,7 +50,7 @@ Scene::Scene(Context * context) : context(context)
 
 	//Pixel Shader
 	{
-		auto hr = D3DX11CompileFromFileA("../../_Assets/Shader/Color.hlsl", nullptr, nullptr, "PS", "ps_5_0", 0, 0, nullptr, &ps_blob, nullptr, nullptr); 
+		auto hr = D3DX11CompileFromFileA("../../_Assets/Shader/Color.hlsl", nullptr, nullptr, "PS", "ps_5_0", 0, 0, nullptr, &ps_blob, nullptr, nullptr);
 		assert(SUCCEEDED(hr));
 
 		hr = graphics->GetDevice()->CreatePixelShader(ps_blob->GetBufferPointer(), ps_blob->GetBufferSize(), nullptr, &pixel_shader);
@@ -88,7 +59,7 @@ Scene::Scene(Context * context) : context(context)
 
 	//create InputLayout
 	{
-		D3D11_INPUT_ELEMENT_DESC descs[] 
+		D3D11_INPUT_ELEMENT_DESC descs[]
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
@@ -130,6 +101,9 @@ Scene::Scene(Context * context) : context(context)
 
 Scene::~Scene()
 {
+	SAFE_DELETE(index_buffer);
+	SAFE_DELETE(vertex_buffer);
+	SAFE_DELETE(camera);
 }
 
 void Scene::Update()
@@ -167,11 +141,9 @@ void Scene::Update()
 
 void Scene::Render()
 {
-	uint stride = sizeof(VertexColor);
-	uint offset = 0;
+	vertex_buffer->BindPipeline();
+	index_buffer->BindPipeline();
 
-	graphics->GetDeviceContext()->IASetVertexBuffers(0, 1, &vertex_buffer, &stride, &offset);
-	graphics->GetDeviceContext()->IASetIndexBuffer(index_buffer, DXGI_FORMAT_R32_UINT, 0);
 	graphics->GetDeviceContext()->IASetInputLayout(input_layout);
 	graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -181,5 +153,5 @@ void Scene::Render()
 
 	graphics->GetDeviceContext()->PSSetShader(pixel_shader, nullptr, 0);
 
-	graphics->GetDeviceContext()->DrawIndexed(indices.size(), 0, 0);
+	graphics->GetDeviceContext()->DrawIndexed(geometry.GetIndexCount(), 0, 0);
 }
