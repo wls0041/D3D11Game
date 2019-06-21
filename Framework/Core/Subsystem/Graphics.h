@@ -4,13 +4,13 @@
 class Graphics final : public ISubsystem
 {
 public:
-    Graphics(class Context *context);
+    Graphics(class Context* context);
     ~Graphics();
 
     auto GetDevice() const -> ID3D11Device* { return device; }
     auto GetDeviceContext() const -> ID3D11DeviceContext* { return device_context; }
 
-	auto Initialize() -> const bool override;
+    auto Initialize() -> const bool override;
     
     void Begin();
     void End();

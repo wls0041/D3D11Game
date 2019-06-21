@@ -162,13 +162,14 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\Context.h" />
     <ClInclude Include="Core\D3D11\BasicData\D3D11_Config.h" />
     <ClInclude Include="Core\D3D11\BasicData\Geometry.h" />
+    <ClInclude Include="Core\D3D11\BasicData\Vertex.h" />
+    <ClInclude Include="Core\D3D11\IAStage\IndexBuffer.h" />
+    <ClInclude Include="Core\D3D11\IAStage\InputLayout.h" />
+    <ClInclude Include="Core\D3D11\IAStage\VertexBuffer.h" />
+    <ClInclude Include="Core\D3D11\ShaderStage\ConstantBuffer.h" />
     <ClInclude Include="Core\D3D11\ShaderStage\IShaderStage.h" />
     <ClInclude Include="Core\D3D11\ShaderStage\PixelShader.h" />
-    <ClInclude Include="Core\D3D11\BasicData\Vertex.h" />
-    <ClInclude Include="Core\D3D11\ShaderStage\Shader_Helper.h" />
     <ClInclude Include="Core\D3D11\ShaderStage\VertexShader.h" />
-    <ClInclude Include="Core\D3D11\IAStage\IndexBuffer.h" />
-    <ClInclude Include="Core\D3D11\IAStage\VertexBuffer.h" />
     <ClInclude Include="Core\Engine.h" />
     <ClInclude Include="Core\Settings.h" />
     <ClInclude Include="Core\Subsystem\Graphics.h" />
@@ -178,14 +179,17 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Framework.h" />
     <ClInclude Include="Scene\Component\Camera.h" />
     <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Utility\FileSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\D3D11\BasicData\Vertex.cpp" />
+    <ClCompile Include="Core\D3D11\IAStage\IndexBuffer.cpp" />
+    <ClCompile Include="Core\D3D11\IAStage\InputLayout.cpp" />
+    <ClCompile Include="Core\D3D11\IAStage\VertexBuffer.cpp" />
+    <ClCompile Include="Core\D3D11\ShaderStage\ConstantBuffer.cpp" />
     <ClCompile Include="Core\D3D11\ShaderStage\IShaderStage.cpp" />
     <ClCompile Include="Core\D3D11\ShaderStage\PixelShader.cpp" />
-    <ClCompile Include="Core\D3D11\BasicData\Vertex.cpp" />
     <ClCompile Include="Core\D3D11\ShaderStage\VertexShader.cpp" />
-    <ClCompile Include="Core\D3D11\IAStage\IndexBuffer.cpp" />
-    <ClCompile Include="Core\D3D11\IAStage\VertexBuffer.cpp" />
     <ClCompile Include="Core\Engine.cpp" />
     <ClCompile Include="Core\Subsystem\Graphics.cpp" />
     <ClCompile Include="Core\Subsystem\Input.cpp" />
@@ -194,6 +198,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     </ClCompile>
     <ClCompile Include="Scene\Component\Camera.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Utility\FileSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\D3D11\BasicData\Geometry.inl">

@@ -3,31 +3,29 @@
 class Scene final
 {
 public:
-	Scene(class Context *context);
-	~Scene();
+    Scene(class Context* context);
+    ~Scene();
 
-	void Update();
-	void Render();
+    void Update();
+    void Render();
 
 private:
-	class Context *context;
-	class Graphics *graphics;
-	class Camera *camera;
-	
-	Geometry<VertexColor> geometry;
-	
-	VertexBuffer *vertex_buffer;
-	IndexBuffer *index_buffer;
+    class Context* context;
+    class Graphics* graphics;
+    class Camera* camera;
 
-	ID3D11VertexShader *vertex_shader;
-	ID3DBlob *vs_blob;
+    Geometry<VertexColor> geometry;
 
-	ID3D11PixelShader *pixel_shader;
-	ID3DBlob *ps_blob;
+    VertexBuffer* vertex_buffer;
+    IndexBuffer* index_buffer;
+    
+    VertexShader* vertex_shader;
+    PixelShader* pixel_shader;
 
-	ID3D11InputLayout *input_layout;
-	ID3D11Buffer *camera_buffer;
-	ID3D11Buffer *world_buffer;
+    InputLayout* input_layout;
 
-	D3DXMATRIX world;
+    ID3D11Buffer* camera_buffer;
+    ID3D11Buffer* world_buffer;
+
+    D3DXMATRIX world;
 };

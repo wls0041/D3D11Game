@@ -2,53 +2,53 @@
 
 enum class ProjectionType : uint
 {
-	Perspective,
-	OrthoGraphics,
+    Perspective,
+    OrthoGraphics,
 };
 
 class Camera final
 {
 public:
-	Camera(class Context *context);
-	~Camera();
+    Camera(class Context* context);
+    ~Camera();
 
-	auto GetViewMatrix() const -> const D3DXMATRIX& { return view; }
-	auto GetProjectionMatrix() const -> const D3DXMATRIX& { return proj; }
+    auto GetViewMatrix() const -> const D3DXMATRIX& { return view; }
+    auto GetProjectionMatrix() const -> const D3DXMATRIX& { return proj; }
 
-	auto SetProjectionType() const -> const ProjectionType&  { return projection_type; }
-	void SetProjectionType(const ProjectionType &type) { this->projection_type = type; }
+    auto GetProjectionType() const -> const ProjectionType& { return projection_type; }
+    void SetProjectionType(const ProjectionType& type) { this->projection_type = type; }
 
-	auto SetFOV() const -> const float& { return fov; }
-	void SetFOV(const float &fov) { this->fov = fov; }
+    auto GetFOV() const -> const float& { return fov; }
+    void SetFOV(const float& fov) { this->fov = fov; }
 
-	auto SetNearPlane() const -> const float& { return near_plane; }
-	void SetNearPlane(const float &near_plane) { this->near_plane = near_plane; }
+    auto GetNearPlane() const -> const float& { return near_plane; }
+    void SetNearPlane(const float& near_plane) { this->near_plane = near_plane; }
 
-	auto SetFarPlane() const -> const float& { return far_plane; }
-	void SetFarPlane(const float &far_plane) { this->far_plane = far_plane; }
+    auto GetFarPlane() const -> const float& { return far_plane; }
+    void SetFarPlane(const float& far_plane) { this->far_plane = far_plane; }
 
-	void Update();
-
-private:
-	void UpdateViewMatrix();
-	void UpdateProjectionMatrix();
+    void Update();
 
 private:
-	class Context *context;
-	class Input *input;
+    void UpdateViewMatrix();
+    void UpdateProjectionMatrix();
 
-	ProjectionType projection_type;
-	float fov; //field of view. ½Ã¾ß°¢
-	float near_plane;
-	float far_plane;
+private:
+    class Context* context;
+    class Input* input;
 
-	D3DXMATRIX view;
-	D3DXMATRIX proj;
+    ProjectionType projection_type;
+    float fov;//field of view
+    float near_plane;
+    float far_plane;
 
-	D3DXVECTOR3 position;
-	D3DXVECTOR3 rotation;
+    D3DXMATRIX view;
+    D3DXMATRIX proj;
 
-	D3DXVECTOR3 right;
-	D3DXVECTOR3 up;
-	D3DXVECTOR3 forward;
+    D3DXVECTOR3 position;
+    D3DXVECTOR3 rotation;
+
+    D3DXVECTOR3 right;
+    D3DXVECTOR3 up;
+    D3DXVECTOR3 forward;
 };

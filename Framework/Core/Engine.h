@@ -3,17 +3,16 @@
 class Engine final
 {
 public:
-	Engine();
-	~Engine();
+    Engine();
+    ~Engine();
 
-	auto GetContext() const->class Context* { return context; }
+    auto GetContext()  const -> class Context* { return context; }
 
-	void Update();
-	void Render();
+    void Update();
+    void Render();
 
 private:
-	class Context *context;
-	class Input *input;
-	class Scene *scene;
-
+    class Context* context;
+    class Input* input;
+    class Scene* scene;
 };

@@ -35,7 +35,10 @@ typedef unsigned int uint;
 #define SAFE_DELETE(p)          { if(p) { delete (p);       (p) = nullptr; } }
 #define SAFE_DELETE_ARRAY(p)    { if(p) { delete[] (p);     (p) = nullptr; } }
 
-//main system
+//Utility
+#include "./Utility/FileSystem.h"
+
+//Main System
 #include "./Core/Settings.h"
 #include "./Core/Context.h"
 #include "./Core/Engine.h"
@@ -49,9 +52,9 @@ typedef unsigned int uint;
 #include "./Core/Subsystem/Graphics.h"
 #include "./Core/Subsystem/Input.h"
 
-//DirectX Pipeline Wrapper
+//DirectX pipeline wrapper
 #include "./Core/D3D11/IAStage/VertexBuffer.h"
 #include "./Core/D3D11/IAStage/IndexBuffer.h"
-
-
-
+#include "./Core/D3D11/IAStage/InputLayout.h"
+#include "./Core/D3D11/ShaderStage/VertexShader.h"
+#include "./Core/D3D11/ShaderStage/PixelShader.h"

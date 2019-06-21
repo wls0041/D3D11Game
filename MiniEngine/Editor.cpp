@@ -3,9 +3,9 @@
 
 Editor::Editor()
 {
-	engine = new Engine();
-	context = engine->GetContext();
-	graphics = context->GetSubsystem<Graphics>();
+    engine      = new Engine();
+    context     = engine->GetContext();
+    graphics    = context->GetSubsystem<Graphics>();
 
 
 }
@@ -16,14 +16,14 @@ Editor::~Editor()
 
 void Editor::Update()
 {
-	engine->Update();
+    engine->Update();
 }
 
 void Editor::Render()
 {
-	graphics->Begin();
-	{
-		engine->Render();
-	}
-	graphics->End();
+    graphics->Begin();
+    {
+        engine->Render();
+    }
+    graphics->End();
 }

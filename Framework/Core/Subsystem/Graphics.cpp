@@ -1,9 +1,9 @@
 #include "Framework.h"
 #include "Graphics.h"
 
-Graphics::Graphics(class Context *context)
+Graphics::Graphics(Context * context)
     : ISubsystem(context)
-	, device(nullptr)
+    , device(nullptr)
     , device_context(nullptr)
     , swap_chain(nullptr)
     , rtv(nullptr)
@@ -75,7 +75,7 @@ auto Graphics::Initialize() -> const bool
         static_cast<uint>(Settings::Get().GetHeight())
     );
 
-	return true;
+    return true;
 }
 
 void Graphics::Begin()

@@ -3,14 +3,14 @@
 class Editor final
 {
 public:
-	Editor();
-	~Editor();
+    Editor();
+    ~Editor();
 
-	void Update();
-	void Render();
+    void Update();
+    void Render();
 
 private:
-	class Engine *engine;
-	class Context *context;
-	class Graphics *graphics;
+    class Engine* engine;
+    class Context* context;
+    class Graphics* graphics;
 };

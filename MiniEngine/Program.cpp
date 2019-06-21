@@ -7,17 +7,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR lpszCmdP
     Window::Create(hInstance, 1280, 720);
     Window::Show();
 
-	Settings::Get().SetWindowInstance(Window::Instance);
-	Settings::Get().SetWindowHandle(Window::Handle);
-	Settings::Get().SetWidth(static_cast<float>(Window::GetWidth()));
-	Settings::Get().SetHeight(static_cast<float>(Window::GetHeight()));
+    Settings::Get().SetWindowInstance(Window::Instance);
+    Settings::Get().SetWindowHandle(Window::Handle);
+    Settings::Get().SetWidth(static_cast<float>(Window::GetWidth()));
+    Settings::Get().SetHeight(static_cast<float>(Window::GetHeight()));
 
-	auto editor = std::make_unique<Editor>();
+    auto editor = std::make_unique<Editor>();
 
     while (Window::Update())
     {
-		editor->Update();
-		editor->Render();
+        editor->Update();
+        editor->Render();
     }
 
     Window::Destroy();
