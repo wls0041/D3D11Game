@@ -13,19 +13,8 @@ private:
     class Context* context;
     class Graphics* graphics;
     class Camera* camera;
+    ConstantBuffer* camera_buffer;
 
-    Geometry<VertexColor> geometry;
+	class Terrain *terrain;
 
-    VertexBuffer* vertex_buffer;
-    IndexBuffer* index_buffer;
-    
-    VertexShader* vertex_shader;
-    PixelShader* pixel_shader;
-
-    InputLayout* input_layout;
-
-    ID3D11Buffer* camera_buffer;
-    ID3D11Buffer* world_buffer;
-
-    D3DXMATRIX world;
 };

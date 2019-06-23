@@ -178,6 +178,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="Scene\Component\Camera.h" />
+    <ClInclude Include="Scene\Component\Terrain.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Utility\FileSystem.h" />
   </ItemGroup>
@@ -197,6 +198,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Scene\Component\Camera.cpp" />
+    <ClCompile Include="Scene\Component\Terrain.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Utility\FileSystem.cpp" />
   </ItemGroup>
