@@ -13,8 +13,7 @@ private:
     class Context* context;
     class Graphics* graphics;
     class Camera* camera;
-    ConstantBuffer* camera_buffer;
-
-	class Terrain *terrain;
-
+    class ConstantBuffer* camera_buffer;
+    
+    class Terrain* terrain;
 };

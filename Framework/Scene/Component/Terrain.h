@@ -3,31 +3,31 @@
 class Terrain final
 {
 public:
-	Terrain(class Context *context);
-	~Terrain();
+    Terrain(class Context* context);
+    ~Terrain();
 
-	void Update();
-	void Render();
-
-private:
-	void ReadPixel(const std::string *path, std::vector<D3DXCOLOR> &pixels);
+    void Update();
+    void Render();
 
 private:
-	class Context *context;
-	class Graphics *graphics;
+    void ReadPixel(const std::string& path, std::vector<D3DXCOLOR>& pixels);
 
-	Geometry<VertexColor> geometry;
-	VertexBuffer *vertex_buffer;
-	IndexBuffer *index_buffer;
-	VertexShader *vertex_shader;
-	PixelShader *pixel_shader;
-	InputLayout *input_layout;
-	ConstantBuffer *world_buffer;
+private:
+    class Context* context;
+    class Graphics* graphics;
 
-	D3DXMATRIX world;
+    Geometry<VertexColor> geometry;
+    VertexBuffer* vertex_buffer;
+    IndexBuffer* index_buffer;
+    VertexShader* vertex_shader;
+    PixelShader* pixel_shader;
+    InputLayout* input_layout;
+    ConstantBuffer* world_buffer;
 
-	uint width;
-	uint height;
+    D3DXMATRIX world;
 
-	ID3D11RasterizerState *rasterizer_state;
+    uint width;
+    uint height;
+
+    ID3D11RasterizerState* rasterizer_state;
 };

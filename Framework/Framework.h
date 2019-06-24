@@ -59,4 +59,3 @@ typedef unsigned int uint;
 #include "./Core/D3D11/ShaderStage/VertexShader.h"
 #include "./Core/D3D11/ShaderStage/PixelShader.h"
 #include "./Core/D3D11/ShaderStage/ConstantBuffer.h"
-
