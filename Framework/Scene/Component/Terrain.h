@@ -12,11 +12,13 @@ public:
 private:
     void ReadPixel(const std::string& path, std::vector<D3DXCOLOR>& pixels);
 
+    void UpdateNormal();
+
 private:
     class Context* context;
     class Graphics* graphics;
 
-    Geometry<VertexColor> geometry;
+    Geometry<VertexTextureNormal> geometry;
     VertexBuffer* vertex_buffer;
     IndexBuffer* index_buffer;
     VertexShader* vertex_shader;
@@ -28,6 +30,8 @@ private:
 
     uint width;
     uint height;
+
+    ID3D11ShaderResourceView* srv;
 
     ID3D11RasterizerState* rasterizer_state;
 };

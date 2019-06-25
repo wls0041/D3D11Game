@@ -27,6 +27,9 @@ public:
     auto GetFarPlane() const -> const float& { return far_plane; }
     void SetFarPlane(const float& far_plane) { this->far_plane = far_plane; }
 
+    void GetWorldRay(D3DXVECTOR3& origin, D3DXVECTOR3& direction);
+    void GetLocalRay(D3DXVECTOR3& origin, D3DXVECTOR3& direction, const D3DXMATRIX& world);
+
     void Update();
 
 private:

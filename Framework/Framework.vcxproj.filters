@@ -24,7 +24,6 @@
     <ClInclude Include="Core\D3D11\IAStage\InputLayout.h" />
     <ClInclude Include="Core\D3D11\ShaderStage\ConstantBuffer.h" />
     <ClInclude Include="Scene\Component\Terrain.h" />
-    <ClInclude Include="Core\D3D11\ShaderStage\Shader_Helper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />

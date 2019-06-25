@@ -3,42 +3,50 @@
 
 Terrain::Terrain(Context * context)
     : context(context)
-    , width(100)
-    , height(100)
+    , width(0)
+    , height(0)
 {
     graphics = context->GetSubsystem<Graphics>();
-
-    //. . .
-    //. . .
-    //. . .
-
-    for (uint z = 0; z <= height; z++)
-        for (uint x = 0; x <= width; x++)
-        {
-            geometry.AddVertex
-            (
-                VertexColor
-                (
-                    D3DXVECTOR3
-                    (
-                        static_cast<float>(x), 
-                        0.0f, 
-                        static_cast<float>(z)), 
-                    D3DXCOLOR(0, 1, 0, 1)
-                )
-            );
-        }
+    
+    std::vector<D3DXCOLOR> pixels;
+    ReadPixel("../../_Assets/Texture/HeightMap.bmp", pixels);
 
     for (uint z = 0; z < height; z++)
         for (uint x = 0; x < width; x++)
         {
-            geometry.AddIndex((width + 1) * z + x); //0
-            geometry.AddIndex((width + 1) * (z + 1) + x); //1
-            geometry.AddIndex((width + 1) * z + (x + 1)); //2
-            geometry.AddIndex((width + 1) * z + (x + 1)); //2
-            geometry.AddIndex((width + 1) * (z + 1) + x); //1
-            geometry.AddIndex((width + 1) * (z + 1) + (x + 1)); //3
+            uint index = width * z + x;
+            geometry.AddVertex
+            (
+                VertexTextureNormal
+                (
+                    D3DXVECTOR3
+                    (
+                        static_cast<float>(x), 
+                        static_cast<float>(pixels[index].r * 255.0f / 7.5f),
+                        static_cast<float>(z)
+                    ), 
+                    D3DXVECTOR2
+                    (
+                        static_cast<float>(x) / width,
+                        static_cast<float>(z) / height
+                    ),
+                    D3DXVECTOR3(0, 0, 0)
+                )
+            );
         }
+
+    for (uint z = 0; z < height - 1; z++)
+        for (uint x = 0; x < width - 1; x++)
+        {
+            geometry.AddIndex(width * z + x); //0
+            geometry.AddIndex(width * (z + 1) + x); //1
+            geometry.AddIndex(width * z + (x + 1)); //2
+            geometry.AddIndex(width * z + (x + 1)); //2
+            geometry.AddIndex(width * (z + 1) + x); //1
+            geometry.AddIndex(width * (z + 1) + (x + 1)); //3
+        }
+
+    UpdateNormal();
 
     vertex_buffer = new VertexBuffer(context);
     vertex_buffer->Create(geometry.GetVertices());
@@ -47,10 +55,10 @@ Terrain::Terrain(Context * context)
     index_buffer->Create(geometry.GetIndices());
 
     vertex_shader = new VertexShader(context);
-    vertex_shader->Create("../../_Assets/Shader/Color.hlsl", "VS", "vs_5_0");
+    vertex_shader->Create("../../_Assets/Shader/Terrain.hlsl", "VS", "vs_5_0");
 
     pixel_shader = new PixelShader(context);
-    pixel_shader->Create("../../_Assets/Shader/Color.hlsl", "PS", "ps_5_0");
+    pixel_shader->Create("../../_Assets/Shader/Terrain.hlsl", "PS", "ps_5_0");
 
     input_layout = new InputLayout(context);
     input_layout->Create(vertex_shader->GetBlob());
@@ -60,11 +68,25 @@ Terrain::Terrain(Context * context)
 
     D3DXMatrixIdentity(&world);
 
+    //Create Shader Resource View
+    {
+        auto hr = D3DX11CreateShaderResourceViewFromFileA
+        (
+            graphics->GetDevice(),
+            "../../_Assets/Texture/Grass.png",
+            nullptr,
+            nullptr,
+            &srv,
+            nullptr
+        );
+        assert(SUCCEEDED(hr));
+    }
+
     //Create Rasterizer State
     {
         D3D11_RASTERIZER_DESC desc;
         ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
-        desc.FillMode = D3D11_FILL_WIREFRAME;
+        desc.FillMode = D3D11_FILL_SOLID;
         desc.CullMode = D3D11_CULL_BACK;
         desc.FrontCounterClockwise = false;
 
@@ -76,6 +98,8 @@ Terrain::Terrain(Context * context)
 Terrain::~Terrain()
 {
     SAFE_RELEASE(rasterizer_state);
+    SAFE_RELEASE(srv);
+
     SAFE_DELETE(world_buffer);
     SAFE_DELETE(input_layout);
     SAFE_DELETE(pixel_shader);
@@ -103,6 +127,7 @@ void Terrain::Render()
     world_buffer->BindPipeline(1, ShaderScope::VS);
 
     graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    graphics->GetDeviceContext()->PSSetShaderResources(0, 1, &srv);
     graphics->GetDeviceContext()->RSSetState(rasterizer_state);
     graphics->GetDeviceContext()->DrawIndexed(geometry.GetIndexCount(), 0, 0);
 }
@@ -151,4 +176,68 @@ void Terrain::ReadPixel(const std::string & path, std::vector<D3DXCOLOR>& pixels
         dst_texture
     );
     assert(SUCCEEDED(hr));
+
+    std::vector<uint> colors(height_map_desc.Width * height_map_desc.Height, uint());
+
+    D3D11_MAPPED_SUBRESOURCE mapped_resource;
+    graphics->GetDeviceContext()->Map
+    (
+        dst_texture,
+        0,
+        D3D11_MAP_READ,
+        0,
+        &mapped_resource
+    );
+
+    memcpy(colors.data(), mapped_resource.pData, sizeof(uint) * colors.size());
+
+    graphics->GetDeviceContext()->Unmap(dst_texture, 0);
+
+    for (uint z = 0; z < height_map_desc.Height; z++)
+        for (uint x = 0; x < height_map_desc.Width; x++)
+        {
+            uint index = height_map_desc.Width * z + x;
+
+            const float f = 1.0f / 255.0f;
+
+            float a = f * static_cast<float>(static_cast<unsigned char>(colors[index] >> 24));
+            float r = f * static_cast<float>(static_cast<unsigned char>(colors[index] >> 16));
+            float g = f * static_cast<float>(static_cast<unsigned char>(colors[index] >> 8));
+            float b = f * static_cast<float>(static_cast<unsigned char>(colors[index] >> 0));
+
+            pixels.emplace_back(r, g, b, a);
+        }
+
+    colors.clear();
+    colors.shrink_to_fit();
+
+    SAFE_RELEASE(dst_texture);
+    SAFE_RELEASE(height_map);
+}
+
+void Terrain::UpdateNormal()
+{
+    auto vertices   = geometry.GetVertexData();
+    auto indices    = geometry.GetIndexData();
+
+    for (uint i = 0; i < geometry.GetIndexCount() / 3; i++)
+    {
+        auto index0 = indices[i * 3 + 0];
+        auto index1 = indices[i * 3 + 1];
+        auto index2 = indices[i * 3 + 2];
+
+        auto v0 = vertices[index0];
+        auto v1 = vertices[index1];
+        auto v2 = vertices[index2];
+
+        auto d1 = v1.position - v0.position;
+        auto d2 = v2.position - v0.position;
+
+        D3DXVECTOR3 normal;
+        D3DXVec3Cross(&normal, &d1, &d2);
+
+        vertices[index0].normal += normal;
+        vertices[index1].normal += normal;
+        vertices[index2].normal += normal;
+    }
 }

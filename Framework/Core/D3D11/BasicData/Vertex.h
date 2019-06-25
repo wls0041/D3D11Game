@@ -39,4 +39,29 @@ struct VertexTexture final
 
     D3DXVECTOR3 position;
     D3DXVECTOR2 uv;
+
+    static D3D11_INPUT_ELEMENT_DESC descs[];
+    static const uint count = 2;
+};
+
+struct VertexTextureNormal final
+{
+    VertexTextureNormal()
+        : position(0, 0, 0)
+        , uv(0, 0)
+        , normal(0, 0, 0)
+    {}
+
+    VertexTextureNormal(const D3DXVECTOR3& position, const D3DXVECTOR2& uv, const D3DXVECTOR3& normal)
+        : position(position)
+        , uv(uv)
+        , normal(normal)
+    {}
+
+    D3DXVECTOR3 position;
+    D3DXVECTOR2 uv;
+    D3DXVECTOR3 normal;
+
+    static D3D11_INPUT_ELEMENT_DESC descs[];
+    static const uint count = 3;
 };
