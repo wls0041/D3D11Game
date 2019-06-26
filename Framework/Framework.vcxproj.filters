@@ -24,6 +24,7 @@
     <ClInclude Include="Core\D3D11\IAStage\InputLayout.h" />
     <ClInclude Include="Core\D3D11\ShaderStage\ConstantBuffer.h" />
     <ClInclude Include="Scene\Component\Terrain.h" />
+    <ClInclude Include="Utility\Geometry_Generator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -42,5 +43,6 @@
     <ClCompile Include="Core\D3D11\IAStage\InputLayout.cpp" />
     <ClCompile Include="Core\D3D11\ShaderStage\ConstantBuffer.cpp" />
     <ClCompile Include="Scene\Component\Terrain.cpp" />
+    <ClCompile Include="Utility\Geometry_Generator.cpp" />
   </ItemGroup>
 </Project>

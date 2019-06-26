@@ -181,6 +181,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Scene\Component\Terrain.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Utility\FileSystem.h" />
+    <ClInclude Include="Utility\Geometry_Generator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\D3D11\BasicData\Vertex.cpp" />
@@ -201,6 +202,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Scene\Component\Terrain.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Utility\FileSystem.cpp" />
+    <ClCompile Include="Utility\Geometry_Generator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\D3D11\BasicData\Geometry.inl">

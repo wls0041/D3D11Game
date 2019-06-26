@@ -37,6 +37,7 @@ typedef unsigned int uint;
 
 //Utility
 #include "./Utility/FileSystem.h"
+#include "./Utility/Geometry_Generator.h"
 
 //Main System
 #include "./Core/Settings.h"
