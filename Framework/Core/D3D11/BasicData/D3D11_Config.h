@@ -18,3 +18,11 @@ struct WorldData
 {
     D3DXMATRIX world;
 };
+
+struct BrushData
+{
+    int brush_type;
+    D3DXVECTOR3 brush_position;
+    int brush_range;
+    D3DXVECTOR3 brush_color;
+};

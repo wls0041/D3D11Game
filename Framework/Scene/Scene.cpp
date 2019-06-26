@@ -13,7 +13,7 @@ Scene::Scene(Context * context)
     camera_buffer = new ConstantBuffer(context);
     camera_buffer->Create<CameraData>();
 
-    terrain = new Terrain(context);
+    terrain = new Terrain(context, camera);
 }
 
 Scene::~Scene()

@@ -6,6 +6,8 @@ namespace Window
     static HINSTANCE Instance;
     static HWND Handle;
 
+    static std::function<LRESULT(HWND, uint, WPARAM, LPARAM)> Input_proc;
+
     inline LRESULT CALLBACK WndProc
     (
         HWND handle,
@@ -14,6 +16,9 @@ namespace Window
         LPARAM lParam
     )
     {
+        if (Input_proc != nullptr)
+            Input_proc(handle, message, wParam, lParam);
+
         switch (message)
         {
         case WM_CLOSE:

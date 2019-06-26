@@ -1,8 +1,10 @@
 #include "Framework.h"
 #include "Terrain.h"
+#include "Camera.h"
 
-Terrain::Terrain(Context * context)
+Terrain::Terrain(Context * context, Camera* camera)
     : context(context)
+    , camera(camera)
     , width(0)
     , height(0)
 {
@@ -66,6 +68,9 @@ Terrain::Terrain(Context * context)
     world_buffer = new ConstantBuffer(context);
     world_buffer->Create<WorldData>();
 
+    brush_buffer = new ConstantBuffer(context);
+    brush_buffer->Create<BrushData>();
+
     D3DXMatrixIdentity(&world);
 
     //Create Shader Resource View
@@ -100,6 +105,7 @@ Terrain::~Terrain()
     SAFE_RELEASE(rasterizer_state);
     SAFE_RELEASE(srv);
 
+    SAFE_DELETE(brush_buffer);
     SAFE_DELETE(world_buffer);
     SAFE_DELETE(input_layout);
     SAFE_DELETE(pixel_shader);
@@ -115,6 +121,37 @@ void Terrain::Update()
         D3DXMatrixTranspose(&world_data->world, &world);
     }
     world_buffer->Unmap();
+
+    static D3DXVECTOR3 position;
+    auto picked = Pick(position);
+
+    if (picked)
+    {
+        auto brush_data = brush_buffer->Map<BrushData>();
+        {
+            brush_data->brush_type      = 1;
+            brush_data->brush_position  = position;
+            brush_data->brush_range     = 10;
+            brush_data->brush_color     = D3DXVECTOR3(0, 0, 1);
+        }
+        brush_buffer->Unmap();
+
+        if (context->GetSubsystem<Input>()->BtnPress(KeyCode::CLICK_LEFT))
+        {
+            auto left   = static_cast<uint>(position.x) - static_cast<uint>(10);
+            auto right  = static_cast<uint>(position.x) + static_cast<uint>(10);
+            auto bottom = static_cast<uint>(position.z) - static_cast<uint>(10);
+            auto top    = static_cast<uint>(position.z) + static_cast<uint>(10);
+
+            D3D11_BOX box;
+            box.left    = left < 0 ? 0 : left;
+            box.top     = top >= height ? height : top;
+            box.right   = right >= width ? width : right;
+            box.bottom  = bottom < 0 ? 0 : bottom;
+            
+            Raise(box);
+        }
+    }
 }
 
 void Terrain::Render()
@@ -125,6 +162,7 @@ void Terrain::Render()
     vertex_shader->BindPipeline();
     pixel_shader->BindPipeline();
     world_buffer->BindPipeline(1, ShaderScope::VS);
+    brush_buffer->BindPipeline(2, ShaderScope::VS);
 
     graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     graphics->GetDeviceContext()->PSSetShaderResources(0, 1, &srv);
@@ -213,6 +251,64 @@ void Terrain::ReadPixel(const std::string & path, std::vector<D3DXCOLOR>& pixels
 
     SAFE_RELEASE(dst_texture);
     SAFE_RELEASE(height_map);
+}
+
+void Terrain::Raise(const D3D11_BOX & box)
+{
+    auto vertices = geometry.GetVertexData();
+
+    for (uint z = box.bottom; z < box.top; z++)
+        for (uint x = box.left; x < box.right; x++)
+        {
+            uint index = width * z + x;
+            vertices[index].position.y += 5.0f;
+        }
+
+    UpdateNormal();
+
+    graphics->GetDeviceContext()->UpdateSubresource
+    (
+        vertex_buffer->GetResource(),
+        0,
+        nullptr,
+        vertices,
+        sizeof(VertexTextureNormal) * geometry.GetVertexCount(),
+        0
+    );
+}
+
+auto Terrain::Pick(D3DXVECTOR3 & position) -> const bool
+{
+    D3DXVECTOR3 org, dir;
+    camera->GetWorldRay(org, dir);
+
+    auto vertices = geometry.GetVertexData();
+    auto indices = geometry.GetIndexData();
+
+    for (uint i = 0; i < geometry.GetIndexCount(); i += 3)
+    {
+        auto index0 = indices[i + 0];
+        auto index1 = indices[i + 1];
+        auto index2 = indices[i + 2];
+
+        auto v0 = vertices[index0].position;
+        auto v1 = vertices[index1].position;
+        auto v2 = vertices[index2].position;
+
+        float u, v, distance;
+
+        if (D3DXIntersectTri(&v0, &v1, &v2, &org, &dir, &u, &v, &distance))
+        {
+            //v0 += u * (v2 - v0) + v * (v1 - v0);
+            //position = v0;
+
+            position = org + distance * dir;
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void Terrain::UpdateNormal()

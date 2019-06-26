@@ -23,6 +23,49 @@ Camera::~Camera()
 {
 }
 
+// Local -> World -> View -> Projection -> Viewport
+
+void Camera::GetWorldRay(D3DXVECTOR3 & origin, D3DXVECTOR3 & direction)
+{
+    auto mouse_position = input->GetMousePosition();
+    auto resolution     = D3DXVECTOR2(Settings::Get().GetWidth(), Settings::Get().GetHeight());
+
+    D3DXVECTOR2 point;
+    point.x = +2.0f * mouse_position.x / resolution.x - 1.0f;
+    point.y = -2.0f * mouse_position.y / resolution.y + 1.0f;
+    point.x = point.x / proj._11;
+    point.y = point.y / proj._22;
+
+    D3DXMATRIX inverse_view;
+    D3DXMatrixInverse(&inverse_view, nullptr, &view);
+
+    auto org = position;
+    auto dir = D3DXVECTOR3(point.x, point.y, 1.0f);
+
+    D3DXVec3TransformNormal(&dir, &dir, &inverse_view);
+    D3DXVec3Normalize(&dir, &dir);
+
+    origin      = org;
+    direction   = dir;
+}
+
+void Camera::GetLocalRay(D3DXVECTOR3 & origin, D3DXVECTOR3 & direction, const D3DXMATRIX & world)
+{
+    D3DXVECTOR3 org, dir;
+    GetWorldRay(org, dir);
+
+    D3DXMATRIX inverse_world;
+    D3DXMatrixInverse(&inverse_world, nullptr, &world);
+
+    D3DXVec3TransformNormal(&dir, &dir, &inverse_world);
+    D3DXVec3Normalize(&dir, &dir);
+
+    D3DXVec3TransformCoord(&org, &org, &inverse_world);
+
+    origin      = org;
+    direction   = dir;
+}
+
 void Camera::Update()
 {
     if (input->KeyPress(KeyCode::KEY_W))

@@ -3,7 +3,7 @@
 class Terrain final
 {
 public:
-    Terrain(class Context* context);
+    Terrain(class Context* context, class Camera* camera);
     ~Terrain();
 
     void Update();
@@ -12,11 +12,16 @@ public:
 private:
     void ReadPixel(const std::string& path, std::vector<D3DXCOLOR>& pixels);
 
+    void Raise(const D3D11_BOX& box);
+
+    auto Pick(D3DXVECTOR3& position) -> const bool;
+
     void UpdateNormal();
 
 private:
     class Context* context;
     class Graphics* graphics;
+    class Camera* camera;
 
     Geometry<VertexTextureNormal> geometry;
     VertexBuffer* vertex_buffer;
@@ -25,6 +30,7 @@ private:
     PixelShader* pixel_shader;
     InputLayout* input_layout;
     ConstantBuffer* world_buffer;
+    ConstantBuffer* brush_buffer;
 
     D3DXMATRIX world;
 

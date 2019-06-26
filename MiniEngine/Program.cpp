@@ -14,6 +14,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR lpszCmdP
 
     auto editor = std::make_unique<Editor>();
 
+    Window::Input_proc = Input::MouseProc;
+
     while (Window::Update())
     {
         editor->Update();
