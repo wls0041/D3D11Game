@@ -15,6 +15,7 @@ private:
 	class Camera* camera;
 	class ConstantBuffer* camera_buffer;
 
+	class Skybox *skybox;
 	class Terrain* terrain;
 
 	//====================

@@ -2,10 +2,21 @@
 #include "Scene.h"
 #include "./Component/Camera.h"
 #include "./Component/Terrain.h"
+#include "./Component/Skybox.h"
 
 Scene::Scene(Context * context)
     : context(context)
 {
+	graphics = context->GetSubsystem<Graphics>();
+
+	camera = new Camera(context);
+
+	camera_buffer = new ConstantBuffer(context);
+	camera_buffer->Create<CameraData>();
+
+	skybox = new Skybox(context, camera);
+	terrain = new Terrain(context, camera);
+
 	///////////////////////////////////////////
 
 	Geometry_Generator::CreateCube(geometry);
@@ -17,10 +28,10 @@ Scene::Scene(Context * context)
 	indexBuffer->Create(geometry.GetIndices());
 
 	vertexShader = new VertexShader(context);
-	vertexShader->Create("../../_Assets/Shader/Texture.hlsl", "VS", "vs_5_0");
+	vertexShader->Create("../../_Assets/Shader/Terrain.hlsl", "VS", "vs_5_0");
 
 	pixelShader = new PixelShader(context);
-	pixelShader->Create("../../_Assets/Shader/Texture.hlsl", "PS", "ps_5_0");
+	pixelShader->Create("../../_Assets/Shader/Terrain.hlsl", "PS", "ps_5_0");
 
 	inputLayout = new InputLayout(context);
 	inputLayout->Create(vertexShader->GetBlob());
@@ -33,9 +44,17 @@ Scene::Scene(Context * context)
 
 Scene::~Scene()
 {
-    SAFE_DELETE(terrain);
-    SAFE_DELETE(camera_buffer);
-    SAFE_DELETE(camera);
+	SAFE_DELETE(vertexBuffer);
+	SAFE_DELETE(indexBuffer);
+	SAFE_DELETE(inputLayout);
+	SAFE_DELETE(vertexShader);
+	SAFE_DELETE(pixelShader);
+	SAFE_DELETE(worldBuffer);
+
+	SAFE_DELETE(terrain);
+	SAFE_DELETE(skybox);
+	SAFE_DELETE(camera_buffer);
+	SAFE_DELETE(camera);
 }
 
 void Scene::Update()
@@ -49,21 +68,22 @@ void Scene::Update()
     }
     camera_buffer->Unmap();
 
+	skybox->Update();
     terrain->Update();
 
 	//--------------------- //임시
 	static D3DXVECTOR3 position(100, 0, 100);
 
-	if (context->GetSubsystem<Input>()->KeyPress(KeyCode::KEY_W))
-		position.z += 1.0;
-	else if (context->GetSubsystem<Input>()->KeyPress(KeyCode::KEY_S))
-		position.z -= 1.0;
-	
-	if (context->GetSubsystem<Input>()->KeyPress(KeyCode::KEY_A))
-		position.x -= 1.0;
-	else if (context->GetSubsystem<Input>()->KeyPress(KeyCode::KEY_D))
-		position.x += 1.0;
-	
+	if (context->GetSubsystem<Input>()->KeyPress(KeyCode::KEY_I))
+		position.z += 1.0f;
+	else if (context->GetSubsystem<Input>()->KeyPress(KeyCode::KEY_K))
+		position.z -= 1.0f;
+
+	if (context->GetSubsystem<Input>()->KeyPress(KeyCode::KEY_J))
+		position.x -= 1.0f;
+	else if (context->GetSubsystem<Input>()->KeyPress(KeyCode::KEY_L))
+		position.x += 1.0f;
+
 	position.y = terrain->GetHeight(position);
 
 	D3DXMATRIX S, T;
@@ -82,7 +102,8 @@ void Scene::Update()
 void Scene::Render()
 {
     camera_buffer->BindPipeline(0, ShaderScope::VS);
-    terrain->Render();
+	skybox->Render();
+	terrain->Render();
 
 	//------------------------------------------ //임시
 	vertexBuffer->BindPipeline();

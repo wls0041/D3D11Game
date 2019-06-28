@@ -18,6 +18,9 @@ public:
     auto GetProjectionType() const -> const ProjectionType& { return projection_type; }
     void SetProjectionType(const ProjectionType& type) { this->projection_type = type; }
 
+	auto GetPosition() const -> const D3DXVECTOR3& { return position; }
+	void SetPosition(const D3DXVECTOR3 &position) { this->position = position; }
+
     auto GetFOV() const -> const float& { return fov; }
     void SetFOV(const float& fov) { this->fov = fov; }
 

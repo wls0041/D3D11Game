@@ -35,6 +35,11 @@ typedef unsigned int uint;
 #define SAFE_DELETE(p)          { if(p) { delete (p);       (p) = nullptr; } }
 #define SAFE_DELETE_ARRAY(p)    { if(p) { delete[] (p);     (p) = nullptr; } }
 
+//FBX SDK
+//#define FBXSDK_SHARED
+//#include <fbxsdk.h>
+//using namespace fbxsdk;
+
 //Utility
 #include "./Utility/FileSystem.h"
 #include "./Utility/Geometry_Generator.h"

@@ -25,6 +25,7 @@
     <ClInclude Include="Core\D3D11\ShaderStage\ConstantBuffer.h" />
     <ClInclude Include="Scene\Component\Terrain.h" />
     <ClInclude Include="Utility\Geometry_Generator.h" />
+    <ClInclude Include="Scene\Component\Skybox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -44,5 +45,6 @@
     <ClCompile Include="Core\D3D11\ShaderStage\ConstantBuffer.cpp" />
     <ClCompile Include="Scene\Component\Terrain.cpp" />
     <ClCompile Include="Utility\Geometry_Generator.cpp" />
+    <ClCompile Include="Scene\Component\Skybox.cpp" />
   </ItemGroup>
 </Project>
