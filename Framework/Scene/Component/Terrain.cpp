@@ -7,6 +7,7 @@ Terrain::Terrain(Context * context, Camera* camera)
 	, camera(camera)
 	, width(0)
 	, height(0)
+	, bRect(true)
 {
 	graphics = context->GetSubsystem<Graphics>();
 
@@ -204,6 +205,8 @@ void Terrain::Update()
 		}
 		brush_buffer->Unmap();
 
+		if (context->GetSubsystem<Input>()->BtnPress(KeyCode::KEY_R)) bRect != bRect;
+
 		if (context->GetSubsystem<Input>()->BtnPress(KeyCode::CLICK_LEFT))
 		{
 			auto left = static_cast<uint>(position.x) - static_cast<uint>(10);
@@ -217,7 +220,8 @@ void Terrain::Update()
 			box.right = right >= width ? width : right;
 			box.bottom = bottom < 0 ? 0 : bottom;
 
-			//Raise(box);
+			//if(bRect) RaiseCircle(box);
+
 			//PaintColor(box);
 			PaintTexture(box);
 		}
@@ -334,6 +338,34 @@ void Terrain::Raise(const D3D11_BOX & box)
 		{
 			uint index = width * z + x;
 			vertices[index].position.y += 5.0f;
+		}
+
+	UpdateNormal();
+
+	graphics->GetDeviceContext()->UpdateSubresource
+	(
+		vertex_buffer->GetResource(),
+		0,
+		nullptr,
+		vertices,
+		sizeof(VertexTerrain) * geometry.GetVertexCount(),
+		0
+	);
+}
+
+void Terrain::RaiseCircle(const D3D11_BOX & box)
+{
+	auto vertices = geometry.GetVertexData();
+	float distance = (box.right - box.left) * 0.5f;
+	D3DXVECTOR2 mid = { (box.right + box.left) * 0.5f, (box.top + box.bottom) * 0.5f };
+	
+	for (uint z = box.bottom; z < box.top; z++)
+		for (uint x = box.left; x < box.right; x++)
+		{
+			if (distance >= sqrt(pow(mid.x - x, 2) + pow(mid.y - z, 2))) {
+				uint index = width * z + x;
+				vertices[index].position.y += 5.0f;
+			}
 		}
 
 	UpdateNormal();

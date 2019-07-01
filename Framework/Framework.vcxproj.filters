@@ -26,6 +26,9 @@
     <ClInclude Include="Scene\Component\Terrain.h" />
     <ClInclude Include="Utility\Geometry_Generator.h" />
     <ClInclude Include="Scene\Component\Skybox.h" />
+    <ClInclude Include="Resource\ModelImporter\FbxType.h" />
+    <ClInclude Include="Resource\ModelImporter\FbxUtility.h" />
+    <ClInclude Include="Resource\ModelImporter\ModelImporter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -46,5 +49,7 @@
     <ClCompile Include="Scene\Component\Terrain.cpp" />
     <ClCompile Include="Utility\Geometry_Generator.cpp" />
     <ClCompile Include="Scene\Component\Skybox.cpp" />
+    <ClCompile Include="Resource\ModelImporter\FbxUtility.cpp" />
+    <ClCompile Include="Resource\ModelImporter\ModelImporter.cpp" />
   </ItemGroup>
 </Project>

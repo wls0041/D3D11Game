@@ -15,6 +15,7 @@ private:
     void ReadPixel(const std::string& path, std::vector<D3DXCOLOR>& pixels);
 
     void Raise(const D3D11_BOX& box);
+	void RaiseCircle(const D3D11_BOX& box);
 	void PaintColor(const D3D11_BOX& box);
 	void PaintTexture(const D3D11_BOX& box);
 
@@ -38,6 +39,7 @@ private:
 
     D3DXMATRIX world;
 
+	bool bRect;
     uint width;
     uint height;
 

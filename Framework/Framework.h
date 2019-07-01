@@ -36,9 +36,10 @@ typedef unsigned int uint;
 #define SAFE_DELETE_ARRAY(p)    { if(p) { delete[] (p);     (p) = nullptr; } }
 
 //FBX SDK
-//#define FBXSDK_SHARED
-//#include <fbxsdk.h>
-//using namespace fbxsdk;
+#define FBXSDK_SHARED
+#include <fbxsdk.h>
+#pragma comment(lib, "libfbxsdk.lib")
+using namespace fbxsdk;
 
 //Utility
 #include "./Utility/FileSystem.h"

@@ -90,7 +90,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>.\; $(SolutionDir)..\_Libraries\;</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -177,6 +177,9 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\Subsystem\ISubsystem.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Framework.h" />
+    <ClInclude Include="Resource\ModelImporter\FbxType.h" />
+    <ClInclude Include="Resource\ModelImporter\FbxUtility.h" />
+    <ClInclude Include="Resource\ModelImporter\ModelImporter.h" />
     <ClInclude Include="Scene\Component\Camera.h" />
     <ClInclude Include="Scene\Component\Terrain.h" />
     <ClInclude Include="Scene\Scene.h" />
@@ -199,6 +202,8 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Framework.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Resource\ModelImporter\FbxUtility.cpp" />
+    <ClCompile Include="Resource\ModelImporter\ModelImporter.cpp" />
     <ClCompile Include="Scene\Component\Camera.cpp" />
     <ClCompile Include="Scene\Component\Terrain.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
