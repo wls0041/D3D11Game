@@ -99,3 +99,37 @@ struct VertexTerrain final
 	static D3D11_INPUT_ELEMENT_DESC descs[];
 	static const uint count = 4;
 };
+
+struct VertexTextureNormalTangentBlend final
+{
+	VertexTextureNormalTangentBlend()
+		: position(0, 0, 0)
+		, uv(0, 0)
+		, normal(0, 0, 0)
+		, tangent(0, 0, 0)
+		, indices(0, 0, 0, 0)
+		, weights(0, 0, 0, 0)
+	{}
+
+	VertexTextureNormalTangentBlend(const D3DXVECTOR3& position, const D3DXVECTOR2& uv, const D3DXVECTOR3& normal,
+									const D3DXVECTOR3& tangent, const D3DXVECTOR4& indices, const D3DXVECTOR4& weights)
+		: position(position)
+		, uv(uv)
+		, normal(normal)
+		, tangent(tangent)
+		, indices(indices)
+		, weights(weights)
+	{}
+
+	D3DXVECTOR3 position;
+	D3DXVECTOR2 uv;
+	D3DXVECTOR3 normal;
+	D3DXVECTOR3 tangent;
+	D3DXVECTOR4 indices;
+	D3DXVECTOR4 weights;
+
+	static D3D11_INPUT_ELEMENT_DESC descs[];
+	static const uint count = 6;
+};
+
+typedef VertexTextureNormalTangentBlend VertexModel;

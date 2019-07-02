@@ -3,6 +3,7 @@
 #include "./Component/Camera.h"
 #include "./Component/Terrain.h"
 #include "./Component/Skybox.h"
+#include "./Resource\ModelImporter/ModelImporter.h"
 
 Scene::Scene(Context * context)
     : context(context)
@@ -40,6 +41,12 @@ Scene::Scene(Context * context)
 	worldBuffer->Create<WorldData>();
 
 	D3DXMatrixIdentity(&world);
+
+	///////////////////////////////////////////
+	ModelImporter *importer = new ModelImporter(context);
+	importer->Load("../../_Assets/Model/Slash.fbx");
+	importer->ExportFile();
+	SAFE_DELETE(importer);
 }
 
 Scene::~Scene()

@@ -8,6 +8,8 @@ public:
 
     void Load(const std::string& path);
 
+	void ExportFile();
+
 private:
     void ProcessMaterial(FbxScene* scene);
     void ProcessSkeletonHierarchy(FbxScene* scene);
@@ -23,6 +25,22 @@ private:
     void ProcessCtrlPoints(FbxNode* node);
     void ProcessBone(FbxNode* node);
     void ProcessMesh(FbxNode* node);
+
+private:
+	auto ReadUV(
+		FbxMesh *fbx_mesh,
+		const int &layer_index,
+		const int &polygon_index,
+		const int &polygon_vertex_index,
+		const int &ctrl_point_index
+	) -> const FbxVector2;
+	
+	auto ReadNormal(
+		FbxMesh *fbx_mesh,
+		const int &ctrl_point_index,
+		const int &vertex_count
+	) -> const FbxVector4;
+
 
 private:
     class Context* context;

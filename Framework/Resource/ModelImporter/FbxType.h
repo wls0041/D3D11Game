@@ -52,7 +52,7 @@ struct FbxMeshData
 
     std::string name;
     D3DXMATRIX transform;
-    //std::vector<VertexModel> vertices;
+    std::vector<VertexModel> vertices;
     std::vector<uint> indices;
 };
 

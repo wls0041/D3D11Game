@@ -1,8 +1,17 @@
 #pragma once
 
+#define NOMINMAX 
+
+#ifdef _DEBUG
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+
+#endif
+
+
 //Window
 #include <Windows.h>
 #include <assert.h>
+#include <iostream>
 
 //STL
 #include <typeinfo>
