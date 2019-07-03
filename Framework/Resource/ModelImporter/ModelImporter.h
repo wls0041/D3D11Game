@@ -6,8 +6,8 @@ public:
     ModelImporter(class Context* context);
     ~ModelImporter();
 
-    void Load(const std::string& path, class Model **model);
-	void ExportFile();
+    void Load(const std::string& path, class Model** model);
+    void ExportFile();
 
 private:
     void ProcessMaterial(FbxScene* scene);
@@ -26,20 +26,21 @@ private:
     void ProcessMesh(FbxNode* node);
 
 private:
-	auto ReadUV(
-		FbxMesh *fbx_mesh,
-		const int &layer_index,
-		const int &polygon_index,
-		const int &polygon_vertex_index,
-		const int &ctrl_point_index
-	) -> const FbxVector2;
-	
-	auto ReadNormal(
-		FbxMesh *fbx_mesh,
-		const int &ctrl_point_index,
-		const int &vertex_count
-	) -> const FbxVector4;
-
+    auto ReadUV
+    (
+        FbxMesh* fbx_mesh,
+        const int& layer_index,
+        const int& polygon_index,
+        const int& polygon_vertex_index,
+        const int& ctrl_point_index
+    ) -> const FbxVector2;
+    
+    auto ReadNormal
+    (
+        FbxMesh* fbx_mesh,
+        const int& ctrl_point_index,
+        const int& vertex_count
+    ) -> const FbxVector4;
 
 private:
     class Context* context;

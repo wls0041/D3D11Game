@@ -1,9 +1,9 @@
 #include "Framework.h"
 #include "Scene.h"
 #include "./Component/Camera.h"
-#include "./Component/Terrain.h"
 #include "./Component/Skybox.h"
-#include "./Resource\ModelImporter/ModelImporter.h"
+#include "./Component/Terrain.h"
+#include "./Resource/ModelImporter/ModelImporter.h"
 
 Scene::Scene(Context * context)
     : context(context)
@@ -29,10 +29,10 @@ Scene::Scene(Context * context)
 	indexBuffer->Create(geometry.GetIndices());
 
 	vertexShader = new VertexShader(context);
-	vertexShader->Create("../../_Assets/Shader/Terrain.hlsl", "VS", "vs_5_0");
+	vertexShader->Create("../../_Assets/Shader/Texture.hlsl", "VS", "vs_5_0");
 
 	pixelShader = new PixelShader(context);
-	pixelShader->Create("../../_Assets/Shader/Terrain.hlsl", "PS", "ps_5_0");
+	pixelShader->Create("../../_Assets/Shader/Texture.hlsl", "PS", "ps_5_0");
 
 	inputLayout = new InputLayout(context);
 	inputLayout->Create(vertexShader->GetBlob());

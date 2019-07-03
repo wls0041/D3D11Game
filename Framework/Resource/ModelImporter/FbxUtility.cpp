@@ -74,3 +74,16 @@ auto FbxUtility::ToMatrix(const FbxAMatrix & value) -> const D3DXMATRIX
 
     return S * R * T;
 }
+
+auto FbxUtility::ToUV(const FbxVector2 & value) -> const D3DXVECTOR2
+{
+	auto uv = ToVector2(value);
+
+	switch (Axis_type)
+	{
+	case AxisType::Maya_Y_Up:
+		return D3DXVECTOR2(uv.x, 1.0f - uv.y); //그림이 뒤집어져 있기 때문에 다시 뒤집어줌
+	}
+
+	return uv;
+}

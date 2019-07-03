@@ -205,7 +205,8 @@ void Terrain::Update()
 		}
 		brush_buffer->Unmap();
 
-		if (context->GetSubsystem<Input>()->BtnPress(KeyCode::KEY_R)) bRect != bRect;
+		//종속성 오류
+		//if (context->GetSubsystem<Input>()->KeyPress(KeyCode::KEY_R)) bRect != bRect; 
 
 		if (context->GetSubsystem<Input>()->BtnPress(KeyCode::CLICK_LEFT))
 		{
@@ -222,6 +223,7 @@ void Terrain::Update()
 
 			//if(bRect) RaiseCircle(box);
 
+			//Raise(box);
 			//PaintColor(box);
 			PaintTexture(box);
 		}

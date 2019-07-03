@@ -21,5 +21,5 @@ public:
     static auto ToQuaternion(const FbxQuaternion& value) -> const D3DXQUATERNION;
     static auto ToMatrix(const FbxAMatrix& value) -> const D3DXMATRIX;
 
-
+	static auto ToUV(const FbxVector2 &value) -> const D3DXVECTOR2;
 };
