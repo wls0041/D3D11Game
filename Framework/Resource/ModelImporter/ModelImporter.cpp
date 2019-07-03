@@ -13,7 +13,7 @@ ModelImporter::~ModelImporter()
 {
 }
 
-void ModelImporter::Load(const std::string & path)
+void ModelImporter::Load(const std::string & path, class Model **model)
 {
     fbx_name = path; //TODO : FileSystem 만들고 처리
 
@@ -76,15 +76,21 @@ void ModelImporter::Load(const std::string & path)
 
 	//Process Model
 	{
+		//ProcessSkeletonHierarchy(scene);
 		ProcessGeometryRecursively(scene->GetRootNode());
 	}
 	scene->Destroy();
 	manager->Destroy();
+
+	*model = new Model(context);
+	(*model)->SetGeometry(mesh_datas[0].vertices, mesh_datas[0].indices);
 }
 
 void ModelImporter::ExportFile()
 {
 	std::cout << "CtrlPoint Count : " << ctrl_point_datas.size() << std::endl;
+
+	std::cout << std::endl;
 
 	for (const auto &mesh_data : mesh_datas)
 	{
@@ -94,7 +100,47 @@ void ModelImporter::ExportFile()
 
 		std::cout << std::endl;
 	}
+
+	std::cout << std::endl;
+
+	std::cout << "Bone Count : " << bone_datas.size() << std::endl;
+
+	std::cout << std::endl;
+
+	for (const auto &bone_data : bone_datas) {
+		std::cout << "Bone Name	: " << bone_data.name.c_str() << std::endl;
+		std::cout << "Bone Parent index : " << bone_data.parent_index << std::endl;
+
+		std::cout << std::endl;
+	}
 } 
+
+void ModelImporter::ProcessSkeletonHierarchy(FbxScene * scene)
+{
+	FbxNode *node = scene->GetRootNode();
+
+	for (int i = 0; i < node->GetChildCount(); i++)
+		ProcessSkeletonHierarchyRecursively(node->GetChild(i), 0, 0, -1);
+}
+
+void ModelImporter::ProcessSkeletonHierarchyRecursively(FbxNode * node, const int & depth, const int & index, const int & parent_index)
+{
+	auto attribute = node->GetNodeAttribute();
+
+	if (attribute)
+	{
+		if (attribute->GetAttributeType() == FbxNodeAttribute::eSkeleton) {
+			FbxBoneData bone_data;
+			bone_data.name = std::string(node->GetName());
+			bone_data.parent_index = parent_index;
+
+			bone_datas.emplace_back(bone_data);
+		}
+	}
+
+	for (int i = 0; i < node->GetChildCount(); i++)
+		ProcessSkeletonHierarchyRecursively(node->GetChild(i), depth + 1, bone_datas.size(), index);
+}
 
 void ModelImporter::ProcessGeometryRecursively(FbxNode * node)
 {
@@ -154,10 +200,10 @@ void ModelImporter::ProcessMesh(FbxNode * node)
 			vertex.position = FbxUtility::ToVector3(ctrl_point_datas[ctrl_point_index].position);
 
 			//UV
-
+			vertex.uv = FbxUtility::ToVector2(ReadUV(fbx_mesh, 0, pi, pvi, ctrl_point_index));
 
 			//NORMAL
-
+			vertex.normal = FbxUtility::ToVector3(ReadNormal(fbx_mesh, ctrl_point_index, vertex_count));
 
 			//INDICES
 
@@ -176,10 +222,10 @@ void ModelImporter::ProcessMesh(FbxNode * node)
 
 auto ModelImporter::ReadUV(FbxMesh * fbx_mesh, const int & layer_index, const int & polygon_index, const int & polygon_vertex_index, const int & ctrl_point_index) -> const FbxVector2
 {
-	if (layer_index >= fbx_mesh->GetLayerCount()) return;
+	if (layer_index >= fbx_mesh->GetLayerCount()) throw std::exception();
 
 	auto layer = fbx_mesh->GetLayer(layer_index);
-	if (!layer) return;
+	if (!layer) throw std::exception();
 
 	FbxLayerElementUV *uv = layer->GetUVs();
 	
@@ -187,7 +233,7 @@ auto ModelImporter::ReadUV(FbxMesh * fbx_mesh, const int & layer_index, const in
 	switch (uv->GetMappingMode()) {
 	case FbxLayerElement::eByControlPoint:
 	{
-		switch (uv->GetReferenceMode)
+		switch (uv->GetReferenceMode())
 		{
 		case FbxLayerElement::eDirect: //바로 맵핑
 			return uv->GetDirectArray().GetAt(ctrl_point_index);
@@ -200,21 +246,56 @@ auto ModelImporter::ReadUV(FbxMesh * fbx_mesh, const int & layer_index, const in
 	}
 	case FbxLayerElement::eByPolygonVertex:
 	{
-		switch (uv->GetReferenceMode)
+		switch (uv->GetReferenceMode())
 		{
 		case FbxLayerElement::eDirect:
-
 		case FbxLayerElement::eIndexToDirect:
-
+			mapping_index = fbx_mesh->GetTextureUVIndex(polygon_index, polygon_vertex_index);
+			return uv->GetDirectArray().GetAt(mapping_index);
 		}
 		break;
 	}
 	}
 
- 	return FbxVector2();
+	throw std::exception();
 }
 
 auto ModelImporter::ReadNormal(FbxMesh * fbx_mesh, const int & ctrl_point_index, const int & vertex_count) -> const FbxVector4
 {
-	return FbxVector4();
+	if (fbx_mesh->GetElementNormalCount() < 1)
+		throw std::exception();
+
+	FbxGeometryElementNormal* normal = fbx_mesh->GetElementNormal();
+
+	int mapping_index = 0;
+	switch (normal->GetMappingMode())
+	{
+	case FbxLayerElement::eByControlPoint:
+	{
+		switch (normal->GetReferenceMode())
+		{
+		case FbxLayerElement::eDirect:
+			return normal->GetDirectArray().GetAt(ctrl_point_index);
+		case FbxLayerElement::eIndexToDirect:
+			mapping_index = normal->GetIndexArray().GetAt(ctrl_point_index);
+			return normal->GetDirectArray().GetAt(mapping_index);
+		}
+		break;
+	}
+
+	case FbxLayerElement::eByPolygonVertex:
+	{
+		switch (normal->GetReferenceMode())
+		{
+		case FbxLayerElement::eDirect:
+			return normal->GetDirectArray().GetAt(vertex_count);
+		case FbxLayerElement::eIndexToDirect:
+			mapping_index = normal->GetIndexArray().GetAt(vertex_count);
+			return normal->GetDirectArray().GetAt(mapping_index);
+		}
+		break;
+	}
+	}
+
+	throw std::exception();
 }

@@ -29,6 +29,7 @@
     <ClInclude Include="Resource\ModelImporter\FbxType.h" />
     <ClInclude Include="Resource\ModelImporter\FbxUtility.h" />
     <ClInclude Include="Resource\ModelImporter\ModelImporter.h" />
+    <ClInclude Include="Resource\Model.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -51,5 +52,6 @@
     <ClCompile Include="Scene\Component\Skybox.cpp" />
     <ClCompile Include="Resource\ModelImporter\FbxUtility.cpp" />
     <ClCompile Include="Resource\ModelImporter\ModelImporter.cpp" />
+    <ClCompile Include="Resource\Model.cpp" />
   </ItemGroup>
 </Project>

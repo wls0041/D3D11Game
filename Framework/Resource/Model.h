@@ -1,26 +1,20 @@
 #pragma once
 
-class Scene final
+class Model final
 {
 public:
-	Scene(class Context* context);
-	~Scene();
+	Model(class Context *context);
+	~Model();
+
+	void SetGeometry(const std::vector<VertexModel> &vertices, const std::vector<uint> &indices);
 
 	void Update();
 	void Render();
 
 private:
-	class Context* context;
-	class Graphics* graphics;
-	class Camera* camera;
-	class ConstantBuffer* camera_buffer;
+	class Context *context;
+	class Graphics *graphics;
 
-	class Skybox *skybox;
-	class Terrain* terrain;
-
-	class Model *model;
-
-	//====================
 	Geometry<VertexTexture> geometry;
 	VertexBuffer* vertexBuffer;
 	IndexBuffer* indexBuffer;

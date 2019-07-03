@@ -6,8 +6,7 @@ public:
     ModelImporter(class Context* context);
     ~ModelImporter();
 
-    void Load(const std::string& path);
-
+    void Load(const std::string& path, class Model **model);
 	void ExportFile();
 
 private:

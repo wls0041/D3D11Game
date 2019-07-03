@@ -44,7 +44,7 @@ Scene::Scene(Context * context)
 
 	///////////////////////////////////////////
 	ModelImporter *importer = new ModelImporter(context);
-	importer->Load("../../_Assets/Model/Slash.fbx");
+	importer->Load("../../_Assets/Model/Slash.fbx", &model);
 	importer->ExportFile();
 	SAFE_DELETE(importer);
 }
@@ -58,6 +58,7 @@ Scene::~Scene()
 	SAFE_DELETE(pixelShader);
 	SAFE_DELETE(worldBuffer);
 
+	SAFE_DELETE(model);
 	SAFE_DELETE(terrain);
 	SAFE_DELETE(skybox);
 	SAFE_DELETE(camera_buffer);
@@ -77,6 +78,7 @@ void Scene::Update()
 
 	skybox->Update();
     terrain->Update();
+	model->Update();
 
 	//--------------------- //임시
 	static D3DXVECTOR3 position(100, 0, 100);
@@ -111,6 +113,7 @@ void Scene::Render()
     camera_buffer->BindPipeline(0, ShaderScope::VS);
 	skybox->Render();
 	terrain->Render();
+	model->Render();
 
 	//------------------------------------------ //임시
 	vertexBuffer->BindPipeline();
