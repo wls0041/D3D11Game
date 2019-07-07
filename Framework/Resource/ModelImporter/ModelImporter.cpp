@@ -78,7 +78,8 @@ void ModelImporter::Load(const std::string & path, Model** model)
     //Process Model
     {
         ProcessMaterial(scene);
-        //ProcessSkeletonHierarchy(scene);
+        ProcessSkeletonHierarchy(scene);
+		ProcessAnimation(scene);
         ProcessGeometryRecursively(scene->GetRootNode());
     }
 
@@ -140,6 +141,15 @@ void ModelImporter::ExportFile()
         std::cout << std::endl;
     }
 
+	std::cout << std::endl;
+	for (const auto &animation_data : animation_datas) {
+		std::cout << "Animation Name : " << animation_data.name.c_str() << std::endl;
+		std::cout << "Animation FrameCount : " << animation_data.frame_count << std::endl;
+		std::cout << "Animation FrameRate : " << animation_data.frame_rate << std::endl;
+		std::cout << "Animation Duration : " << animation_data.duration << std::endl;
+
+		std::cout << std::endl;
+	}
 }
 
 void ModelImporter::ProcessMaterial(FbxScene * scene)
@@ -226,6 +236,57 @@ void ModelImporter::ProcessSkeletonHierarchyRecursively(FbxNode * node, const in
         ProcessSkeletonHierarchyRecursively(node->GetChild(i), depth + 1, bone_datas.size(), index);
 }
 
+void ModelImporter::ProcessAnimation(FbxScene * scene)
+{
+	FbxArray<FbxString*> animation_names;
+	scene->FillAnimStackNameArray(animation_names);
+
+	FbxTime::EMode time_mode = scene->GetGlobalSettings().GetTimeMode();
+	for (int i = 0; i < animation_names.Size(); i++) {
+		FbxTakeInfo *take_info = scene->GetTakeInfo(animation_names[i]->Buffer()); //c_str과 비슷한 역할.
+		FbxTimeSpan time_span = take_info->mLocalTimeSpan; //애니메이션 수명
+		FbxLongLong start = time_span.GetStart().GetFrameCount(); //시작할 시간. 프레임
+		FbxLongLong end = time_span.GetStop().GetFrameCount();
+
+		FbxSkinnedAnimationData animation_data;
+		animation_data.name = std::string(take_info->mName.Buffer());
+		animation_data.frame_count = static_cast<int>(end - start + 1);
+		animation_data.frame_rate = static_cast<float>(FbxTime::GetFrameRate(time_mode));
+		animation_data.duration = static_cast<float>(time_span.GetDuration().GetMilliSeconds());
+
+		animation_datas.emplace_back(animation_data);
+		ProcessAnimationRecursiely(scene->GetRootNode(), i, start, end);
+	}
+}
+
+void ModelImporter::ProcessAnimationRecursiely(FbxNode * node, const uint & animation_index, const FbxLongLong & start, const FbxLongLong & end)
+{
+	auto attribute = node->GetNodeAttribute();
+	
+	if (attribute) {
+		if (attribute->GetAttributeType() == FbxNodeAttribute::eSkeleton) {
+			FbxBoneKeyframeData bone_animation_data;
+			bone_animation_data.name = std::string(node->GetName());
+
+			for (auto i = start; i <= end; i++) {
+				FbxTime current_time;
+				current_time.SetFrame(i);
+
+				FbxKeyframeData keyframe_data;
+				keyframe_data.time = current_time.GetMilliSeconds();
+				keyframe_data.transform = FbxUtility::ToMatrix(node->EvaluateLocalTransform(current_time));//world변환. 스케일, 위치, 각도 한 번에 바꿈
+				
+				bone_animation_data.keyframes.emplace_back(keyframe_data);
+			}
+
+			animation_datas[animation_index].bone_animations.emplace_back(bone_animation_data);
+		}
+	}
+
+	for (int i = 0; i < node->GetChildCount(); i++)
+		ProcessAnimationRecursiely(node->GetChild(i), animation_index, start, end);
+}
+
 void ModelImporter::ProcessGeometryRecursively(FbxNode * node)
 {
     auto attribute = node->GetNodeAttribute();
@@ -236,7 +297,7 @@ void ModelImporter::ProcessGeometryRecursively(FbxNode * node)
         {
         case FbxNodeAttribute::eMesh:
             ProcessCtrlPoints(node);
-            //ProcessBone(node);
+            ProcessBone(node);
             ProcessMesh(node);
         }
     }
@@ -258,6 +319,58 @@ void ModelImporter::ProcessCtrlPoints(FbxNode * node)
         ctrl_point_data.position = fbx_mesh->GetControlPointAt(i);
         ctrl_point_datas[i] = ctrl_point_data;
     }
+}
+
+void ModelImporter::ProcessBone(FbxNode * node)
+{
+	auto fbx_mesh = node->GetMesh();
+	
+	if (!fbx_mesh) return;
+
+	for (int di = 0; di < fbx_mesh->GetDeformerCount(); di++) { //Deformer. 모델 바깥을 둘러싼 모형. 이 모형을 조작해서 안의 모델의 모양을 바꿈.
+		FbxSkin *skin = reinterpret_cast<FbxSkin*>(fbx_mesh->GetDeformer(di, FbxDeformer::eSkin)); //여기서 bone을 움직이게 하는 놈만 빼올 예정
+		if (!skin) continue;
+		
+		for (int ci = 0; ci < skin->GetClusterCount(); ci++) {//cluster. 무리. 여기서는 관절. 관절의 디포머
+			FbxCluster *cluster = skin->GetCluster(ci);
+
+			//Cluster 에서 현재 bone의 이름을 가져옴
+			std::string bone_name = cluster->GetLink()->GetName();
+			
+			//이름으로 bone의 index를 가져옴
+			uint bone_index = FindBoneIndexFromName(bone_name);
+
+			//index로 Bone Data 가져옴
+			auto &bone_data = bone_datas[bone_index];
+
+			//Binding 시간에 Mesh의 변환
+			FbxAMatrix transform_matrix;
+			cluster->GetTransformMatrix(transform_matrix);
+
+			//관절 공간에서 세계공간으로 바인딩 되는 시간에 클러스터의 변환
+			FbxAMatrix transform_link_matrix;
+			cluster->GetTransformLinkMatrix(transform_link_matrix);
+
+			//BindPose matrix
+			bone_data.bind_pose_transform = FbxUtility::ToMatrix(transform_link_matrix);
+
+			//Offset matrix. 각각 꺼낸 bone의 시작점
+			bone_data.offset_transform = FbxUtility::ToMatrix(transform_link_matrix.Inverse() *transform_matrix);
+
+			//가중치. bone이 움직이면 skin이 찢어지는 현상 방지
+			auto ctrl_point_indices = cluster->GetControlPointIndices();
+			auto ctrl_point_weights = cluster->GetControlPointWeights();
+
+			for (int cp = 0; cp < cluster->GetControlPointIndicesCount(); cp++) {
+				FbxVertexWeight vertex_weight;
+				vertex_weight.index = bone_index;
+				vertex_weight.weight = ctrl_point_weights[cp];
+
+				uint ctrl_point_index = ctrl_point_indices[cp];
+				ctrl_point_datas[ctrl_point_index].vertex_weights.emplace_back(vertex_weight);
+			}
+		}
+	}
 }
 
 void ModelImporter::ProcessMesh(FbxNode * node)
@@ -290,8 +403,10 @@ void ModelImporter::ProcessMesh(FbxNode * node)
             vertex.normal = FbxUtility::ToVector3(ReadNormal(fbx_mesh, ctrl_point_index, vertex_count));
 
             //Indices
+			vertex.indices = FbxUtility::ToVertexIndices(ctrl_point_datas[ctrl_point_index].vertex_weights);
 
             //Weights
+			vertex.weights = FbxUtility::ToVertexWeights(ctrl_point_datas[ctrl_point_index].vertex_weights);
 
             mesh_data.vertices.emplace_back(vertex);
             mesh_data.indices.emplace_back(vertex_count);
@@ -384,4 +499,15 @@ auto ModelImporter::ReadNormal(FbxMesh * fbx_mesh, const int & ctrl_point_index,
     }
 
     throw std::exception();
+}
+
+auto ModelImporter::FindBoneIndexFromName(const std::string & name) -> const uint
+{
+	uint index = 0;
+
+	for (const auto &bone_data : bone_datas) {
+		if (bone_data.name == name) return index;
+		index++;
+	}
+	throw std::exception();
 }

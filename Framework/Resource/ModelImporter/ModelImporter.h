@@ -20,6 +20,9 @@ private:
         const int& parent_index
     );
 
+	void ProcessAnimation(FbxScene *scene);
+	void ProcessAnimationRecursiely(FbxNode *node, const uint &animation_index, const FbxLongLong &start, const FbxLongLong &end);
+
     void ProcessGeometryRecursively(FbxNode* node);
     void ProcessCtrlPoints(FbxNode* node);
     void ProcessBone(FbxNode* node);
@@ -41,6 +44,8 @@ private:
         const int& ctrl_point_index,
         const int& vertex_count
     ) -> const FbxVector4;
+	
+	auto FindBoneIndexFromName(const std::string &name) -> const uint;
 
 private:
     class Context* context;

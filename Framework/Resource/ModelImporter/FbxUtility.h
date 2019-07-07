@@ -22,4 +22,7 @@ public:
     static auto ToMatrix(const FbxAMatrix& value) -> const D3DXMATRIX;
 
 	static auto ToUV(const FbxVector2 &value) -> const D3DXVECTOR2;
+
+	static auto ToVertexIndices(const std::vector<struct FbxVertexWeight> &vertex_weight) -> const D3DXVECTOR4;
+	static auto ToVertexWeights(const std::vector<struct FbxVertexWeight> &vertex_weight) -> const D3DXVECTOR4;
 };
