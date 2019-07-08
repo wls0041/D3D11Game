@@ -14,6 +14,8 @@ public:
 private:
     void ReadPixel(const std::string& path, std::vector<D3DXCOLOR>& pixels);
 
+	void Flatting(const D3D11_BOX &box);
+	void Down(const D3D11_BOX &box);
     void Raise(const D3D11_BOX& box);
 	void RaiseCircle(const D3D11_BOX& box);
 	void PaintColor(const D3D11_BOX& box);

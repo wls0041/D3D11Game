@@ -3,6 +3,7 @@
 #include "./Component/Camera.h"
 #include "./Component/Skybox.h"
 #include "./Component/Terrain.h"
+#include "./Component/MultiCube.h"
 #include "./Resource/ModelImporter/ModelImporter.h"
 
 Scene::Scene(Context * context)
@@ -18,6 +19,13 @@ Scene::Scene(Context * context)
 	skybox = new Skybox(context, camera);
 	terrain = new Terrain(context, camera);
 
+	for (int x = 0; x < 5; x++) {
+		for (int y = 0; y < 5; y++) {
+			for (int z = 0; z < 5; z++) {
+				multiCube[x][y][z] = new MultiCube(context, camera, D3DXVECTOR3(x, y, z));
+			}
+		}
+	}
 	///////////////////////////////////////////
 
 	Geometry_Generator::CreateCube(geometry);
@@ -58,6 +66,14 @@ Scene::~Scene()
 	SAFE_DELETE(pixelShader);
 	SAFE_DELETE(worldBuffer);
 
+	for (int x = 0; x < 5; x++) {
+		for (int y = 0; y < 5; y++) {
+			for (int z = 0; z < 5; z++) {
+				SAFE_DELETE(multiCube[x][y][z]);
+			}
+		}
+	}
+
 	SAFE_DELETE(model);
 	SAFE_DELETE(terrain);
 	SAFE_DELETE(skybox);
@@ -79,6 +95,14 @@ void Scene::Update()
 	skybox->Update();
     terrain->Update();
 	model->Update();
+
+	for (int x = 0; x < 5; x++) {
+		for (int y = 0; y < 5; y++) {
+			for (int z = 0; z < 5; z++) {
+				//multiCube[x][y][z]->Update();
+			}
+		}
+	}
 
 	//--------------------- //임시
 	static D3DXVECTOR3 position(100, 0, 100);
@@ -115,6 +139,13 @@ void Scene::Render()
 	terrain->Render();
 	model->Render();
 
+	for (int x = 0; x < 5; x++) {
+		for (int y = 0; y < 5; y++) {
+			for (int z = 0; z < 5; z++) {
+				multiCube[x][y][z]->Render();
+			}
+		}
+	}
 	//------------------------------------------ //임시
 	vertexBuffer->BindPipeline();
 	indexBuffer->BindPipeline();

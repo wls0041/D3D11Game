@@ -226,8 +226,12 @@ void Terrain::Update()
 			//Raise(box);
 			//PaintColor(box);
 			PaintTexture(box);
+
+			//Flatting(box); ¿À·ù
+			//Down(box);
 		}
 	}
+	
 }
 
 void Terrain::Render()
@@ -329,6 +333,55 @@ void Terrain::ReadPixel(const std::string & path, std::vector<D3DXCOLOR>& pixels
 
 	SAFE_RELEASE(dst_texture);
 	SAFE_RELEASE(height_map);
+}
+
+void Terrain::Flatting(const D3D11_BOX & box)
+{
+	auto vertices = geometry.GetVertexData();
+
+	for (uint z = box.bottom; z < box.top; z++)
+		for (uint x = box.left; x < box.right; x++)
+		{
+			uint index = width * z + x;
+			if(vertices[index].position.y != 0.0f)
+				vertices[index].position.y = 0.0f;
+		}
+
+	UpdateNormal();
+
+	graphics->GetDeviceContext()->UpdateSubresource
+	(
+		vertex_buffer->GetResource(),
+		0,
+		nullptr,
+		vertices,
+		sizeof(VertexTerrain) * geometry.GetVertexCount(),
+		0
+	);
+}
+
+void Terrain::Down(const D3D11_BOX & box)
+{
+	auto vertices = geometry.GetVertexData();
+
+	for (uint z = box.bottom; z < box.top; z++)
+		for (uint x = box.left; x < box.right; x++)
+		{
+			uint index = width * z + x;
+			vertices[index].position.y -= 5.0f;
+		}
+
+	UpdateNormal();
+
+	graphics->GetDeviceContext()->UpdateSubresource
+	(
+		vertex_buffer->GetResource(),
+		0,
+		nullptr,
+		vertices,
+		sizeof(VertexTerrain) * geometry.GetVertexCount(),
+		0
+	);
 }
 
 void Terrain::Raise(const D3D11_BOX & box)

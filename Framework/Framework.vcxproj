@@ -182,6 +182,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Resource\ModelImporter\FbxUtility.h" />
     <ClInclude Include="Resource\ModelImporter\ModelImporter.h" />
     <ClInclude Include="Scene\Component\Camera.h" />
+    <ClInclude Include="Scene\Component\MultiCube.h" />
     <ClInclude Include="Scene\Component\Terrain.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\Component\Skybox.h" />
@@ -207,6 +208,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Resource\ModelImporter\FbxUtility.cpp" />
     <ClCompile Include="Resource\ModelImporter\ModelImporter.cpp" />
     <ClCompile Include="Scene\Component\Camera.cpp" />
+    <ClCompile Include="Scene\Component\MultiCube.cpp" />
     <ClCompile Include="Scene\Component\Terrain.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\Component\Skybox.cpp" />

@@ -17,8 +17,8 @@ private:
 
 	class Skybox *skybox;
 	class Terrain* terrain;
-
 	class Model *model;
+	class MultiCube *multiCube[5][5][5];
 
 	//====================
 	Geometry<VertexTexture> geometry;

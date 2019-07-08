@@ -26,3 +26,9 @@ struct BrushData
     int brush_range;
     D3DXVECTOR3 brush_color;
 };
+
+struct MultiData
+{
+	int paint_type;
+	D3DXVECTOR3 index;
+};

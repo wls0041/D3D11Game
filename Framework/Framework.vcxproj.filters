@@ -30,6 +30,7 @@
     <ClInclude Include="Resource\ModelImporter\FbxUtility.h" />
     <ClInclude Include="Resource\ModelImporter\ModelImporter.h" />
     <ClInclude Include="Resource\Model.h" />
+    <ClInclude Include="Scene\Component\MultiCube.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -53,5 +54,6 @@
     <ClCompile Include="Resource\ModelImporter\FbxUtility.cpp" />
     <ClCompile Include="Resource\ModelImporter\ModelImporter.cpp" />
     <ClCompile Include="Resource\Model.cpp" />
+    <ClCompile Include="Scene\Component\MultiCube.cpp" />
   </ItemGroup>
 </Project>
