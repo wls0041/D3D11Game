@@ -92,6 +92,12 @@ void ModelImporter::Load(const std::string & path, Model** model)
 
     for (const auto& material_data : material_datas)
         (*model)->AddMaterial(material_data);
+
+	for (const auto &bone_data : bone_datas)
+		(*model)->AddBone(bone_data);
+
+	for (const auto &animation_data : animation_datas)
+		(*model)->AddAnimation(animation_data);
 }
 
 void ModelImporter::ExportFile()
@@ -388,19 +394,19 @@ void ModelImporter::ProcessMesh(FbxNode * node)
     {
         for (int i = 0; i < 3; i++)
         {
-            int pvi = i;
+            int pvi = FbxUtility::Axis_type == AxisType::Maya_Y_Up ? 2 - i : i; //텍스쳐가 뒤집히는 현상 해결. Cull모드로도 해결 가능
             int ctrl_point_index = fbx_mesh->GetPolygonVertex(pi, pvi);
 
             VertexModel vertex;
 
             //Position
-            vertex.position = FbxUtility::ToVector3(ctrl_point_datas[ctrl_point_index].position);
+            vertex.position = FbxUtility::ToPosition(ctrl_point_datas[ctrl_point_index].position);
 
             //Uv
             vertex.uv = FbxUtility::ToUV(ReadUV(fbx_mesh, 0, pi, pvi, ctrl_point_index));
 
             //Normal
-            vertex.normal = FbxUtility::ToVector3(ReadNormal(fbx_mesh, ctrl_point_index, vertex_count));
+            vertex.normal = FbxUtility::ToNormal(ReadNormal(fbx_mesh, ctrl_point_index, vertex_count));
 
             //Indices
 			vertex.indices = FbxUtility::ToVertexIndices(ctrl_point_datas[ctrl_point_index].vertex_weights);

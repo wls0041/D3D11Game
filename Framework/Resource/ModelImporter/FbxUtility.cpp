@@ -3,7 +3,14 @@
 #include "FbxType.h"
 
 AxisType FbxUtility::Axis_type = AxisType::DirectX;
-const D3DXMATRIX FbxUtility::Convert_matrix;
+const D3DXMATRIX FbxUtility::Convert_matrix
+{
+	-1, 0,-8.74227766e-08f, 0,
+	0, 1, 0, 0,
+	8.74227766e-08f, 0, 1, 0,
+	0, 0, 0, 1
+};
+//Scale(1,1,-1) * RotationY(180) 기본적으로 뒤를 보고 있는 (축이 뒤집힌) 마야를 정상으로 뒤집음
 
 auto FbxUtility::ToFloat(const FbxDouble & value) -> const float
 {
@@ -73,6 +80,13 @@ auto FbxUtility::ToMatrix(const FbxAMatrix & value) -> const D3DXMATRIX
     D3DXMatrixRotationQuaternion(&R, &r);
     D3DXMatrixTranslation(&T, t.x, t.y, t.z);
 
+	switch (Axis_type)
+	{
+	case AxisType::Maya_Y_Up:
+		return Convert_matrix * S * R * T * Convert_matrix; //행렬곱은 행이나 열 밖에 변환되지 않음. (앞쪽은 가로, 뒤쪽은 세로) 따라서 앞 뒤로 곱해줘 모든 원소를 변환
+	}
+
+
     return S * R * T;
 }
 
@@ -87,6 +101,34 @@ auto FbxUtility::ToUV(const FbxVector2 & value) -> const D3DXVECTOR2
 	}
 
 	return uv;
+}
+
+auto FbxUtility::ToPosition(const FbxVector4 & value) -> const D3DXVECTOR3
+{
+	auto position = ToVector3(value);
+
+	switch (Axis_type)
+	{
+	case AxisType::Maya_Y_Up:
+		D3DXVec3TransformCoord(&position, &position, &Convert_matrix); 
+		break;
+	}
+
+	return position;
+}
+
+auto FbxUtility::ToNormal(const FbxVector4 & value) -> const D3DXVECTOR3
+{
+	auto normal = ToVector3(value);
+
+	switch (Axis_type)
+	{
+	case AxisType::Maya_Y_Up:
+		D3DXVec3TransformNormal(&normal, &normal, &Convert_matrix); 
+		break;
+	}
+
+	return normal;
 }
 
 auto FbxUtility::ToVertexIndices(const std::vector<struct FbxVertexWeight>& vertex_weight) -> const D3DXVECTOR4

@@ -18,6 +18,7 @@
 #include <vector>
 #include <memory>
 #include <functional>
+#include <algorithm>
 
 //DirectX
 #include <dxgi1_2.h>
