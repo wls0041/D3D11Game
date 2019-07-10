@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "Editor.h"
 #include "./Core/Window.h"
+#include "./Imgui/imgui_impl_win32.h"
+
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM); //외부의 접근 차단하려면 static으로
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
@@ -14,7 +17,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR lpszCmdP
 
     auto editor = std::make_unique<Editor>();
 
-    Window::Input_proc = Input::MouseProc;
+	Window::Input_proc = Input::MouseProc;
+	Window::Editor_proc = ImGui_ImplWin32_WndProcHandler;
 
     while (Window::Update())
     {

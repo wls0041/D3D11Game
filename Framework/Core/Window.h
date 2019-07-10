@@ -6,7 +6,8 @@ namespace Window
     static HINSTANCE Instance;
     static HWND Handle;
 
-    static std::function<LRESULT(HWND, uint, WPARAM, LPARAM)> Input_proc;
+	static std::function<LRESULT(HWND, uint, WPARAM, LPARAM)> Input_proc;
+	static std::function<LRESULT(HWND, uint, WPARAM, LPARAM)> Editor_proc; //imgui에서 쓸 용도
 
     inline LRESULT CALLBACK WndProc
     (
@@ -18,6 +19,9 @@ namespace Window
     {
         if (Input_proc != nullptr)
             Input_proc(handle, message, wParam, lParam);
+
+		if (Editor_proc != nullptr)
+			Editor_proc(handle, message, wParam, lParam);
 
         switch (message)
         {

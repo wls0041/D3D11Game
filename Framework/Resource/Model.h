@@ -2,6 +2,8 @@
 
 struct Material {
 	ID3D11ShaderResourceView *diffuse;
+	ID3D11ShaderResourceView *normal;
+	ID3D11ShaderResourceView *specular;
 };
 
 struct Mesh {
@@ -90,9 +92,11 @@ private:
 	PixelShader* pixelShader;
 	ConstantBuffer* worldBuffer;
 	ConstantBuffer* skinnedBuffer;
+	ConstantBuffer* materialBuffer;
 	D3DXMATRIX world;
 
 	float frame_timer;
+	float normal_multiplier;
 
 	std::vector<Mesh> meshes;
 	std::vector<Material> materials;

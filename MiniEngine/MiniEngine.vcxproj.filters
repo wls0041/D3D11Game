@@ -4,9 +4,29 @@
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Program.cpp" />
     <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="Imgui\ImGuizmo.cpp" />
+    <ClCompile Include="Imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="Imgui\Source\imgui.cpp" />
+    <ClCompile Include="Imgui\Source\imgui_demo.cpp" />
+    <ClCompile Include="Imgui\Source\imgui_draw.cpp" />
+    <ClCompile Include="Imgui\Source\imgui_stdlib.cpp" />
+    <ClCompile Include="Imgui\Source\imgui_widgets.cpp" />
+    <ClCompile Include="Imgui\TextEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Editor.h" />
+    <ClInclude Include="Imgui\ImGuizmo.h" />
+    <ClInclude Include="Imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="Imgui\imgui_impl_win32.h" />
+    <ClInclude Include="Imgui\Source\imconfig.h" />
+    <ClInclude Include="Imgui\Source\imgui.h" />
+    <ClInclude Include="Imgui\Source\imgui_internal.h" />
+    <ClInclude Include="Imgui\Source\imgui_stdlib.h" />
+    <ClInclude Include="Imgui\Source\imstb_rectpack.h" />
+    <ClInclude Include="Imgui\Source\imstb_textedit.h" />
+    <ClInclude Include="Imgui\Source\imstb_truetype.h" />
+    <ClInclude Include="Imgui\TextEditor.h" />
   </ItemGroup>
 </Project>

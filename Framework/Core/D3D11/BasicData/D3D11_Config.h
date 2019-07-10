@@ -12,6 +12,8 @@ struct CameraData
 {
     D3DXMATRIX view;
     D3DXMATRIX projection;
+	D3DXVECTOR3 camera_position;
+	float padding;
 };
 
 struct WorldData
@@ -36,4 +38,10 @@ struct MultiData
 struct SkinnedData
 {
 	D3DXMATRIX skinned_transforms[100];
+};
+
+struct MaterialData
+{
+	float normal_multiplier;
+	D3DXVECTOR3 padding;
 };

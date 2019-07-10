@@ -110,6 +110,7 @@ void Animation::Interpolate(const float & t, std::vector<D3DXMATRIX>& matrixs)
 Model::Model(Context * context)
     : context(context)
 	, frame_timer(0.0f)
+	, normal_multiplier(0.12f)
 {
     graphics = context->GetSubsystem<Graphics>();
 	timer = context->GetSubsystem<Timer>();
@@ -129,6 +130,9 @@ Model::Model(Context * context)
 	skinnedBuffer = new ConstantBuffer(context);
 	skinnedBuffer->Create<SkinnedData>();
 
+	materialBuffer = new ConstantBuffer(context);
+	materialBuffer->Create<MaterialData>();
+
     D3DXMatrixIdentity(&world);
 }
 
@@ -145,6 +149,7 @@ Model::~Model()
     SAFE_DELETE(pixelShader);
 	SAFE_DELETE(worldBuffer);
 	SAFE_DELETE(skinnedBuffer);
+	SAFE_DELETE(materialBuffer);
 }
 
 void Model::AddGeometry(const FbxMeshData & mesh_data)
@@ -172,8 +177,29 @@ void Model::AddMaterial(const FbxMaterialData & material_data)
         nullptr,
         &material.diffuse,
         nullptr
-    );
+    );    
+	
+	hr = D3DX11CreateShaderResourceViewFromFileA
+	(
+		graphics->GetDevice(),
+		material_data.normal_texture_path.c_str(),
+		nullptr,
+		nullptr,
+		&material.normal,
+		nullptr
+	);
     assert(SUCCEEDED(hr));
+
+	hr = D3DX11CreateShaderResourceViewFromFileA
+	(
+		graphics->GetDevice(),
+		material_data.occlusion_texture_path.c_str(),
+		nullptr,
+		nullptr,
+		&material.specular,
+		nullptr
+	);
+	assert(SUCCEEDED(hr));
 
     materials.emplace_back(material);
 }
@@ -265,6 +291,15 @@ void Model::Update()
 		for (uint i = 0; i < bone_count; i++) D3DXMatrixTranspose(&skinned_data->skinned_transforms[i], &skinned_transforms[i]);
 	}
 	skinnedBuffer->Unmap();
+
+	if (context->GetSubsystem<Input>()->KeyPress(KeyCode::KEY_Z)) normal_multiplier -= 0.1f;
+	else if (context->GetSubsystem<Input>()->KeyPress(KeyCode::KEY_X)) normal_multiplier += 0.1f;
+
+	auto material_data = materialBuffer->Map<MaterialData>();
+	{
+		material_data->normal_multiplier = normal_multiplier;
+	}
+	materialBuffer->Unmap();
 }
 
 void Model::Render()
@@ -274,8 +309,11 @@ void Model::Render()
     pixelShader->BindPipeline();
 	worldBuffer->BindPipeline(1, ShaderScope::VS);
 	skinnedBuffer->BindPipeline(2, ShaderScope::VS);
+	materialBuffer->BindPipeline(3, ShaderScope::PS);
 
     graphics->GetDeviceContext()->PSSetShaderResources(0, 1, &materials[0].diffuse);
+	graphics->GetDeviceContext()->PSSetShaderResources(3, 1, &materials[0].normal);
+	graphics->GetDeviceContext()->PSSetShaderResources(5, 1, &materials[0].specular);
     graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
     for (auto& mesh : meshes)

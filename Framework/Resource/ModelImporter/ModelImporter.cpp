@@ -55,21 +55,21 @@ void ModelImporter::Load(const std::string & path, Model** model)
         FbxUtility::Axis_type = AxisType::DirectX;
 
     //Check Unit System
-    //FbxSystemUnit scene_unit_system = scene->GetGlobalSettings().GetSystemUnit();
-    //if (scene_unit_system != FbxSystemUnit::m)
-    //{
-    //    const FbxSystemUnit::ConversionOptions conversion_options = 
-    //    {
-    //        false,  // Rrs Node                 : 부모의 눈금을 상속받지 않는 노드도 변환 할것인가
-    //        true,   // All Limits               : 제한선을 변환 할것인가
-    //        true,   // Cluster                  : 클러스터(관절)을 변환 할것인가 
-    //        true,   // Light Intensity          : 광도 속성을 변환 할것인가
-    //        true,   // Photometic Properties    : 측광 라이트 속성을 변환 할것인가
-    //        true    // Camera Clip Plane        : 카메라 클립평면을 변환 할것인가
-    //    };
+    FbxSystemUnit scene_unit_system = scene->GetGlobalSettings().GetSystemUnit();
+    if (scene_unit_system != FbxSystemUnit::m)
+    {
+        const FbxSystemUnit::ConversionOptions conversion_options = 
+        {
+            false,  // Rrs Node                 : 부모의 눈금을 상속받지 않는 노드도 변환 할것인가
+            true,   // All Limits               : 제한선을 변환 할것인가
+            true,   // Cluster                  : 클러스터(관절)을 변환 할것인가 
+            true,   // Light Intensity          : 광도 속성을 변환 할것인가
+            true,   // Photometic Properties    : 측광 라이트 속성을 변환 할것인가
+            true    // Camera Clip Plane        : 카메라 클립평면을 변환 할것인가
+        };
 
-    //    FbxSystemUnit::m.ConvertScene(scene, conversion_options);
-    //}
+        FbxSystemUnit::m.ConvertScene(scene, conversion_options);
+    }
 
     //Triangulater FbxScene
     FbxGeometryConverter geometry_converter(manager);
@@ -419,6 +419,7 @@ void ModelImporter::ProcessMesh(FbxNode * node)
             vertex_count++;
         }
     }
+	CalcTangent(mesh_data);
 
     mesh_datas.emplace_back(mesh_data);
 }
@@ -518,10 +519,39 @@ void ModelImporter::CalcTangent(FbxMeshData & mesh_data)
 		auto p1 = mesh_data.vertices[index1].position;
 		auto p2 = mesh_data.vertices[index2].position;
 
-		auto u0 = mesh_data.vertices[index0].uv;
-		auto u1 = mesh_data.vertices[index1].uv;
-		auto u2 = mesh_data.vertices[index2].uv;
+		auto e0 = p1 - p0;
+		auto e1 = p2 - p0;
+
+		auto uv0 = mesh_data.vertices[index0].uv;
+		auto uv1 = mesh_data.vertices[index1].uv;
+		auto uv2 = mesh_data.vertices[index2].uv;
+
+		auto u0 = uv1.x - uv0.x;
+		auto u1 = uv2.x - uv0.x;
+		
+		auto v0 = uv1.y - uv0.y;
+		auto v1 = uv2.y - uv0.y;
+
+		//binormal구하는 수식
+		auto r = 1.0f / (u0 * v1 - v0 * v1);
+		
+		D3DXVECTOR3 tangent;
+		tangent.x = r * (v1 * e0.x - v0 * e1.x);
+		tangent.y = r * (v1 * e0.y - v0 * e1.y);
+		tangent.z = r * (v1 * e0.z - v0 * e1.z);
+		
+		mesh_data.vertices[index0].tangent += tangent;
+		mesh_data.vertices[index1].tangent += tangent;
+		mesh_data.vertices[index2].tangent += tangent;
 	}
+
+	//for (uint i = 0; i < mesh_data.vertices.size(); i++) { //CPU 계산방식, GPU방식으로 Model.hlsl의 TBN에서 계산. 둘 중 적합한 방식을 고르면 됨
+	//	auto n = mesh_data.vertices[i].normal;
+	//	auto t = mesh_data.vertices[i].tangent;
+
+	//	mesh_data.vertices[i].tangent = t - D3DXVec3Dot(&n, &t) * n;//gram-schmidt orthogonalize, normal과 tangent가 직교가 아닐 수 있기 때문에 사용
+	//	D3DXVec3Normalize(&mesh_data.vertices[i].tangent, &mesh_data.vertices[i].tangent);
+	//}
 }
 
 auto ModelImporter::FindBoneIndexFromName(const std::string & name) -> const uint

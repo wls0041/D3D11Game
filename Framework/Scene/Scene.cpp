@@ -89,6 +89,7 @@ void Scene::Update()
     {
         D3DXMatrixTranspose(&camera_data->view, &camera->GetViewMatrix());
         D3DXMatrixTranspose(&camera_data->projection, &camera->GetProjectionMatrix());
+		camera_data->camera_position = camera->GetPosition();
     }
     camera_buffer->Unmap();
 
