@@ -32,3 +32,8 @@ struct MultiData
 	int paint_type;
 	D3DXVECTOR3 index;
 };
+
+struct SkinnedData
+{
+	D3DXMATRIX skinned_transforms[100];
+};

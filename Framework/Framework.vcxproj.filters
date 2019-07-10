@@ -31,6 +31,7 @@
     <ClInclude Include="Resource\ModelImporter\ModelImporter.h" />
     <ClInclude Include="Resource\Model.h" />
     <ClInclude Include="Scene\Component\MultiCube.h" />
+    <ClInclude Include="Core\Subsystem\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -55,5 +56,6 @@
     <ClCompile Include="Resource\ModelImporter\ModelImporter.cpp" />
     <ClCompile Include="Resource\Model.cpp" />
     <ClCompile Include="Scene\Component\MultiCube.cpp" />
+    <ClCompile Include="Core\Subsystem\Timer.cpp" />
   </ItemGroup>
 </Project>

@@ -44,7 +44,9 @@ private:
         const int& ctrl_point_index,
         const int& vertex_count
     ) -> const FbxVector4;
-	
+
+	void CalcTangent(struct FbxMeshData &mesh_data);
+
 	auto FindBoneIndexFromName(const std::string &name) -> const uint;
 
 private:

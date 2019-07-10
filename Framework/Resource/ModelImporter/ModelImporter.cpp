@@ -55,21 +55,21 @@ void ModelImporter::Load(const std::string & path, Model** model)
         FbxUtility::Axis_type = AxisType::DirectX;
 
     //Check Unit System
-    FbxSystemUnit scene_unit_system = scene->GetGlobalSettings().GetSystemUnit();
-    if (scene_unit_system != FbxSystemUnit::m)
-    {
-        const FbxSystemUnit::ConversionOptions conversion_options = 
-        {
-            false,  // Rrs Node                 : 부모의 눈금을 상속받지 않는 노드도 변환 할것인가
-            true,   // All Limits               : 제한선을 변환 할것인가
-            true,   // Cluster                  : 클러스터(관절)을 변환 할것인가 
-            true,   // Light Intensity          : 광도 속성을 변환 할것인가
-            true,   // Photometic Properties    : 측광 라이트 속성을 변환 할것인가
-            true    // Camera Clip Plane        : 카메라 클립평면을 변환 할것인가
-        };
+    //FbxSystemUnit scene_unit_system = scene->GetGlobalSettings().GetSystemUnit();
+    //if (scene_unit_system != FbxSystemUnit::m)
+    //{
+    //    const FbxSystemUnit::ConversionOptions conversion_options = 
+    //    {
+    //        false,  // Rrs Node                 : 부모의 눈금을 상속받지 않는 노드도 변환 할것인가
+    //        true,   // All Limits               : 제한선을 변환 할것인가
+    //        true,   // Cluster                  : 클러스터(관절)을 변환 할것인가 
+    //        true,   // Light Intensity          : 광도 속성을 변환 할것인가
+    //        true,   // Photometic Properties    : 측광 라이트 속성을 변환 할것인가
+    //        true    // Camera Clip Plane        : 카메라 클립평면을 변환 할것인가
+    //    };
 
-        FbxSystemUnit::m.ConvertScene(scene, conversion_options);
-    }
+    //    FbxSystemUnit::m.ConvertScene(scene, conversion_options);
+    //}
 
     //Triangulater FbxScene
     FbxGeometryConverter geometry_converter(manager);
@@ -505,6 +505,23 @@ auto ModelImporter::ReadNormal(FbxMesh * fbx_mesh, const int & ctrl_point_index,
     }
 
     throw std::exception();
+}
+
+void ModelImporter::CalcTangent(FbxMeshData & mesh_data)
+{
+	for (uint i = 0; i < mesh_data.indices.size() / 3; i++) {
+		uint index0 = mesh_data.indices[i * 3 + 0];
+		uint index1 = mesh_data.indices[i * 3 + 1];
+		uint index2 = mesh_data.indices[i * 3 + 2];
+
+		auto p0 = mesh_data.vertices[index0].position;
+		auto p1 = mesh_data.vertices[index1].position;
+		auto p2 = mesh_data.vertices[index2].position;
+
+		auto u0 = mesh_data.vertices[index0].uv;
+		auto u1 = mesh_data.vertices[index1].uv;
+		auto u2 = mesh_data.vertices[index2].uv;
+	}
 }
 
 auto ModelImporter::FindBoneIndexFromName(const std::string & name) -> const uint

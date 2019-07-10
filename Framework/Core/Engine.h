@@ -13,6 +13,7 @@ public:
 
 private:
     class Context* context;
+	class Timer *timer;
     class Input* input;
     class Scene* scene;
 };

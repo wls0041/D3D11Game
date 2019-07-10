@@ -19,6 +19,7 @@
 #include <memory>
 #include <functional>
 #include <algorithm>
+#include <chrono>
 
 //DirectX
 #include <dxgi1_2.h>
@@ -66,6 +67,7 @@ using namespace fbxsdk;
 #include "./Core/D3D11/BasicData/Geometry.h"
 
 //Subsystem
+#include "./Core/Subsystem/Timer.h"
 #include "./Core/Subsystem/Graphics.h"
 #include "./Core/Subsystem/Input.h"
 

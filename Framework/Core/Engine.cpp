@@ -7,7 +7,7 @@ Engine::Engine()
     context = new Context();
     context->RegisterSubsystem<Graphics>();
     input = context->RegisterSubsystem<Input>();
-
+	timer = context->RegisterSubsystem<Timer>();
     context->InitializeSubsystems();
 
     scene = new Scene(context);
@@ -21,6 +21,7 @@ Engine::~Engine()
 
 void Engine::Update()
 {
+	timer->Update();
     input->Update();
     scene->Update();
 }

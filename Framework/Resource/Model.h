@@ -89,6 +89,7 @@ private:
 	VertexShader* vertexShader;
 	PixelShader* pixelShader;
 	ConstantBuffer* worldBuffer;
+	ConstantBuffer* skinnedBuffer;
 	D3DXMATRIX world;
 
 	float frame_timer;

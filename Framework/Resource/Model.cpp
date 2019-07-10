@@ -50,22 +50,22 @@ void AnimationNode::Interpolate(const float & t, D3DXMATRIX & mat) const
 				auto s0 = keyframes[i].scale;
 				auto s1 = keyframes[i + 1].scale;
 
-				auto p = D3DXQUATERNION(0 , 0, 0, 1);
-				auto p0 = keyframes[i].quaternion;
-				auto p1 = keyframes[i + 1].quaternion;
+				auto r = D3DXQUATERNION(0 , 0, 0, 1);
+				auto r0 = keyframes[i].quaternion;
+				auto r1 = keyframes[i + 1].quaternion;
 
-				auto t = D3DXVECTOR3(0, 0, 0);
-				auto t0 = keyframes[i].position;
-				auto t1 = keyframes[i + 1].position;
+				auto p = D3DXVECTOR3(0, 0, 0);
+				auto p0 = keyframes[i].position;
+				auto p1 = keyframes[i + 1].position;
 			
 				//Linear Interpolate
 				D3DXVec3Lerp(&s, &s0, &s1, f); //선형보관
-				D3DXVec3Lerp(&t, &t0, &t1, f);
-				D3DXQuaternionSlerp(&p, &p0, &p1, f); //Spherical Linear Interpolate. 구면보관
+				D3DXVec3Lerp(&p, &p0, &p1, f);
+				D3DXQuaternionSlerp(&r, &r0, &r1, f); //Spherical Linear Interpolate. 구면보관
 
 				D3DXMATRIX S, R, T;
 				D3DXMatrixScaling(&S, s.x, s.y, s.z);
-				D3DXMatrixRotationQuaternion(&R, &p);
+				D3DXMatrixRotationQuaternion(&R, &r);
 				D3DXMatrixTranslation(&T, p.x, p.y, p.z);
 
 				mat = S * R * T;
@@ -112,6 +112,7 @@ Model::Model(Context * context)
 	, frame_timer(0.0f)
 {
     graphics = context->GetSubsystem<Graphics>();
+	timer = context->GetSubsystem<Timer>();
 
     vertexShader = new VertexShader(context);
     vertexShader->Create("../../_Assets/Shader/Model.hlsl", "VS", "vs_5_0");
@@ -124,6 +125,9 @@ Model::Model(Context * context)
 
     worldBuffer = new ConstantBuffer(context);
     worldBuffer->Create<WorldData>();
+
+	skinnedBuffer = new ConstantBuffer(context);
+	skinnedBuffer->Create<SkinnedData>();
 
     D3DXMatrixIdentity(&world);
 }
@@ -139,7 +143,8 @@ Model::~Model()
     SAFE_DELETE(inputLayout);
     SAFE_DELETE(vertexShader);
     SAFE_DELETE(pixelShader);
-    SAFE_DELETE(worldBuffer);
+	SAFE_DELETE(worldBuffer);
+	SAFE_DELETE(skinnedBuffer);
 }
 
 void Model::AddGeometry(const FbxMeshData & mesh_data)
@@ -212,6 +217,8 @@ void Model::AddAnimation(const FbxSkinnedAnimationData & animation_data)
 		}
 		animation.SetChannels(animation_node);
 	}
+
+	animations.emplace_back(animation);
 }
 
 void Model::Update()
@@ -228,9 +235,36 @@ void Model::Update()
 	if (skinned_transforms.empty()) {
 		skinned_transforms.reserve(bone_count);
 		skinned_transforms.resize(bone_count);
-
-		//TODO : Timer
 	}
+
+	frame_timer += timer->GetDeltaTimeMs();
+	if (frame_timer > animations[1].GetClipEndTime()) frame_timer = 0; //원래는 1로 지정해서 하면 안됨
+
+	//보간된 애니메이션 행렬
+	std::vector<D3DXMATRIX> animation_transforms(bone_count);
+	animations[1].Interpolate(frame_timer, animation_transforms);
+
+	//보간된 애니메이션 행렬을 월드 공간으로 이동
+	std::vector<D3DXMATRIX> bone_animation_transforms(bone_count);
+	for (uint i = 0; i < bone_count; i++) {
+		if (i == 0) bone_animation_transforms[0] = animation_transforms[0]; //Root Bone
+		else {
+			auto parent_index = bones[i].parent_index; 
+			auto mat_animation = animation_transforms[i];
+			auto mat_parent_animation = bone_animation_transforms[parent_index];
+
+			bone_animation_transforms[i] = mat_animation * mat_parent_animation; //이미 bone_animation에 부모가 계산됨. 따라서 곱해주면 끝. 이를 반복
+		}
+
+		auto mat_bone = bones[i].mat_offset;
+		skinned_transforms[i] = mat_bone * bone_animation_transforms[i]; //skin에 bone을 입힘
+	}
+
+	auto skinned_data = skinnedBuffer->Map<SkinnedData>();
+	{
+		for (uint i = 0; i < bone_count; i++) D3DXMatrixTranspose(&skinned_data->skinned_transforms[i], &skinned_transforms[i]);
+	}
+	skinnedBuffer->Unmap();
 }
 
 void Model::Render()
@@ -238,7 +272,9 @@ void Model::Render()
     inputLayout->BindPipeline();
     vertexShader->BindPipeline();
     pixelShader->BindPipeline();
-    worldBuffer->BindPipeline(1, ShaderScope::VS);
+	worldBuffer->BindPipeline(1, ShaderScope::VS);
+	skinnedBuffer->BindPipeline(2, ShaderScope::VS);
+
     graphics->GetDeviceContext()->PSSetShaderResources(0, 1, &materials[0].diffuse);
     graphics->GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
