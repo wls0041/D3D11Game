@@ -1,29 +1,193 @@
 #include "stdafx.h"
 #include "Editor.h"
+#include "./ImGui/imgui_impl_win32.h"
+#include "./ImGui/imgui_impl_dx11.h"
+#include "./Widget/Widget_MenuBar.h"
+#include "./Widget/Widget_Console.h"
+#include "./Widget/Widget_Hierarchy.h"
+#include "./Widget/Widget_Inspector.h"
+#include "./Widget/Widget_Project.h"
+#include "./Widget/Widget_Scene.h"
+
+#define DOCKING_ENABLED ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable
 
 Editor::Editor()
+	: is_using_dock_space(true)
 {
-    engine      = new Engine();
-    context     = engine->GetContext();
-    graphics    = context->GetSubsystem<Graphics>();
+	engine = std::make_unique<Engine>();
+	context = engine->GetContext();
+	graphics = context->GetSubsystem<Graphics>();
 
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
 
+	auto& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; //tab으로 창 넘어갈 수 있게 하는 등의 기능
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcon;
+	io.ConfigResizeWindowsFromEdges = true; //window창 크기 조절
+
+	ImGui_ImplWin32_Init(Settings::Get().GetWindowHandle());
+	ImGui_ImplDX11_Init(graphics->GetDevice(), graphics->GetDeviceContext());
+	ApplyStyle();
+
+	widgets.emplace_back(std::make_unique<Widget_MenuBar>(context));
+	widgets.emplace_back(std::make_unique<Widget_Console>(context));
+	widgets.emplace_back(std::make_unique<Widget_Hierarchy>(context));
+	widgets.emplace_back(std::make_unique<Widget_Inspector>(context));
+	widgets.emplace_back(std::make_unique<Widget_Project>(context));
+	widgets.emplace_back(std::make_unique<Widget_Scene>(context));
 }
 
 Editor::~Editor()
+{
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+}
+
+void Editor::Resize(const uint & width, const uint & height)
 {
 }
 
 void Editor::Update()
 {
-    engine->Update();
+	engine->Update();
 }
 
 void Editor::Render()
 {
-    graphics->Begin();
-    {
-        engine->Render();
-    }
-    graphics->End();
+	graphics->Begin();
+	{
+		ImGui_ImplDX11_NewFrame();
+		ImGui_ImplWin32_NewFrame();
+		ImGui::NewFrame();
+
+		if (DOCKING_ENABLED) BeginDockspace();
+		{
+			for (const auto& widget : widgets)
+			{
+				widget->Begin();
+				widget->Render();
+				widget->End();
+			}
+		}
+		if (DOCKING_ENABLED) EndDockspace();
+
+		ImGui::Render(); //자기 데이터를 만듦
+		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());//만들 데이터를 가져다 렌더링함.(얘가 렌더링을 하는 것)
+
+		if (DOCKING_ENABLED)
+		{
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+		}
+	}
+	graphics->End();
+}
+
+void Editor::BeginDockspace()
+{
+	ImGuiWindowFlags window_flags =
+		ImGuiWindowFlags_MenuBar |
+		ImGuiWindowFlags_NoDocking |
+		ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoCollapse |
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoBringToFrontOnFocus |
+		ImGuiWindowFlags_NoNavFocus;
+
+	auto viewport = ImGui::GetMainViewport();
+
+	ImGui::SetNextWindowPos(viewport->Pos);
+	ImGui::SetNextWindowSize(viewport->Size);
+	ImGui::SetNextWindowViewport(viewport->ID);
+	ImGui::SetNextWindowBgAlpha(0.0f);
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ImGui::Begin("Dockspace", &is_using_dock_space, window_flags);
+	ImGui::PopStyleVar(3);
+
+	auto id = ImGui::GetID("my_dockspace");
+	//TODO :
+	ImGui::DockSpace(id, ImVec2(0, 0), ImGuiDockNodeFlags_PassthruDockspace);
+}
+
+void Editor::EndDockspace()
+{
+	ImGui::End();
+}
+
+void Editor::ApplyStyle()
+{
+	ImGui::StyleColorsDark();
+	ImGuiStyle& style = ImGui::GetStyle();
+
+	float fontSize = 15.0f;
+	float roundness = 2.0f;
+	ImVec4 white = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+	ImVec4 text = ImVec4(0.76f, 0.77f, 0.8f, 1.0f);
+	ImVec4 black = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+	ImVec4 backgroundVeryDark = ImVec4(0.08f, 0.086f, 0.094f, 1.00f);
+	ImVec4 backgroundDark = ImVec4(0.117f, 0.121f, 0.145f, 1.00f);
+	ImVec4 backgroundMedium = ImVec4(0.26f, 0.26f, 0.27f, 1.0f);
+	ImVec4 backgroundLight = ImVec4(0.37f, 0.38f, 0.39f, 1.0f);
+	ImVec4 highlightBlue = ImVec4(0.172f, 0.239f, 0.341f, 1.0f);
+	ImVec4 highlightBlueHovered = ImVec4(0.202f, 0.269f, 0.391f, 1.0f);
+	ImVec4 highlightBlueActive = ImVec4(0.382f, 0.449f, 0.561f, 1.0f);
+	ImVec4 barBackground = ImVec4(0.078f, 0.082f, 0.09f, 1.0f);
+	ImVec4 bar = ImVec4(0.164f, 0.180f, 0.231f, 1.0f);
+	ImVec4 barHovered = ImVec4(0.411f, 0.411f, 0.411f, 1.0f);
+	ImVec4 barActive = ImVec4(0.337f, 0.337f, 0.368f, 1.0f);
+
+	// Spatial
+	style.WindowBorderSize = 1.0f;
+	style.FrameBorderSize = 1.0f;
+	style.FramePadding = ImVec2(5, 5);
+	style.ItemSpacing = ImVec2(6, 5);
+	style.Alpha = 1.0f;
+	style.WindowRounding = roundness;
+	style.FrameRounding = roundness;
+	style.PopupRounding = roundness;
+	style.GrabRounding = roundness;
+	style.ScrollbarSize = 20.0f;
+	style.ScrollbarRounding = roundness;
+
+	// Colors
+	style.Colors[ImGuiCol_Text] = text;
+	style.Colors[ImGuiCol_WindowBg] = backgroundDark;
+	style.Colors[ImGuiCol_Border] = black;
+	style.Colors[ImGuiCol_FrameBg] = bar;
+	style.Colors[ImGuiCol_FrameBgHovered] = highlightBlue;
+	style.Colors[ImGuiCol_FrameBgActive] = highlightBlueHovered;
+	style.Colors[ImGuiCol_TitleBg] = backgroundVeryDark;
+	style.Colors[ImGuiCol_TitleBgActive] = bar;
+	style.Colors[ImGuiCol_MenuBarBg] = backgroundVeryDark;
+	style.Colors[ImGuiCol_ScrollbarBg] = barBackground;
+	style.Colors[ImGuiCol_ScrollbarGrab] = bar;
+	style.Colors[ImGuiCol_ScrollbarGrabHovered] = barHovered;
+	style.Colors[ImGuiCol_ScrollbarGrabActive] = barActive;
+	style.Colors[ImGuiCol_CheckMark] = white;
+	style.Colors[ImGuiCol_SliderGrab] = bar;
+	style.Colors[ImGuiCol_SliderGrabActive] = barActive;
+	style.Colors[ImGuiCol_Button] = barActive;
+	style.Colors[ImGuiCol_ButtonHovered] = highlightBlue;
+	style.Colors[ImGuiCol_ButtonActive] = highlightBlueActive;
+	style.Colors[ImGuiCol_Header] = highlightBlue; // selected items (tree, menu bar etc.)
+	style.Colors[ImGuiCol_HeaderHovered] = highlightBlueHovered; // hovered items (tree, menu bar etc.)
+	style.Colors[ImGuiCol_HeaderActive] = highlightBlueActive;
+	style.Colors[ImGuiCol_Separator] = backgroundLight;
+	style.Colors[ImGuiCol_ResizeGrip] = backgroundMedium;
+	style.Colors[ImGuiCol_ResizeGripHovered] = highlightBlue;
+	style.Colors[ImGuiCol_ResizeGripActive] = highlightBlueHovered;
+	style.Colors[ImGuiCol_PlotLines] = ImVec4(0.0f, 0.7f, 0.77f, 1.0f);
+	style.Colors[ImGuiCol_PlotHistogram] = highlightBlue; // Also used for progress bar
+	style.Colors[ImGuiCol_PlotHistogramHovered] = highlightBlueHovered;
+	style.Colors[ImGuiCol_TextSelectedBg] = highlightBlue;
+	style.Colors[ImGuiCol_PopupBg] = backgroundVeryDark;
+	style.Colors[ImGuiCol_DragDropTarget] = backgroundLight;
 }

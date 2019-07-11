@@ -49,12 +49,6 @@ Scene::Scene(Context * context)
 	worldBuffer->Create<WorldData>();
 
 	D3DXMatrixIdentity(&world);
-
-	///////////////////////////////////////////
-	ModelImporter *importer = new ModelImporter(context);
-	importer->Load("../../_Assets/Model/Slash.fbx", &model);
-	importer->ExportFile();
-	SAFE_DELETE(importer);
 }
 
 Scene::~Scene()
@@ -74,7 +68,6 @@ Scene::~Scene()
 		}
 	}
 
-	SAFE_DELETE(model);
 	SAFE_DELETE(terrain);
 	SAFE_DELETE(skybox);
 	SAFE_DELETE(camera_buffer);
@@ -95,7 +88,6 @@ void Scene::Update()
 
 	skybox->Update();
     terrain->Update();
-	model->Update();
 
 	for (int x = 0; x < 5; x++) {
 		for (int y = 0; y < 5; y++) {
@@ -138,7 +130,6 @@ void Scene::Render()
     camera_buffer->BindPipeline(0, ShaderScope::VS);
 	skybox->Render();
 	terrain->Render();
-	model->Render();
 
 	for (int x = 0; x < 5; x++) {
 		for (int y = 0; y < 5; y++) {

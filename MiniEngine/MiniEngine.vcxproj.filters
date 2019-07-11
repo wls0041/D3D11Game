@@ -13,6 +13,12 @@
     <ClCompile Include="Imgui\Source\imgui_stdlib.cpp" />
     <ClCompile Include="Imgui\Source\imgui_widgets.cpp" />
     <ClCompile Include="Imgui\TextEditor.cpp" />
+    <ClCompile Include="Widget\Widget_MenuBar.cpp" />
+    <ClCompile Include="Widget\Widget_Console.cpp" />
+    <ClCompile Include="Widget\Widget_Hierarchy.cpp" />
+    <ClCompile Include="Widget\Widget_Inspector.cpp" />
+    <ClCompile Include="Widget\Widget_Project.cpp" />
+    <ClCompile Include="Widget\Widget_Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -28,5 +34,12 @@
     <ClInclude Include="Imgui\Source\imstb_textedit.h" />
     <ClInclude Include="Imgui\Source\imstb_truetype.h" />
     <ClInclude Include="Imgui\TextEditor.h" />
+    <ClInclude Include="Widget\Widget_MenuBar.h" />
+    <ClInclude Include="Widget\IWidget.h" />
+    <ClInclude Include="Widget\Widget_Console.h" />
+    <ClInclude Include="Widget\Widget_Hierarchy.h" />
+    <ClInclude Include="Widget\Widget_Inspector.h" />
+    <ClInclude Include="Widget\Widget_Project.h" />
+    <ClInclude Include="Widget\Widget_Scene.h" />
   </ItemGroup>
 </Project>

@@ -178,6 +178,12 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Widget\Widget_Console.cpp" />
+    <ClCompile Include="Widget\Widget_Hierarchy.cpp" />
+    <ClCompile Include="Widget\Widget_Inspector.cpp" />
+    <ClCompile Include="Widget\Widget_MenuBar.cpp" />
+    <ClCompile Include="Widget\Widget_Project.cpp" />
+    <ClCompile Include="Widget\Widget_Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Editor.h" />
@@ -193,6 +199,13 @@
     <ClInclude Include="Imgui\Source\imstb_truetype.h" />
     <ClInclude Include="Imgui\TextEditor.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Widget\IWidget.h" />
+    <ClInclude Include="Widget\Widget_Console.h" />
+    <ClInclude Include="Widget\Widget_Hierarchy.h" />
+    <ClInclude Include="Widget\Widget_Inspector.h" />
+    <ClInclude Include="Widget\Widget_MenuBar.h" />
+    <ClInclude Include="Widget\Widget_Project.h" />
+    <ClInclude Include="Widget\Widget_Scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
