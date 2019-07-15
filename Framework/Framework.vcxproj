@@ -178,6 +178,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\Subsystem\Timer.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Framework.h" />
+    <ClInclude Include="Log\Engine_Logger.h" />
     <ClInclude Include="Log\ILogger.h" />
     <ClInclude Include="Log\Log.h" />
     <ClInclude Include="Resource\Model.h" />

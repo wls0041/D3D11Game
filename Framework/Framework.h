@@ -18,6 +18,7 @@
 #include <fstream>
 #include <typeinfo>
 #include <vector>
+#include <deque>
 #include <memory>
 #include <functional>
 #include <algorithm>
@@ -59,6 +60,9 @@ using namespace fbxsdk;
 //Utility
 #include "./Utility/FileSystem.h"
 #include "./Utility/Geometry_Generator.h"
+
+//Log
+#include "./Log/Log.h"
 
 //Main System
 #include "./Core/Settings.h"
