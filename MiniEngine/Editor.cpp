@@ -113,7 +113,26 @@ void Editor::BeginDockspace()
 	ImGui::PopStyleVar(3);
 
 	auto id = ImGui::GetID("my_dockspace");
-	//TODO :
+
+	if (!ImGui::DockBuilderGetNode(id)) {
+		ImGui::DockBuilderRemoveNode(id);
+		ImGui::DockBuilderAddNode(id, ImGui::GetMainViewport()->Size);
+
+		auto main = id;
+		auto right = ImGui::DockBuilderSplitNode(main, ImGuiDir_Right, 0.4f, nullptr, &main);
+		auto down = ImGui::DockBuilderSplitNode(main, ImGuiDir_Down, 0.2f, nullptr, &main);
+		auto right_right = ImGui::DockBuilderSplitNode(right, ImGuiDir_Right, 0.5f, nullptr, &right);
+		auto down_right = ImGui::DockBuilderSplitNode(down, ImGuiDir_Right, 0.5f, nullptr, &down);
+
+		ImGui::DockBuilderDockWindow("Scene", main); //식별자. Scene이라는 이름을 가진 애가 있어야 함
+		ImGui::DockBuilderDockWindow("Hierarchy", right);
+		ImGui::DockBuilderDockWindow("Inspector", right_right);
+		ImGui::DockBuilderDockWindow("Project", down);
+		ImGui::DockBuilderDockWindow("Console", down_right);
+
+		ImGui::DockBuilderFinish(id);
+	}
+
 	ImGui::DockSpace(id, ImVec2(0, 0), ImGuiDockNodeFlags_PassthruDockspace);
 }
 

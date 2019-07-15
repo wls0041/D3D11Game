@@ -32,6 +32,8 @@
     <ClInclude Include="Resource\Model.h" />
     <ClInclude Include="Scene\Component\MultiCube.h" />
     <ClInclude Include="Core\Subsystem\Timer.h" />
+    <ClInclude Include="Log\Log.h" />
+    <ClInclude Include="Log\ILogger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -57,5 +59,6 @@
     <ClCompile Include="Resource\Model.cpp" />
     <ClCompile Include="Scene\Component\MultiCube.cpp" />
     <ClCompile Include="Core\Subsystem\Timer.cpp" />
+    <ClCompile Include="Log\Log.cpp" />
   </ItemGroup>
 </Project>

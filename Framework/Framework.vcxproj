@@ -178,6 +178,8 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\Subsystem\Timer.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Framework.h" />
+    <ClInclude Include="Log\ILogger.h" />
+    <ClInclude Include="Log\Log.h" />
     <ClInclude Include="Resource\Model.h" />
     <ClInclude Include="Resource\ModelImporter\FbxType.h" />
     <ClInclude Include="Resource\ModelImporter\FbxUtility.h" />
@@ -206,6 +208,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Framework.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Log\Log.cpp" />
     <ClCompile Include="Resource\Model.cpp" />
     <ClCompile Include="Resource\ModelImporter\FbxUtility.cpp" />
     <ClCompile Include="Resource\ModelImporter\ModelImporter.cpp" />
