@@ -181,6 +181,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Log\Engine_Logger.h" />
     <ClInclude Include="Log\ILogger.h" />
     <ClInclude Include="Log\Log.h" />
+    <ClInclude Include="Math\Math.h" />
     <ClInclude Include="Resource\Model.h" />
     <ClInclude Include="Resource\ModelImporter\FbxType.h" />
     <ClInclude Include="Resource\ModelImporter\FbxUtility.h" />
@@ -210,6 +211,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Log\Log.cpp" />
+    <ClCompile Include="Math\Math.cpp" />
     <ClCompile Include="Resource\Model.cpp" />
     <ClCompile Include="Resource\ModelImporter\FbxUtility.cpp" />
     <ClCompile Include="Resource\ModelImporter\ModelImporter.cpp" />

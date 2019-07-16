@@ -116,7 +116,9 @@ void Log::LogToFile(const char * text, const LogType & type)
 	const std::string prefix = (type == LogType::Info) ? "Info : " : (type == LogType::Warning) ? "Warning : " : "Error : ";
 	const auto final_text = prefix + text;
 
-	if (is_first_log) {
+	if (is_first_log)
+	{
+		FileSystem::Delete_File(log_file_name);
 		is_first_log = false;
 	}
 
