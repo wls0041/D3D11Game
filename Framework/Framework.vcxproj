@@ -181,7 +181,13 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Log\Engine_Logger.h" />
     <ClInclude Include="Log\ILogger.h" />
     <ClInclude Include="Log\Log.h" />
+    <ClInclude Include="Math\Color4.h" />
     <ClInclude Include="Math\Math.h" />
+    <ClInclude Include="Math\Matrix.h" />
+    <ClInclude Include="Math\Quaternion.h" />
+    <ClInclude Include="Math\Vector2.h" />
+    <ClInclude Include="Math\Vector3.h" />
+    <ClInclude Include="Math\Vector4.h" />
     <ClInclude Include="Resource\Model.h" />
     <ClInclude Include="Resource\ModelImporter\FbxType.h" />
     <ClInclude Include="Resource\ModelImporter\FbxUtility.h" />
@@ -211,7 +217,13 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Log\Log.cpp" />
+    <ClCompile Include="Math\Color4.cpp" />
     <ClCompile Include="Math\Math.cpp" />
+    <ClCompile Include="Math\Matrix.cpp" />
+    <ClCompile Include="Math\Quaternion.cpp" />
+    <ClCompile Include="Math\Vector2.cpp" />
+    <ClCompile Include="Math\Vector3.cpp" />
+    <ClCompile Include="Math\Vector4.cpp" />
     <ClCompile Include="Resource\Model.cpp" />
     <ClCompile Include="Resource\ModelImporter\FbxUtility.cpp" />
     <ClCompile Include="Resource\ModelImporter\ModelImporter.cpp" />
