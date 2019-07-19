@@ -79,8 +79,8 @@ void Geometry_Generator::CreateSphere(Geometry<VertexTexture>& geometry, const f
 {
 	geometry.AddVertex(VertexTexture({ 0, radius, 0 }, { 0, 0 }));
 
-	float phiStep = static_cast<float>(D3DX_PI / stacks);
-	float thetaStep = static_cast<float>(D3DX_PI * 2.0 / slices);
+	float phiStep = static_cast<float>(Math::PI / stacks);
+	float thetaStep = static_cast<float>(Math::PI * 2.0 / slices);
 
 	for (int i = 1; i <= stacks - 1; i++)
 	{
@@ -90,17 +90,17 @@ void Geometry_Generator::CreateSphere(Geometry<VertexTexture>& geometry, const f
 		{
 			float theta = j * thetaStep;
 
-			D3DXVECTOR3 position = D3DXVECTOR3
+			Vector3 position = Vector3
 			(
 				radius * sin(phi) * cos(theta),
 				radius * cos(phi),
 				radius * sin(phi) * sin(theta)
 			);
 
-			D3DXVECTOR2 uv = D3DXVECTOR2
+			Vector2 uv = Vector2
 			(
-				static_cast<float>(theta / D3DX_PI * 2.0),
-				static_cast<float>(phi / D3DX_PI)
+				static_cast<float>(theta / Math::PI * 2.0f),
+				static_cast<float>(phi / Math::PI)
 			);
 
 			geometry.AddVertex(VertexTexture(position, uv));

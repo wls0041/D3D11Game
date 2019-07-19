@@ -111,7 +111,7 @@ void InputLayout::Create(ID3DBlob * blob)
     Create
     (
         input_layout_descs.data(),
-        input_layout_descs.size(),
+		static_cast<uint>(input_layout_descs.size()),
         blob
     );
 }

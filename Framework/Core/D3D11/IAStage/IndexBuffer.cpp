@@ -18,7 +18,7 @@ IndexBuffer::~IndexBuffer()
 void IndexBuffer::Create(const std::vector<uint>& indices, const D3D11_USAGE & usage)
 {
     stride = sizeof(uint);
-    count = indices.size();
+    count = static_cast<uint>(indices.size());
 
     D3D11_BUFFER_DESC desc;
     ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));

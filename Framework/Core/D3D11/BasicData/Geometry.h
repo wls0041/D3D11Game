@@ -11,8 +11,8 @@ public:
     //==========================================================
     //Vertex
     //==========================================================
-    auto GetVertexCount() const -> const uint { return vertices.size(); }
-    auto GetVertexByteWidth() const -> const uint { return vertices.size() * sizeof(T); }
+    auto GetVertexCount() const -> const uint { return static_cast<uint>(vertices.size()); }
+    auto GetVertexByteWidth() const -> const uint { return static_cast<uint>(vertices.size()) * sizeof(T); }
     auto GetVertexData() -> T* { return vertices.data(); }
     auto GetVertices() const -> const std::vector<T>& { return vertices; }
     auto GetVertices(const uint& offset, const uint& count) -> const std::vector<T>;
@@ -24,8 +24,8 @@ public:
     //==========================================================
     //Index
     //==========================================================
-    auto GetIndexCount() const -> const uint { return indices.size(); }
-    auto GetIndexByteWidth() const -> const uint { return indices.size() * sizeof(uint); }
+    auto GetIndexCount() const -> const uint { return static_cast<uint>(indices.size()); }
+    auto GetIndexByteWidth() const -> const uint { return static_cast<uint>(indices.size()) * sizeof(uint); }
     auto GetIndexData() -> uint* { return indices.data(); }
     auto GetIndices() const -> const std::vector<uint>& { return indices; }
     auto GetIndices(const uint& offset, const uint& count) -> const std::vector<uint>;

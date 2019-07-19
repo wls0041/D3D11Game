@@ -58,8 +58,8 @@ public:
 	Input(class Context* context);
     ~Input() = default;
 
-	const D3DXVECTOR2& GetMousePosition() const { return mousePosition; }
-	const D3DXVECTOR3& GetMouseMoveValue() const { return wheelMoveValue; }
+	const Vector2& GetMousePosition() const { return mousePosition; }
+	const Vector3& GetMouseMoveValue() const { return wheelMoveValue; }
 
 	LRESULT MsgProc(HWND handle, const uint& message, const WPARAM& wParam, const LPARAM& lParam);
 
@@ -110,8 +110,8 @@ private:
 	DWORD startDblClk[MAX_INPUT_MOUSE];
 	int buttonCount[MAX_INPUT_MOUSE];
 	DWORD timeDblClk;
-	D3DXVECTOR2 mousePosition; //마우스 위치
-	D3DXVECTOR3 wheelStatus;
-	D3DXVECTOR3 wheelOldStatus;
-	D3DXVECTOR3 wheelMoveValue;
+	Vector2 mousePosition; //마우스 위치
+	Vector3 wheelStatus;
+	Vector3 wheelOldStatus;
+	Vector3 wheelMoveValue;
 };

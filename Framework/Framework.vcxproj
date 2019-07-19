@@ -44,6 +44,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -72,8 +73,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(DH);</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(DL);</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -110,17 +111,29 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeaderFile>Framework.h</PrecompiledHeaderFile>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <AdditionalIncludeDirectories>.\;$(SolutionDir)..\_Libraries\Assimp_5.0.0\;$(SolutionDir)..\_Libraries\FreeImage_3.18.0\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\_Libraries\Lib_x64;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp_debug.lib;FreeImageLib_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <PostBuildEvent>
+      <Command>copy /Y "$(OutDir)$(ProjectName).lib" "..\..\_Libraries\Lib_x64\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -188,15 +201,9 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Math\Vector2.h" />
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Math\Vector4.h" />
-    <ClInclude Include="Resource\Model.h" />
-    <ClInclude Include="Resource\ModelImporter\FbxType.h" />
-    <ClInclude Include="Resource\ModelImporter\FbxUtility.h" />
-    <ClInclude Include="Resource\ModelImporter\ModelImporter.h" />
+    <ClInclude Include="Resource\Importer\TextureImporter.h" />
     <ClInclude Include="Scene\Component\Camera.h" />
-    <ClInclude Include="Scene\Component\MultiCube.h" />
-    <ClInclude Include="Scene\Component\Terrain.h" />
     <ClInclude Include="Scene\Scene.h" />
-    <ClInclude Include="Scene\Component\Skybox.h" />
     <ClInclude Include="Utility\FileSystem.h" />
     <ClInclude Include="Utility\Geometry_Generator.h" />
   </ItemGroup>
@@ -215,6 +222,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Core\Subsystem\Timer.cpp" />
     <ClCompile Include="Framework.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Log\Log.cpp" />
     <ClCompile Include="Math\Color4.cpp" />
@@ -224,14 +232,9 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Math\Vector2.cpp" />
     <ClCompile Include="Math\Vector3.cpp" />
     <ClCompile Include="Math\Vector4.cpp" />
-    <ClCompile Include="Resource\Model.cpp" />
-    <ClCompile Include="Resource\ModelImporter\FbxUtility.cpp" />
-    <ClCompile Include="Resource\ModelImporter\ModelImporter.cpp" />
+    <ClCompile Include="Resource\Importer\TextureImporter.cpp" />
     <ClCompile Include="Scene\Component\Camera.cpp" />
-    <ClCompile Include="Scene\Component\MultiCube.cpp" />
-    <ClCompile Include="Scene\Component\Terrain.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
-    <ClCompile Include="Scene\Component\Skybox.cpp" />
     <ClCompile Include="Utility\FileSystem.cpp" />
     <ClCompile Include="Utility\Geometry_Generator.cpp" />
   </ItemGroup>

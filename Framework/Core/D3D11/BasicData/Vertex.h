@@ -13,13 +13,13 @@ struct VertexColor final
 		, color(0, 0, 0, 1)
 	{}
 
-	VertexColor(const D3DXVECTOR3& position, const D3DXCOLOR& color)
+	VertexColor(const Vector3& position, const Color4& color)
 		: position(position)
 		, color(color)
 	{}
 
-	D3DXVECTOR3 position;
-	D3DXCOLOR color;
+	Vector3 position;
+	Color4 color;
 
 	static D3D11_INPUT_ELEMENT_DESC descs[];
 	static const uint count = 2;
@@ -32,13 +32,13 @@ struct VertexTexture final
 		, uv(0, 0)
 	{}
 
-	VertexTexture(const D3DXVECTOR3& position, const D3DXVECTOR2& uv)
+	VertexTexture(const Vector3& position, const Vector2& uv)
 		: position(position)
 		, uv(uv)
 	{}
 
-	D3DXVECTOR3 position;
-	D3DXVECTOR2 uv;
+	Vector3 position;
+	Vector2 uv;
 
 	static D3D11_INPUT_ELEMENT_DESC descs[];
 	static const uint count = 2;
@@ -52,15 +52,15 @@ struct VertexTextureNormal final
 		, normal(0, 0, 0)
 	{}
 
-	VertexTextureNormal(const D3DXVECTOR3& position, const D3DXVECTOR2& uv, const D3DXVECTOR3& normal)
+	VertexTextureNormal(const Vector3& position, const Vector2& uv, const Vector3& normal)
 		: position(position)
 		, uv(uv)
 		, normal(normal)
 	{}
 
-	D3DXVECTOR3 position;
-	D3DXVECTOR2 uv;
-	D3DXVECTOR3 normal;
+	Vector3 position;
+	Vector2 uv;
+	Vector3 normal;
 
 	static D3D11_INPUT_ELEMENT_DESC descs[];
 	static const uint count = 3;
@@ -78,10 +78,10 @@ struct VertexTerrain final
 
 	VertexTerrain
 	(
-		const D3DXVECTOR3& position,
-		const D3DXVECTOR2& uv,
-		const D3DXVECTOR3& normal,
-		const D3DXCOLOR& color
+		const Vector3& position,
+		const Vector2& uv,
+		const Vector3& normal,
+		const Color4& color
 	)
 		: position(position)
 		, uv(uv)
@@ -90,11 +90,11 @@ struct VertexTerrain final
 		, alpha(0, 0, 0, 0)
 	{}
 
-	D3DXVECTOR3 position;
-	D3DXVECTOR2 uv;
-	D3DXVECTOR3 normal;
-	D3DXCOLOR color;
-	D3DXCOLOR alpha;
+	Vector3 position;
+	Vector2 uv;
+	Vector3 normal;
+	Color4 color;
+	Color4 alpha;
 
 	static D3D11_INPUT_ELEMENT_DESC descs[];
 	static const uint count = 4;
@@ -111,8 +111,8 @@ struct VertexTextureNormalTangentBlend final
 		, weights(0, 0, 0, 0)
 	{}
 
-	VertexTextureNormalTangentBlend(const D3DXVECTOR3& position, const D3DXVECTOR2& uv, const D3DXVECTOR3& normal,
-									const D3DXVECTOR3& tangent, const D3DXVECTOR4& indices, const D3DXVECTOR4& weights)
+	VertexTextureNormalTangentBlend(const Vector3& position, const Vector2& uv, const Vector3& normal,
+									const Vector3& tangent, const Vector4& indices, const Vector4& weights)
 		: position(position)
 		, uv(uv)
 		, normal(normal)
@@ -121,12 +121,12 @@ struct VertexTextureNormalTangentBlend final
 		, weights(weights)
 	{}
 
-	D3DXVECTOR3 position;
-	D3DXVECTOR2 uv;
-	D3DXVECTOR3 normal;
-	D3DXVECTOR3 tangent;
-	D3DXVECTOR4 indices;
-	D3DXVECTOR4 weights;
+	Vector3 position;
+	Vector2 uv;
+	Vector3 normal;
+	Vector3 tangent;
+	Vector4 indices;
+	Vector4 weights;
 
 	static D3D11_INPUT_ELEMENT_DESC descs[];
 	static const uint count = 6;

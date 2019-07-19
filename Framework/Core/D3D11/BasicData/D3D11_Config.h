@@ -10,38 +10,38 @@ enum class ShaderScope : uint
 
 struct CameraData
 {
-    D3DXMATRIX view;
-    D3DXMATRIX projection;
-	D3DXVECTOR3 camera_position;
+    Matrix view;
+    Matrix projection;
+	Vector3 camera_position;
 	float padding;
 };
 
 struct WorldData
 {
-    D3DXMATRIX world;
+    Matrix world;
 };
 
 struct BrushData
 {
     int brush_type;
-    D3DXVECTOR3 brush_position;
+    Vector3 brush_position;
     int brush_range;
-    D3DXVECTOR3 brush_color;
+    Vector3 brush_color;
 };
 
 struct MultiData
 {
 	int paint_type;
-	D3DXVECTOR3 index;
+	Vector3 index;
 };
 
 struct SkinnedData
 {
-	D3DXMATRIX skinned_transforms[100];
+	Matrix skinned_transforms[100];
 };
 
 struct MaterialData
 {
 	float normal_multiplier;
-	D3DXVECTOR3 padding;
+	Vector3 padding;
 };

@@ -23,14 +23,7 @@
     <ClInclude Include="Utility\FileSystem.h" />
     <ClInclude Include="Core\D3D11\IAStage\InputLayout.h" />
     <ClInclude Include="Core\D3D11\ShaderStage\ConstantBuffer.h" />
-    <ClInclude Include="Scene\Component\Terrain.h" />
     <ClInclude Include="Utility\Geometry_Generator.h" />
-    <ClInclude Include="Scene\Component\Skybox.h" />
-    <ClInclude Include="Resource\ModelImporter\FbxType.h" />
-    <ClInclude Include="Resource\ModelImporter\FbxUtility.h" />
-    <ClInclude Include="Resource\ModelImporter\ModelImporter.h" />
-    <ClInclude Include="Resource\Model.h" />
-    <ClInclude Include="Scene\Component\MultiCube.h" />
     <ClInclude Include="Core\Subsystem\Timer.h" />
     <ClInclude Include="Log\Log.h" />
     <ClInclude Include="Log\ILogger.h" />
@@ -42,6 +35,7 @@
     <ClInclude Include="Math\Quaternion.h" />
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Math\Vector4.h" />
+    <ClInclude Include="Resource\Importer\TextureImporter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -59,13 +53,7 @@
     <ClCompile Include="Utility\FileSystem.cpp" />
     <ClCompile Include="Core\D3D11\IAStage\InputLayout.cpp" />
     <ClCompile Include="Core\D3D11\ShaderStage\ConstantBuffer.cpp" />
-    <ClCompile Include="Scene\Component\Terrain.cpp" />
     <ClCompile Include="Utility\Geometry_Generator.cpp" />
-    <ClCompile Include="Scene\Component\Skybox.cpp" />
-    <ClCompile Include="Resource\ModelImporter\FbxUtility.cpp" />
-    <ClCompile Include="Resource\ModelImporter\ModelImporter.cpp" />
-    <ClCompile Include="Resource\Model.cpp" />
-    <ClCompile Include="Scene\Component\MultiCube.cpp" />
     <ClCompile Include="Core\Subsystem\Timer.cpp" />
     <ClCompile Include="Log\Log.cpp" />
     <ClCompile Include="Math\Math.cpp" />
@@ -75,5 +63,6 @@
     <ClCompile Include="Math\Quaternion.cpp" />
     <ClCompile Include="Math\Vector3.cpp" />
     <ClCompile Include="Math\Vector4.cpp" />
+    <ClCompile Include="Resource\Importer\TextureImporter.cpp" />
   </ItemGroup>
 </Project>

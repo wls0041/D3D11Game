@@ -12,14 +12,14 @@ public:
     Camera(class Context* context);
     ~Camera();
 
-    auto GetViewMatrix() const -> const D3DXMATRIX& { return view; }
-    auto GetProjectionMatrix() const -> const D3DXMATRIX& { return proj; }
+    auto GetViewMatrix() const -> const Matrix& { return view; }
+    auto GetProjectionMatrix() const -> const Matrix& { return proj; }
 
     auto GetProjectionType() const -> const ProjectionType& { return projection_type; }
     void SetProjectionType(const ProjectionType& type) { this->projection_type = type; }
 
-	auto GetPosition() const -> const D3DXVECTOR3& { return position; }
-	void SetPosition(const D3DXVECTOR3 &position) { this->position = position; }
+	auto GetPosition() const -> const Vector3& { return position; }
+	void SetPosition(const Vector3 &position) { this->position = position; }
 
     auto GetFOV() const -> const float& { return fov; }
     void SetFOV(const float& fov) { this->fov = fov; }
@@ -29,9 +29,6 @@ public:
 
     auto GetFarPlane() const -> const float& { return far_plane; }
     void SetFarPlane(const float& far_plane) { this->far_plane = far_plane; }
-
-    void GetWorldRay(D3DXVECTOR3& origin, D3DXVECTOR3& direction);
-    void GetLocalRay(D3DXVECTOR3& origin, D3DXVECTOR3& direction, const D3DXMATRIX& world);
 
     void Update();
 
@@ -48,13 +45,13 @@ private:
     float near_plane;
     float far_plane;
 
-    D3DXMATRIX view;
-    D3DXMATRIX proj;
+    Matrix view;
+    Matrix proj;
 
-    D3DXVECTOR3 position;
-    D3DXVECTOR3 rotation;
+    Vector3 position;
+    Vector3 rotation;
 
-    D3DXVECTOR3 right;
-    D3DXVECTOR3 up;
-    D3DXVECTOR3 forward;
+    Vector3 right;
+    Vector3 up;
+    Vector3 forward;
 };

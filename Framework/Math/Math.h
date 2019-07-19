@@ -54,7 +54,7 @@ public:
 	}
 
 	template <typename T>
-	static const int Sign(const T& value)
+	static constexpr int Sign(const T &value)
 	{
 		return (T(0) < value) - (value < T(0));
 	}

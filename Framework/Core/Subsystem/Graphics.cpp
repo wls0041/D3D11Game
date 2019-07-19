@@ -59,7 +59,7 @@ auto Graphics::Initialize() -> const bool
 		nullptr,
 		D3D11_CREATE_DEVICE_BGRA_SUPPORT,
 		feature_levels.data(),
-		feature_levels.size(),
+		static_cast<uint>(feature_levels.size()),
 		D3D11_SDK_VERSION,
 		&desc,
 		&swap_chain,

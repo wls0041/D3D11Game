@@ -29,5 +29,5 @@ private:
 private:
     HINSTANCE hInstance = nullptr;
     HWND handle = nullptr;
-    D3DXVECTOR2 windowSize = D3DXVECTOR2(0, 0);
+    Vector2 windowSize = Vector2(0, 0);
 };

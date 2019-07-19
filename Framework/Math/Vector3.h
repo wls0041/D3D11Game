@@ -20,9 +20,9 @@ public:
 	static auto Dot(const Vector3& lhs, const Vector3& rhs) -> const float; //½ºÄ®¶ó. º¤ÅÍ¹æÇâÀÇ Å©±â
 	static auto Cross(const Vector3& lhs, const Vector3& rhs) -> const Vector3; //¼öÁ÷º¤ÅÍ
 
-	//TODO :
-	static auto TransformCoord() -> const Vector3;
-	static auto TransformNormal() -> const Vector3;
+
+	static auto TransformCoord(const Vector3 &lhs, const class Matrix &rhs) -> const Vector3;
+	static auto TransformNormal(const Vector3 &lhs, const class Matrix &rhs) -> const Vector3;
 
 	static auto Normalize(const Vector3& rhs) -> const Vector3;
 
@@ -37,8 +37,8 @@ public:
 	auto Length() const -> const float { return sqrtf(x * x + y * y + z * z); }
 	auto LengthSq() const -> const float { return x * x + y * y + z * z; }
 	auto Volume() const -> const float { return x * y * z; }
-	auto Dot(const Vector3& rhs) -> const float { return Dot(*this, rhs); }
-	auto Cross(const Vector3& rhs) -> const Vector3 { return Cross(*this, rhs); }
+	auto Dot(const Vector3& rhs) const -> const float { return Dot(*this, rhs); }
+	auto Cross(const Vector3& rhs) const -> const Vector3 { return Cross(*this, rhs); }
 	auto Absolute() const -> const Vector3 { return Vector3(fabs(x), fabs(y), fabs(z)); }
 	auto Normalize() const -> const Vector3;
 	void Normalize();

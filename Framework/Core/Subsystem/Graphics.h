@@ -26,5 +26,5 @@ private:
     ID3D11RenderTargetView* rtv;
     ID3D11DepthStencilView* dsv;
     D3D11_VIEWPORT viewport;
-    D3DXCOLOR clear_color;
+    Color4 clear_color;
 };

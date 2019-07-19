@@ -34,7 +34,7 @@ void Log::Write(const char * text, const LogType & type) //*라 null체크 필요함
 	const auto formatted_text = caller_name.empty() ? std::string(text) : caller_name + " : " + std::string(text);
 
 	if (log_to_file) {
-		log_buffer.emplace_back(formatted_text, text);
+		log_buffer.emplace_back(formatted_text, type);
 		log_buffer.emplace_back(formatted_text.c_str(), type);
 	}
 	else { 
