@@ -36,6 +36,12 @@
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Math\Vector4.h" />
     <ClInclude Include="Resource\Importer\TextureImporter.h" />
+    <ClInclude Include="Resource\IResource.h" />
+    <ClInclude Include="Resource\Texture.h" />
+    <ClInclude Include="Resource\Texture2D.h" />
+    <ClInclude Include="Resource\Texture3D.h" />
+    <ClInclude Include="Resource\TextureCube.h" />
+    <ClInclude Include="Core\D3D11\D3D11_Helper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -64,5 +70,10 @@
     <ClCompile Include="Math\Vector3.cpp" />
     <ClCompile Include="Math\Vector4.cpp" />
     <ClCompile Include="Resource\Importer\TextureImporter.cpp" />
+    <ClCompile Include="Resource\IResource.cpp" />
+    <ClCompile Include="Resource\Texture.cpp" />
+    <ClCompile Include="Resource\Texture2D.cpp" />
+    <ClCompile Include="Resource\Texture3D.cpp" />
+    <ClCompile Include="Resource\TextureCube.cpp" />
   </ItemGroup>
 </Project>

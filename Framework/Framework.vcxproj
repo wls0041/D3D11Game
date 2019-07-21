@@ -129,7 +129,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\_Libraries\Lib_x64;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp_debug.lib;FreeImageLib_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp_debug.lib;FreeImageLib_debug.lib;IrrXML_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
       <Command>copy /Y "$(OutDir)$(ProjectName).lib" "..\..\_Libraries\Lib_x64\"</Command>
@@ -176,6 +176,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\D3D11\BasicData\D3D11_Config.h" />
     <ClInclude Include="Core\D3D11\BasicData\Geometry.h" />
     <ClInclude Include="Core\D3D11\BasicData\Vertex.h" />
+    <ClInclude Include="Core\D3D11\D3D11_Helper.h" />
     <ClInclude Include="Core\D3D11\IAStage\IndexBuffer.h" />
     <ClInclude Include="Core\D3D11\IAStage\InputLayout.h" />
     <ClInclude Include="Core\D3D11\IAStage\VertexBuffer.h" />
@@ -202,6 +203,11 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Math\Vector4.h" />
     <ClInclude Include="Resource\Importer\TextureImporter.h" />
+    <ClInclude Include="Resource\IResource.h" />
+    <ClInclude Include="Resource\Texture.h" />
+    <ClInclude Include="Resource\Texture2D.h" />
+    <ClInclude Include="Resource\Texture3D.h" />
+    <ClInclude Include="Resource\TextureCube.h" />
     <ClInclude Include="Scene\Component\Camera.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Utility\FileSystem.h" />
@@ -233,6 +239,11 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Math\Vector3.cpp" />
     <ClCompile Include="Math\Vector4.cpp" />
     <ClCompile Include="Resource\Importer\TextureImporter.cpp" />
+    <ClCompile Include="Resource\IResource.cpp" />
+    <ClCompile Include="Resource\Texture.cpp" />
+    <ClCompile Include="Resource\Texture2D.cpp" />
+    <ClCompile Include="Resource\Texture3D.cpp" />
+    <ClCompile Include="Resource\TextureCube.cpp" />
     <ClCompile Include="Scene\Component\Camera.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Utility\FileSystem.cpp" />

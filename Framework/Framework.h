@@ -1,4 +1,5 @@
 #pragma once
+#pragma warning(disable : 4506) //인라인 함수가 h에 정의되지 않음 오류
 
 #define NOMINMAX
 
@@ -79,3 +80,6 @@ typedef unsigned int uint;
 #include "./Core/D3D11/ShaderStage/VertexShader.h"
 #include "./Core/D3D11/ShaderStage/PixelShader.h"
 #include "./Core/D3D11/ShaderStage/ConstantBuffer.h"
+
+//Resource
+#include "./Resource/Texture.h"
