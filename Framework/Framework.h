@@ -53,6 +53,7 @@ typedef unsigned int uint;
 
 //Utility
 #include "./Utility/FileSystem.h"
+#include "./Utility/FileStream.h"
 #include "./Utility/Geometry_Generator.h"
 
 //Log

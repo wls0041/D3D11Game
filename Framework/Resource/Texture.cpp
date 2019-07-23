@@ -1,5 +1,6 @@
 #include "Framework.h"
 #include "Texture.h"
+#include "./Importer/TextureImporter.h"
 
 Texture::Texture(Context * context)
     : IResource(context)
@@ -32,6 +33,51 @@ Texture::~Texture()
         SAFE_RELEASE(depth_stencil_view);
 }
 
+const bool Texture::SaveToFile(const std::string & path)
+{
+	uint byte_count = 0;
+
+	if (FileSystem::IsExistFile(path)) {
+		auto stream = std::make_unique <FileStream>(path, Stream_Read);
+		if (stream->IsOpen()) stream->Read(byte_count);
+	}
+
+	auto append = true;
+	auto stream = std::make_unique <FileStream>(path, Stream_Write | Stream_Append);
+	if (!stream->IsOpen()) return false;
+
+	//binary data에 저장되어 있는 순서 = byte_count(개수), mip_count, mipData, bpp, bpc, ...
+	if (byte_count != 0 && mip_chain.empty()) 
+		stream->Skip(sizeof(uint) + sizeof(uint) + byte_count); //byte_count 건너뛰고 밉채인 사이즈 건너뛰고 저장된 내용
+	else {
+		byte_count = GetByteCount();
+		stream->Write(byte_count);
+		stream->Write(static_cast<uint>(mip_chain.size()));
+
+		for (auto &mip : mip_chain) stream->Write(mip);
+
+		mip_chain.clear(); //이미 srv에 찍고 바이너리 파일로 빼놨기 때문에 굳이 들고있을 필요 없이 지워버리고 필요할 때 불러서 씀
+		mip_chain.shrink_to_fit();
+	}
+
+	stream->Write(bpp);
+	stream->Write(bpc);
+	stream->Write(width);
+	stream->Write(height);
+	stream->Write(channels);
+	stream->Write(is_gray_scale);
+	stream->Write(is_transparent);
+	stream->Write(resource_name);
+	stream->Write(resource_path);
+
+	return true;
+}
+
+const bool Texture::LoadFromFile(const std::string & path)
+{
+	return false;
+}
+
 void Texture::SetViewport(const float & x, const float & y, const float & width, const float & height)
 {
     viewport.TopLeftX   = x;
@@ -55,17 +101,42 @@ auto Texture::GetMipLevel(const uint & level) -> mip_level *
     return nullptr;
 }
 
-auto Texture::Load(const std::string & path) -> const bool
+auto Texture::Load_Foreign(const std::string & path, const bool & is_generate_mip_chain) -> const bool
 {
-    return false;
+	return false;
 }
 
-auto Texture::Serialize(const std::string & path) -> const bool
+auto Texture::Load_Native(const std::string & path) -> const bool
 {
-    return false;
+	auto stream = std::make_unique<FileStream>(path, Stream_Read);
+	if (!stream->IsOpen()) return false;
+
+	mip_chain.clear();
+	mip_chain.shrink_to_fit();
+
+	auto byte_count = stream->Read<uint>();
+	auto mip_count = stream->Read<uint>();
+
+	for (auto &mip : mip_chain) stream->Read(mip);
+	
+	stream->Write(bpp);
+	stream->Write(bpc);
+	stream->Write(width);
+	stream->Write(height);
+	stream->Write(channels);
+	stream->Write(is_gray_scale);
+	stream->Write(is_transparent);
+	stream->Write(resource_name);
+	stream->Write(resource_path);
+
+	return true;
 }
 
-auto Texture::Deserialize(const std::string & path) -> const bool
+auto Texture::GetByteCount() -> const uint
 {
-    return false;
+	uint byte_count = 0;
+
+	for (auto &mip : mip_chain) byte_count += static_cast<uint>(mip.size());
+	
+	return byte_count;
 }

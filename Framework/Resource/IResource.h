@@ -16,6 +16,9 @@ public:
 	IResource(class Context *context, const ResourceType &resource_type = ResourceType::Unknown);
 	virtual ~IResource() = default;
 
+	virtual const bool SaveToFile(const std::string &path) = 0;
+	virtual const bool LoadFromFile(const std::string &path) = 0;
+
 	auto GetResourceID() const -> const uint& { return resource_id; }
 
 	auto GetResourceType() const -> const ResourceType& { return resource_type; }
@@ -28,11 +31,10 @@ public:
 	void SetResourcePath(const std::string &path) { this->resource_path = path; }
 
 private:
-	class Context *context;
-	ResourceType resource_type;
+	class Context* context;
 
 	uint resource_id;
-
+	ResourceType resource_type;
 	std::string resource_name;
 	std::string resource_path;
 	

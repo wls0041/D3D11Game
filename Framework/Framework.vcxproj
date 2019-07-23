@@ -210,6 +210,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Resource\TextureCube.h" />
     <ClInclude Include="Scene\Component\Camera.h" />
     <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Utility\FileStream.h" />
     <ClInclude Include="Utility\FileSystem.h" />
     <ClInclude Include="Utility\Geometry_Generator.h" />
   </ItemGroup>
@@ -246,6 +247,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Resource\TextureCube.cpp" />
     <ClCompile Include="Scene\Component\Camera.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Utility\FileStream.cpp" />
     <ClCompile Include="Utility\FileSystem.cpp" />
     <ClCompile Include="Utility\Geometry_Generator.cpp" />
   </ItemGroup>
