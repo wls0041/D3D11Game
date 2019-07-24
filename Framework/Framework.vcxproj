@@ -189,6 +189,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\Subsystem\Graphics.h" />
     <ClInclude Include="Core\Subsystem\Input.h" />
     <ClInclude Include="Core\Subsystem\ISubsystem.h" />
+    <ClInclude Include="Core\Subsystem\ResourceManager.h" />
     <ClInclude Include="Core\Subsystem\Timer.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Framework.h" />
@@ -226,6 +227,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Core\Engine.cpp" />
     <ClCompile Include="Core\Subsystem\Graphics.cpp" />
     <ClCompile Include="Core\Subsystem\Input.cpp" />
+    <ClCompile Include="Core\Subsystem\ResourceManager.cpp" />
     <ClCompile Include="Core\Subsystem\Timer.cpp" />
     <ClCompile Include="Framework.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

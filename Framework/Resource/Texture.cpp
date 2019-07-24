@@ -3,7 +3,7 @@
 #include "./Importer/TextureImporter.h"
 
 Texture::Texture(Context * context)
-    : IResource(context)
+    : IResource(context, ResourceType::Texture)
     , bpp(0)
     , bpc(8)
     , width(0)
@@ -90,15 +90,44 @@ void Texture::SetViewport(const float & x, const float & y, const float & width,
 
 void Texture::GetMipChain(std::vector<mip_level>* mip_chain)
 {
+	if (!this->mip_chain.empty()) {
+		mip_chain = &this->mip_chain;
+		return;
+	}
+
+	auto stream = std::make_unique<FileStream>(resource_path, Stream_Read);
+	if (!stream->IsOpen()) return;
+
+	stream->Skip(sizeof(uint));
+
+	uint mip_count= stream->Read<uint>();
+	this->mip_chain.reserve(mip_count);
+	this->mip_chain.resize(mip_count);
+
+	for (auto &mip : this->mip_chain)  stream->Read(mip);
 }
 
 void Texture::ClearMipChain()
 {
+	for (auto& mip : mip_chain)
+	{
+		mip.clear();
+		mip.shrink_to_fit();
+	}
+
+	mip_chain.clear();
+	mip_chain.shrink_to_fit();
 }
 
 auto Texture::GetMipLevel(const uint & level) -> mip_level *
 {
-    return nullptr;
+	if (level >= mip_chain.size())
+	{
+		LOG_ERROR("Mip Level out of range");
+		return nullptr;
+	}
+
+	return &mip_chain[level];
 }
 
 auto Texture::Load_Foreign(const std::string & path, const bool & is_generate_mip_chain) -> const bool

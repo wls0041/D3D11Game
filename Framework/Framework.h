@@ -16,6 +16,7 @@
 #include <iostream>
 #include <fstream>
 #include <typeinfo>
+#include <map>
 #include <vector>
 #include <deque>
 #include <memory>
@@ -73,6 +74,7 @@ typedef unsigned int uint;
 #include "./Core/Subsystem/Timer.h"
 #include "./Core/Subsystem/Graphics.h"
 #include "./Core/Subsystem/Input.h"
+#include "./Core/Subsystem/ResourceManager.h"
 
 //DirectX pipeline wrapper
 #include "./Core/D3D11/IAStage/VertexBuffer.h"

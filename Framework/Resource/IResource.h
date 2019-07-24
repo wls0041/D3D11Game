@@ -30,7 +30,7 @@ public:
 	auto GetResourcePath() const -> const std::string& { return resource_path; }
 	void SetResourcePath(const std::string &path) { this->resource_path = path; }
 
-private:
+protected:
 	class Context* context;
 
 	uint resource_id;

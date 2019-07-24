@@ -8,7 +8,9 @@ Engine::Engine()
     context->RegisterSubsystem<Graphics>();
     input = context->RegisterSubsystem<Input>();
 	timer = context->RegisterSubsystem<Timer>();
-    context->InitializeSubsystems();
+
+	context->RegisterSubsystem<ResourceManager>();
+	context->InitializeSubsystems();
 
     scene = new Scene(context);
 }
