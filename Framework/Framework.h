@@ -18,6 +18,7 @@
 #include <typeinfo>
 #include <map>
 #include <vector>
+#include <queue>
 #include <deque>
 #include <memory>
 #include <functional>
@@ -64,6 +65,9 @@ typedef unsigned int uint;
 #include "./Core/Settings.h"
 #include "./Core/Context.h"
 #include "./Core/Engine.h"
+
+//EventSystem
+#include "./Core/EventSystem/EventSystem.h"
 
 //Basic Data
 #include "./Core/D3D11/BasicData/D3D11_Config.h"

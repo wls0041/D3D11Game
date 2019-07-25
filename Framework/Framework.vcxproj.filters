@@ -44,6 +44,8 @@
     <ClInclude Include="Core\D3D11\D3D11_Helper.h" />
     <ClInclude Include="Utility\FileStream.h" />
     <ClInclude Include="Core\Subsystem\ResourceManager.h" />
+    <ClInclude Include="Core\EventSystem\EventSystem.h" />
+    <ClInclude Include="Core\Subsystem\Thread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -79,5 +81,6 @@
     <ClCompile Include="Resource\TextureCube.cpp" />
     <ClCompile Include="Utility\FileStream.cpp" />
     <ClCompile Include="Core\Subsystem\ResourceManager.cpp" />
+    <ClCompile Include="Core\Subsystem\Thread.cpp" />
   </ItemGroup>
 </Project>

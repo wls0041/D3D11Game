@@ -71,7 +71,7 @@ public:
 		std::is_same<T, Matrix>::value > ::type >
 	void Read(T &value) //얘는 읽어온 파일을 value에 넣으므로 const 붙으면 안됨
 	{
-		in.write(reinterpret_cast<char*>(&value), sizeof(T));
+		in.write(reinterpret_cast<char*>(&value), sizeof(T)); //들어온 데이터를 1byte단위로 체크하기 위해 char 씀
 	}
 
 	void Read(std::string &value);
