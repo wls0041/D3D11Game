@@ -9,6 +9,14 @@ enum class EventType : uint
 	Render,
 };
 
+#define EVENT_HANDLER_STATIC(function)	[]() { function(); }
+#define EVENT_HANDLER(function)			[this]() { function(); }
+
+#define FIRE_EVENT(type)				EventSystem::Get().Fire(type)
+
+#define SUBSCRIBE_TO_EVENT(type, function)		EventSystem::Get().Subscribe(type, function)
+#define UNSUBSCRIBE_FROM_EVENT(type, function)  EventSystem::Get().Unsubscribe(type, function)
+
 class EventSystem final
 {
 public:
@@ -27,7 +35,7 @@ public:
 		subscriber_groups[event_type].push_back(std::forward<subscriber>(func));//move라는 함수도 있음.
 	}
 
-	void Unscribe(const EventType& event_type, subscriber&& function)
+	void Unsubscribe(const EventType& event_type, subscriber&& function)
 	{
 		const size_t function_address = *reinterpret_cast<size_t*>(reinterpret_cast<char*>(&function));
 	
@@ -40,6 +48,7 @@ public:
 				iter = subscriber_group.erase(iter);
 				return;
 			}
+			else iter++;
 		}
 	}
 

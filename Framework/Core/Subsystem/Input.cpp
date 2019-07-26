@@ -20,7 +20,7 @@ Input::Input(Context * context)
 		std::placeholders::_4
 	);
 
-	//EventSystem::Get().Subscribe(EventType::Update, EVENT_HANDLER(Update));
+	SUBSCRIBE_TO_EVENT(EventType::Update, EVENT_HANDLER(Update));
 }
 
 LRESULT Input::MsgProc(HWND handle, const uint & message, const WPARAM & wParam, const LPARAM & lParam)

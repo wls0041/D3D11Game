@@ -46,6 +46,10 @@
     <ClInclude Include="Core\Subsystem\ResourceManager.h" />
     <ClInclude Include="Core\EventSystem\EventSystem.h" />
     <ClInclude Include="Core\Subsystem\Thread.h" />
+    <ClInclude Include="Core\Subsystem\SceneManager.h" />
+    <ClInclude Include="Scene\Actor.h" />
+    <ClInclude Include="Scene\Component\IComponent.h" />
+    <ClInclude Include="Scene\Component\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -82,5 +86,9 @@
     <ClCompile Include="Utility\FileStream.cpp" />
     <ClCompile Include="Core\Subsystem\ResourceManager.cpp" />
     <ClCompile Include="Core\Subsystem\Thread.cpp" />
+    <ClCompile Include="Core\Subsystem\SceneManager.cpp" />
+    <ClCompile Include="Scene\Actor.cpp" />
+    <ClCompile Include="Scene\Component\IComponent.cpp" />
+    <ClCompile Include="Scene\Component\Transform.cpp" />
   </ItemGroup>
 </Project>

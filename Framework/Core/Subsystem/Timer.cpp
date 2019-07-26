@@ -5,6 +5,7 @@ Timer::Timer(Context * context)
 	: ISubsystem(context)
 	, delta_time_ms(0.0f)
 {
+	SUBSCRIBE_TO_EVENT(EventType::Update, EVENT_HANDLER(Update));
 }
 
 const bool Timer::Initialize()

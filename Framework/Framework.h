@@ -26,6 +26,8 @@
 #include <chrono>
 #include <mutex>
 #include <thread>
+#include <any> 
+#include <variant> 
 
 //DirectX
 #include <d3dcompiler.h>
@@ -76,9 +78,11 @@ typedef unsigned int uint;
 
 //Subsystem
 #include "./Core/Subsystem/Timer.h"
-#include "./Core/Subsystem/Graphics.h"
 #include "./Core/Subsystem/Input.h"
+#include "./Core/Subsystem/Thread.h"
+#include "./Core/Subsystem/Graphics.h"
 #include "./Core/Subsystem/ResourceManager.h"
+#include "./Core/Subsystem/SceneManager.h"
 
 //DirectX pipeline wrapper
 #include "./Core/D3D11/IAStage/VertexBuffer.h"

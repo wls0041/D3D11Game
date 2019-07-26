@@ -4,31 +4,27 @@
 
 Engine::Engine()
 {
-    context = new Context();
+	context = new Context();
+
+	context->RegisterSubsystem<Timer>();
+	context->RegisterSubsystem<Input>();
+	context->RegisterSubsystem<Thread>();
     context->RegisterSubsystem<Graphics>();
-    input = context->RegisterSubsystem<Input>();
-	timer = context->RegisterSubsystem<Timer>();
-
 	context->RegisterSubsystem<ResourceManager>();
+	context->RegisterSubsystem<SceneManager>();
+	
 	context->InitializeSubsystems();
-
-    scene = new Scene(context);
 }
-
+ 
 Engine::~Engine()
 {
-    SAFE_DELETE(scene);
     SAFE_DELETE(context);
 }
 
 void Engine::Update()
 {
-	timer->Update();
-    input->Update();
-    scene->Update();
-}
-
-void Engine::Render()
-{
-    scene->Render();
+	FIRE_EVENT(EventType::Frame_Start);
+	FIRE_EVENT(EventType::Update);
+	FIRE_EVENT(EventType::Render);
+	FIRE_EVENT(EventType::Frame_End);
 }

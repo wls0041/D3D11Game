@@ -191,6 +191,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\Subsystem\Input.h" />
     <ClInclude Include="Core\Subsystem\ISubsystem.h" />
     <ClInclude Include="Core\Subsystem\ResourceManager.h" />
+    <ClInclude Include="Core\Subsystem\SceneManager.h" />
     <ClInclude Include="Core\Subsystem\Thread.h" />
     <ClInclude Include="Core\Subsystem\Timer.h" />
     <ClInclude Include="Core\Window.h" />
@@ -211,7 +212,10 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Resource\Texture2D.h" />
     <ClInclude Include="Resource\Texture3D.h" />
     <ClInclude Include="Resource\TextureCube.h" />
+    <ClInclude Include="Scene\Actor.h" />
     <ClInclude Include="Scene\Component\Camera.h" />
+    <ClInclude Include="Scene\Component\IComponent.h" />
+    <ClInclude Include="Scene\Component\Transform.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Utility\FileStream.h" />
     <ClInclude Include="Utility\FileSystem.h" />
@@ -230,6 +234,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Core\Subsystem\Graphics.cpp" />
     <ClCompile Include="Core\Subsystem\Input.cpp" />
     <ClCompile Include="Core\Subsystem\ResourceManager.cpp" />
+    <ClCompile Include="Core\Subsystem\SceneManager.cpp" />
     <ClCompile Include="Core\Subsystem\Thread.cpp" />
     <ClCompile Include="Core\Subsystem\Timer.cpp" />
     <ClCompile Include="Framework.cpp">
@@ -250,7 +255,10 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Resource\Texture2D.cpp" />
     <ClCompile Include="Resource\Texture3D.cpp" />
     <ClCompile Include="Resource\TextureCube.cpp" />
+    <ClCompile Include="Scene\Actor.cpp" />
     <ClCompile Include="Scene\Component\Camera.cpp" />
+    <ClCompile Include="Scene\Component\IComponent.cpp" />
+    <ClCompile Include="Scene\Component\Transform.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Utility\FileStream.cpp" />
     <ClCompile Include="Utility\FileSystem.cpp" />

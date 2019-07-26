@@ -7,7 +7,6 @@ public:
 	~Scene();
 
 	void Update();
-	void Render();
 
 private:
 };
