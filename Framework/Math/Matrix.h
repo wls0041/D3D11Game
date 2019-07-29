@@ -53,6 +53,7 @@ public:
 	operator float*() { return &_11; }
 	operator const float*() const { return &_11; }
 
+	const Vector3 operator*(const Vector3 &rhs) const;
 	const Matrix operator*(const Matrix& rhs) const;
 	const bool operator==(const Matrix& rhs) const;
 	const bool operator!=(const Matrix& rhs) const { return !(*this == rhs); }
@@ -63,3 +64,5 @@ public:
 	float _13, _23, _33, _43;
 	float _14, _24, _34, _44;
 };
+
+inline Vector3 operator*(const Vector3 &lhs, const Matrix &rhs) { return rhs * lhs; }

@@ -176,6 +176,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\D3D11\BasicData\D3D11_Config.h" />
     <ClInclude Include="Core\D3D11\BasicData\Geometry.h" />
     <ClInclude Include="Core\D3D11\BasicData\Vertex.h" />
+    <ClInclude Include="Core\D3D11\CommandList.h" />
     <ClInclude Include="Core\D3D11\D3D11_Helper.h" />
     <ClInclude Include="Core\D3D11\IAStage\IndexBuffer.h" />
     <ClInclude Include="Core\D3D11\IAStage\InputLayout.h" />
@@ -190,6 +191,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\Subsystem\Graphics.h" />
     <ClInclude Include="Core\Subsystem\Input.h" />
     <ClInclude Include="Core\Subsystem\ISubsystem.h" />
+    <ClInclude Include="Core\Subsystem\Renderer.h" />
     <ClInclude Include="Core\Subsystem\ResourceManager.h" />
     <ClInclude Include="Core\Subsystem\SceneManager.h" />
     <ClInclude Include="Core\Subsystem\Thread.h" />
@@ -223,6 +225,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\D3D11\BasicData\Vertex.cpp" />
+    <ClCompile Include="Core\D3D11\CommandList.cpp" />
     <ClCompile Include="Core\D3D11\IAStage\IndexBuffer.cpp" />
     <ClCompile Include="Core\D3D11\IAStage\InputLayout.cpp" />
     <ClCompile Include="Core\D3D11\IAStage\VertexBuffer.cpp" />
@@ -233,6 +236,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Core\Engine.cpp" />
     <ClCompile Include="Core\Subsystem\Graphics.cpp" />
     <ClCompile Include="Core\Subsystem\Input.cpp" />
+    <ClCompile Include="Core\Subsystem\Renderer.cpp" />
     <ClCompile Include="Core\Subsystem\ResourceManager.cpp" />
     <ClCompile Include="Core\Subsystem\SceneManager.cpp" />
     <ClCompile Include="Core\Subsystem\Thread.cpp" />

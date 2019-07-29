@@ -50,6 +50,8 @@
     <ClInclude Include="Scene\Actor.h" />
     <ClInclude Include="Scene\Component\IComponent.h" />
     <ClInclude Include="Scene\Component\Transform.h" />
+    <ClInclude Include="Core\Subsystem\Renderer.h" />
+    <ClInclude Include="Core\D3D11\CommandList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -90,5 +92,7 @@
     <ClCompile Include="Scene\Actor.cpp" />
     <ClCompile Include="Scene\Component\IComponent.cpp" />
     <ClCompile Include="Scene\Component\Transform.cpp" />
+    <ClCompile Include="Core\Subsystem\Renderer.cpp" />
+    <ClCompile Include="Core\D3D11\CommandList.cpp" />
   </ItemGroup>
 </Project>

@@ -366,6 +366,18 @@ void Matrix::SetIdentity()
 	_41 = 0; _42 = 0; _43 = 0; _44 = 1;
 }
 
+const Vector3 Matrix::operator*(const Vector3 &rhs) const
+{
+	Vector4 temp;
+
+	temp.x = (rhs.x * _11) + (rhs.y * _21) + (rhs.z * _31) + _41;
+	temp.y = (rhs.x * _12) + (rhs.y * _22) + (rhs.z * _32) + _42;
+	temp.z = (rhs.x * _13) + (rhs.y * _23) + (rhs.z * _33) + _43;
+	temp.w = 1 / ((rhs.x * _14) + (rhs.y * _24) + (rhs.z * _34) + _44);
+
+	return Vector3(temp.x * temp.w, temp.y * temp.w, temp.z * temp.w);
+}
+
 const Matrix Matrix::operator*(const Matrix & rhs) const
 {
 	return Matrix
