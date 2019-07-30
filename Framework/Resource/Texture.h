@@ -25,7 +25,7 @@ public:
     auto GetShaderResourceView() const -> ID3D11ShaderResourceView* { return shader_resource_view; }
     auto GetUnorderedAccessView() const -> ID3D11UnorderedAccessView* { return unordered_access_view; }
     auto GetRenderTargetView() const -> ID3D11RenderTargetView* { return render_target_view; }
-    auto GetDepthStencilView(const uint& index) const -> ID3D11DepthStencilView* { return index < static_cast<uint>(depth_stencil_views.size()) ? depth_stencil_views[index] : nullptr; }
+    auto GetDepthStencilView(const uint& index = 0) const -> ID3D11DepthStencilView* { return index < static_cast<uint>(depth_stencil_views.size()) ? depth_stencil_views[index] : nullptr; }
 
     auto GetViewport() const -> const D3D11_VIEWPORT& { return viewport; }
     void SetViewport(const float& x, const float& y, const float& width, const float& height);

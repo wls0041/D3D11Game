@@ -5,7 +5,7 @@ static const std::string NOT_ASSIGNED_STR = "N/A";
 
 enum class ShaderScope : uint
 {
-    Unknown, VS, PS, GS, DS, HS, CS,
+    Unknown, Global, VS, PS, GS, DS, HS, CS,
 };
 
 struct CameraData
