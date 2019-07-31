@@ -9,7 +9,7 @@ IComponent::IComponent(Context * context, Actor * actor, Transform * transform)
 	, component_type(ComponentType::Unknown)
 	, is_enabled(true)
 {
-	//TODO : id setting
+	id = GUID_Generator::Generate();
 }
 
 void IComponent::SetAttributes(const std::vector<Attribute>& attributes)

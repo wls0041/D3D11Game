@@ -14,6 +14,7 @@ Texture::Texture(Context * context)
     , is_transparent(false)
     , is_generate_mip_chain(true)
     , format(DXGI_FORMAT_R8G8B8A8_UNORM)
+	, bind_flags(TEXTURE_BIND_FLAGS::SRV)
     , shader_resource_view(nullptr)
     , unordered_access_view(nullptr)
     , render_target_view(nullptr)
@@ -168,4 +169,64 @@ auto Texture::GetByteCount() -> const uint
 	for (auto &mip : mip_chain) byte_count += static_cast<uint>(mip.size());
 	
 	return byte_count;
+}
+
+auto Texture::GetChannelsFromFormat(const DXGI_FORMAT & format) -> const uint
+{
+	switch (format)
+	{
+	case DXGI_FORMAT_R32G32B32A32_TYPELESS: return 4;
+	case DXGI_FORMAT_R32G32B32A32_FLOAT:    return 4;
+	case DXGI_FORMAT_R32G32B32A32_UINT:     return 4;
+	case DXGI_FORMAT_R32G32B32A32_SINT:     return 4;
+	case DXGI_FORMAT_R32G32B32_TYPELESS:    return 3;
+	case DXGI_FORMAT_R32G32B32_FLOAT:       return 3;
+	case DXGI_FORMAT_R32G32B32_UINT:        return 3;
+	case DXGI_FORMAT_R32G32B32_SINT:        return 3;
+	case DXGI_FORMAT_R16G16B16A16_TYPELESS: return 4;
+	case DXGI_FORMAT_R16G16B16A16_FLOAT:    return 4;
+	case DXGI_FORMAT_R16G16B16A16_UNORM:    return 4;
+	case DXGI_FORMAT_R16G16B16A16_UINT:     return 4;
+	case DXGI_FORMAT_R16G16B16A16_SNORM:    return 4;
+	case DXGI_FORMAT_R16G16B16A16_SINT:     return 4;
+	case DXGI_FORMAT_R32G32_TYPELESS:       return 2;
+	case DXGI_FORMAT_R32G32_FLOAT:          return 2;
+	case DXGI_FORMAT_R32G32_UINT:           return 2;
+	case DXGI_FORMAT_R32G32_SINT:           return 2;
+	case DXGI_FORMAT_R8G8B8A8_TYPELESS:     return 4;
+	case DXGI_FORMAT_R8G8B8A8_UNORM:        return 4;
+	case DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:   return 4;
+	case DXGI_FORMAT_R8G8B8A8_UINT:         return 4;
+	case DXGI_FORMAT_R8G8B8A8_SNORM:        return 4;
+	case DXGI_FORMAT_R8G8B8A8_SINT:         return 4;
+	case DXGI_FORMAT_R16G16_TYPELESS:       return 2;
+	case DXGI_FORMAT_R16G16_FLOAT:          return 2;
+	case DXGI_FORMAT_R16G16_UNORM:          return 2;
+	case DXGI_FORMAT_R16G16_UINT:           return 2;
+	case DXGI_FORMAT_R16G16_SNORM:          return 2;
+	case DXGI_FORMAT_R16G16_SINT:           return 2;
+	case DXGI_FORMAT_R32_TYPELESS:          return 1;
+	case DXGI_FORMAT_D32_FLOAT:             return 1;
+	case DXGI_FORMAT_R32_FLOAT:             return 1;
+	case DXGI_FORMAT_R32_UINT:              return 1;
+	case DXGI_FORMAT_R32_SINT:              return 1;
+	case DXGI_FORMAT_R8G8_TYPELESS:         return 2;
+	case DXGI_FORMAT_R8G8_UNORM:            return 2;
+	case DXGI_FORMAT_R8G8_UINT:             return 2;
+	case DXGI_FORMAT_R8G8_SNORM:            return 2;
+	case DXGI_FORMAT_R8G8_SINT:             return 2;
+	case DXGI_FORMAT_R16_TYPELESS:          return 1;
+	case DXGI_FORMAT_R16_FLOAT:             return 1;
+	case DXGI_FORMAT_D16_UNORM:             return 1;
+	case DXGI_FORMAT_R16_UNORM:             return 1;
+	case DXGI_FORMAT_R16_UINT:              return 1;
+	case DXGI_FORMAT_R16_SNORM:             return 1;
+	case DXGI_FORMAT_R16_SINT:              return 1;
+	case DXGI_FORMAT_R8_TYPELESS:           return 1;
+	case DXGI_FORMAT_R8_UNORM:              return 1;
+	case DXGI_FORMAT_R8_UINT:               return 1;
+	case DXGI_FORMAT_R8_SNORM:              return 1;
+	case DXGI_FORMAT_R8_SINT:               return 1;
+	default:                                return 0;
+	}
 }

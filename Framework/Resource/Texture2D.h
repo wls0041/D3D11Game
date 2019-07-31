@@ -57,6 +57,44 @@ public:
 
 
 public:
-	Texture2D();
-	~Texture2D();
+	Texture2D
+	(
+		class Context* context,
+		const uint& width,
+		const uint& height,
+		const DXGI_FORMAT& format,
+		const std::vector<std::vector<std::byte>>& mip_chain,
+		const uint& flags = SRV
+	);
+
+	Texture2D
+	(
+		class Context* context,
+		const uint& width,
+		const uint& height,
+		const DXGI_FORMAT& format,
+		const std::vector<std::byte>& mip_level,
+		const uint& flags = SRV
+	);
+
+	Texture2D
+	(
+		class Context* context,
+		const uint& width,
+		const uint& height,
+		const DXGI_FORMAT& format,
+		const uint& array_size,
+		const uint& flags = SRV
+	);
+
+	Texture2D
+	(
+		class Context* context,
+		const bool& is_generate_mipmap = true,
+		const uint& flags = SRV
+	);
+
+	~Texture2D() = default;
+
+	const bool CreateGpuResource() override;
 };

@@ -71,6 +71,11 @@ public:
 
 	auto GetByteCount() -> const uint;
 
+	virtual const bool CreateGpuResource() = 0;
+
+protected:
+	auto GetChannelsFromFormat(const DXGI_FORMAT &format) -> const uint;
+
 protected:
     class Graphics* graphics;
 
@@ -86,6 +91,8 @@ protected:
     DXGI_FORMAT format;
     D3D11_VIEWPORT viewport;
     std::vector<mip_level> mip_chain;
+
+	TEXTURE_BIND_FLAGS bind_flags;
 
     ID3D11ShaderResourceView* shader_resource_view;
     ID3D11UnorderedAccessView* unordered_access_view;

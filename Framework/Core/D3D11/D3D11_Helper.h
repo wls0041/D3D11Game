@@ -1,9 +1,10 @@
 #pragma once
 #include "Framework.h"
 
-namespace DX11_Helper
+namespace D3D11_Helper
 {
-	inline const char *DXGI_ERROR_TO_STRING(const HRESULT &error) {
+	inline const char* DXGI_ERROR_TO_STRING(const HRESULT& error)
+	{
 		switch (error)
 		{
 		case DXGI_ERROR_DEVICE_HUNG:                    return "DXGI_ERROR_DEVICE_HUNG";               // The application's device failed due to badly formed commands sent by the application. This is an design-time issue that should be investigated and fixed.

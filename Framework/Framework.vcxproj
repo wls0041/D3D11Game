@@ -222,6 +222,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Utility\FileStream.h" />
     <ClInclude Include="Utility\FileSystem.h" />
     <ClInclude Include="Utility\Geometry_Generator.h" />
+    <ClInclude Include="Utility\GUID_Generator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\D3D11\BasicData\Vertex.cpp" />
@@ -267,6 +268,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Utility\FileStream.cpp" />
     <ClCompile Include="Utility\FileSystem.cpp" />
     <ClCompile Include="Utility\Geometry_Generator.cpp" />
+    <ClCompile Include="Utility\GUID_Generator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\D3D11\BasicData\Geometry.inl">

@@ -7,8 +7,7 @@ IResource::IResource(Context * context, const ResourceType & resource_type)
 	, resource_name(NOT_ASSIGNED_STR)
 	, resource_path(NOT_ASSIGNED_STR)
 {	 
-	//TODO:
-
+	id = GUID_Generator::Generate();
 }
 
 template<typename T>

@@ -52,6 +52,7 @@
     <ClInclude Include="Scene\Component\Transform.h" />
     <ClInclude Include="Core\Subsystem\Renderer.h" />
     <ClInclude Include="Core\D3D11\CommandList.h" />
+    <ClInclude Include="Utility\GUID_Generator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -94,5 +95,6 @@
     <ClCompile Include="Scene\Component\Transform.cpp" />
     <ClCompile Include="Core\Subsystem\Renderer.cpp" />
     <ClCompile Include="Core\D3D11\CommandList.cpp" />
+    <ClCompile Include="Utility\GUID_Generator.cpp" />
   </ItemGroup>
 </Project>

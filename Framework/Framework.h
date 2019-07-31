@@ -17,6 +17,7 @@
 #include <fstream>
 #include <typeinfo>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <queue>
 #include <deque>
@@ -59,6 +60,7 @@ typedef unsigned int uint;
 #include "./Utility/FileSystem.h"
 #include "./Utility/FileStream.h"
 #include "./Utility/Geometry_Generator.h"
+#include "./Utility/GUID_Generator.h"
 
 //Log
 #include "./Log/Log.h"
