@@ -53,6 +53,8 @@
     <ClInclude Include="Core\Subsystem\Renderer.h" />
     <ClInclude Include="Core\D3D11\CommandList.h" />
     <ClInclude Include="Utility\GUID_Generator.h" />
+    <ClInclude Include="Resource\Importer\AssimpHelper.h" />
+    <ClInclude Include="Resource\Importer\ModelImporter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -96,5 +98,7 @@
     <ClCompile Include="Core\Subsystem\Renderer.cpp" />
     <ClCompile Include="Core\D3D11\CommandList.cpp" />
     <ClCompile Include="Utility\GUID_Generator.cpp" />
+    <ClCompile Include="Resource\Importer\AssimpHelper.cpp" />
+    <ClCompile Include="Resource\Importer\ModelImporter.cpp" />
   </ItemGroup>
 </Project>

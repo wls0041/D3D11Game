@@ -26,5 +26,6 @@ public:
     static auto ToWstring(const std::string& str) -> const std::wstring;
 
 private:
-
+	static std::vector<std::string> support_texture_formats;
+	static std::vector<std::string> support_model_formats;
 };

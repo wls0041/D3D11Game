@@ -4,6 +4,78 @@
 
 using namespace std::filesystem;
 
+std::vector<std::string> support_texture_formats
+{
+	".jpg",
+	".png",
+	".bmp",
+	".tga",
+	".dds",
+	".exr",
+	".raw",
+	".gif",
+	".hdr",
+	".ico",
+	".iff",
+	".jng",
+	".jpeg",
+	".koala",
+	".kodak",
+	".mng",
+	".pcx",
+	".pbm",
+	".pgm",
+	".ppm",
+	".pfm",
+	".pict",
+	".psd",
+	".raw",
+	".sgi",
+	".targa",
+	".tiff",
+	".tif",
+	".wbmp",
+	".webp",
+	".xbm",
+	".xpm"
+};
+
+std::vector<std::string> support_model_formats
+{
+	".3ds",
+	".obj",
+	".fbx",
+	".blend",
+	".dae",
+	".lwo",
+	".c4d",
+	".ase",
+	".dxf",
+	".hmp",
+	".md2",
+	".md3",
+	".md5",
+	".mdc",
+	".mdl",
+	".nff",
+	".ply",
+	".stl",
+	".x",
+	".smd",
+	".lxo",
+	".lws",
+	".ter",
+	".ac3d",
+	".ms3d",
+	".cob",
+	".q3bsp",
+	".xgl",
+	".csm",
+	".bvh",
+	".b3d",
+	".ndo"
+};
+
 auto FileSystem::Create_Directory(const std::string & path) -> const bool
 {
 	try {
