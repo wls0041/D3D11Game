@@ -60,11 +60,123 @@ auto ModelImporter::Load(Model * model, const std::string & path) -> const bool
 	const auto scene = importer.ReadFile(model_path, assimp_flags);
 	const auto result = scene != nullptr;
 
-	if (result) {
-
-	}
+	if (result) ReadNodeHierarchy(scene, scene->mRootNode, model);
 	else LOG_ERROR_F("%s", importer.GetErrorString()); //왜 열지 못했는지 이유 출력
 
 	importer.FreeScene();
 	return result;
+}
+
+void ModelImporter::ReadNodeHierarchy(const aiScene * assimp_scene, aiNode * assimp_node, Model * model, Actor * parent_actor, Actor * new_actor)
+{
+}
+
+void ModelImporter::ReadAnimations(const aiScene * assimp_scene, Model * model)
+{
+}
+
+void ModelImporter::LoadMesh(const aiScene * assimp_scene, aiMesh * assimp_mesh, Model * model, Actor * actor)
+{
+	if (!model || !assimp_scene || !assimp_mesh || !actor) {
+		LOG_ERROR("Invalid Parameters");
+		return;
+	}
+
+	//Vertices
+	std::vector<VertexModel> vertices;
+	{
+		const auto vertex_count = assimp_mesh->mNumVertices;
+		vertices.reserve(vertex_count);
+		vertices.resize(vertex_count);
+
+		for (uint i = 0; i < vertex_count; i++) {
+			auto &vertex = vertices[i];
+
+			if (assimp_mesh->mVertices)
+				vertex.position = AssimpHelper::ToVector3(assimp_mesh->mVertices[i]);
+		
+			if (assimp_mesh->mNormals)
+				vertex.normal = AssimpHelper::ToVector3(assimp_mesh->mNormals[i]);
+
+			if (assimp_mesh->mTangents)
+				vertex.tangent = AssimpHelper::ToVector3(assimp_mesh->mTangents[i]);
+
+			const uint uv_channel = 0; //layer와 같은 역할
+			if (assimp_mesh->HasTextureCoords(uv_channel)) 
+				vertex.uv = AssimpHelper::ToVector2(assimp_mesh->mTextureCoords[uv_channel][i]);
+		}
+	}
+	
+	//Indices
+	std::vector<uint> indices;
+	{
+		const auto index_count = assimp_mesh->mNumFaces * 3; //삼각형 개수 * 3
+		indices.reserve(index_count);
+		indices.resize(index_count);
+
+		for (uint i = 0; i < assimp_mesh->mNumFaces; i++) {
+			auto &face = assimp_mesh->mFaces[i];
+			indices[i * 3 + 0] = face.mIndices[0];
+			indices[i * 3 + 1] = face.mIndices[1];
+			indices[i * 3 + 2] = face.mIndices[2];
+		}
+	}
+
+	//TODO : Renderable 만들고 처리
+	//TODO : Nodel 만들고 처리
+
+	if (assimp_scene->HasMaterials()) {
+		const auto assimp_material = assimp_scene->mMaterials[assimp_mesh->mMaterialIndex];
+		//TODO : model 만들고 처리
+	}
+}
+
+auto ModelImporter::LoadMaterial(const aiScene * assimp_scene, aiMaterial * assimp_material, Model * model) -> std::shared_ptr<Material>
+{
+	if (!model || !assimp_material) {
+		LOG_ERROR("Invalid Parameters");
+		return nullptr;
+	}
+	
+	auto material = std::make_shared<Material>(context);
+
+	//Name
+	aiString material_name;
+	aiGetMaterialString(assimp_material, AI_MATKEY_NAME, &material_name);
+	material->SetResourceName(material_name.C_Str());
+
+	//CULL_MODE
+	int is_two_sided = 0;
+	uint max = 1;
+
+	if (AI_SUCCESS == aiGetMaterialIntegerArray(assimp_material, AI_MATKEY_TWOSIDED, &is_two_sided, &max));
+	{
+		if (is_two_sided != 0) material->SetCullMode(D3D11_CULL_NONE);
+	}
+
+	//Diffuse Color
+	aiColor4D diffuse_color(1.0f, 1.0f, 1.0f, 1.0f);
+	aiGetMaterialColor(assimp_material, AI_MATKEY_COLOR_DIFFUSE, &diffuse_color);
+
+	//opacity
+	aiColor4D opacity(1.0f, 1.0f, 1.0f, 1.0f);
+	aiGetMaterialColor(assimp_material, AI_MATKEY_OPACITY, &opacity);
+
+
+	material->SetAlbedoColor(Color4(diffuse_color.r, diffuse_color.g, diffuse_color.b, opacity.r));
+
+	const auto LoadTexture = [&model, &assimp_scene, &assimp_material, &material, this](const aiTextureType &assimp_type, const TextureType &texture_type) {
+
+	};
+	/////////////////////요기
+	LoadTexture(aiTextureType_DIFFUSE, TextureType::Albedo);
+	LoadTexture(aiTextureType_DIFFUSE, TextureType::Roughness);
+	LoadTexture(aiTextureType_DIFFUSE, TextureType::Metalic);
+	LoadTexture(aiTextureType_DIFFUSE, TextureType::Normal);
+	LoadTexture(aiTextureType_DIFFUSE, TextureType::Height);
+	LoadTexture(aiTextureType_DIFFUSE, TextureType::Occlusion);
+	LoadTexture(aiTextureType_DIFFUSE, TextureType::Emissive);
+	LoadTexture(aiTextureType_DIFFUSE, TextureType::Mask);
+
+	return nullptr;
 }

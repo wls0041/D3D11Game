@@ -3,7 +3,9 @@
 enum class ResourceType : uint {
 	Unknown, 
 	Texture,
-
+	Model,
+	Material,
+	Mesh,
 };
 
 class IResource

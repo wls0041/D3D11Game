@@ -96,3 +96,7 @@ typedef unsigned int uint;
 
 //Resource
 #include "./Resource/Texture.h"
+#include "./Resource/Mesh.h"
+#include "./Resource/Material.h"
+#include "./Resource/Model.h"
+

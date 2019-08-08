@@ -55,6 +55,10 @@
     <ClInclude Include="Utility\GUID_Generator.h" />
     <ClInclude Include="Resource\Importer\AssimpHelper.h" />
     <ClInclude Include="Resource\Importer\ModelImporter.h" />
+    <ClInclude Include="Resource\Model.h" />
+    <ClInclude Include="Resource\Mesh.h" />
+    <ClInclude Include="Resource\Material.h" />
+    <ClInclude Include="Resource\ProgressReport.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -100,5 +104,8 @@
     <ClCompile Include="Utility\GUID_Generator.cpp" />
     <ClCompile Include="Resource\Importer\AssimpHelper.cpp" />
     <ClCompile Include="Resource\Importer\ModelImporter.cpp" />
+    <ClCompile Include="Resource\Model.cpp" />
+    <ClCompile Include="Resource\Mesh.cpp" />
+    <ClCompile Include="Resource\Material.cpp" />
   </ItemGroup>
 </Project>

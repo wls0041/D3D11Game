@@ -212,6 +212,10 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Resource\Importer\ModelImporter.h" />
     <ClInclude Include="Resource\Importer\TextureImporter.h" />
     <ClInclude Include="Resource\IResource.h" />
+    <ClInclude Include="Resource\Material.h" />
+    <ClInclude Include="Resource\Mesh.h" />
+    <ClInclude Include="Resource\Model.h" />
+    <ClInclude Include="Resource\ProgressReport.h" />
     <ClInclude Include="Resource\Texture.h" />
     <ClInclude Include="Resource\Texture2D.h" />
     <ClInclude Include="Resource\Texture3D.h" />
@@ -260,6 +264,9 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Resource\Importer\ModelImporter.cpp" />
     <ClCompile Include="Resource\Importer\TextureImporter.cpp" />
     <ClCompile Include="Resource\IResource.cpp" />
+    <ClCompile Include="Resource\Material.cpp" />
+    <ClCompile Include="Resource\Mesh.cpp" />
+    <ClCompile Include="Resource\Model.cpp" />
     <ClCompile Include="Resource\Texture.cpp" />
     <ClCompile Include="Resource\Texture2D.cpp" />
     <ClCompile Include="Resource\Texture3D.cpp" />
