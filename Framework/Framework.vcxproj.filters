@@ -59,6 +59,8 @@
     <ClInclude Include="Resource\Mesh.h" />
     <ClInclude Include="Resource\Material.h" />
     <ClInclude Include="Resource\ProgressReport.h" />
+    <ClInclude Include="Shader\Shader.h" />
+    <ClInclude Include="Shader\Standard_Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -107,5 +109,7 @@
     <ClCompile Include="Resource\Model.cpp" />
     <ClCompile Include="Resource\Mesh.cpp" />
     <ClCompile Include="Resource\Material.cpp" />
+    <ClCompile Include="Shader\Shader.cpp" />
+    <ClCompile Include="Shader\Standard_Shader.cpp" />
   </ItemGroup>
 </Project>

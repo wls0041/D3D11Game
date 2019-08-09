@@ -6,7 +6,7 @@ enum class TextureType : uint
 	Unknown,
 	Albedo, //본인이 발산하는 고유색 (디퓨즈와 다른 점은 음영을 포함하지 않는다는 것)
 	Roughness, //거칠기
-	Metalic, //ROUGHTNESS와 METALIC은 두 정점 사이에 미세한 굴곡이 있다고 가정해서 더 현신감 있는 표면을 만들어줌
+	Metallic, //ROUGHTNESS와 METALIC은 두 정점 사이에 미세한 굴곡이 있다고 가정해서 더 현신감 있는 표면을 만들어줌
 	Normal, //표면질감. 굴곡이 있는 것처럼 만들어줌.
 	Height, //노말맵만 사용시 실제 굴곡이 아님으로 인한 오류를 해결해줌
 	Occlusion, //가려지는 부분 색 처리. 그림자
@@ -28,6 +28,10 @@ public:
 
 	const bool SaveToFile(const std::string &path) override;
 	const bool LoadFromFile(const std::string &path) override;
+
+	auto GetShader() -> const std::shared_ptr<class Shader>& { return shader; }
+	void SetShader(const std::shared_ptr<class Shader> &shader) { this->shader = shader; }
+	void SetStandardShader();
 
 	auto GetTexture(const TextureType& type)->Texture*;
 	auto GetTextureShaderResource(const TextureType& type)->ID3D11ShaderResourceView*;
@@ -66,6 +70,8 @@ public:
 	void SetOffset(const Vector2& uv_offset) { this->uv_offset = uv_offset; }
 
 private:
+	std::shared_ptr<class Shader> shader;
+
 	ShadingMode shading_mode;
 	D3D11_CULL_MODE cull_mode;
 

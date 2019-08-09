@@ -94,6 +94,9 @@ typedef unsigned int uint;
 #include "./Core/D3D11/ShaderStage/PixelShader.h"
 #include "./Core/D3D11/ShaderStage/ConstantBuffer.h"
 
+//Shader
+#include "./Shader/Shader.h"
+
 //Resource
 #include "./Resource/Texture.h"
 #include "./Resource/Mesh.h"

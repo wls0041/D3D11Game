@@ -225,6 +225,8 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Scene\Component\IComponent.h" />
     <ClInclude Include="Scene\Component\Transform.h" />
     <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Shader\Shader.h" />
+    <ClInclude Include="Shader\Standard_Shader.h" />
     <ClInclude Include="Utility\FileStream.h" />
     <ClInclude Include="Utility\FileSystem.h" />
     <ClInclude Include="Utility\Geometry_Generator.h" />
@@ -276,6 +278,8 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Scene\Component\IComponent.cpp" />
     <ClCompile Include="Scene\Component\Transform.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Shader\Shader.cpp" />
+    <ClCompile Include="Shader\Standard_Shader.cpp" />
     <ClCompile Include="Utility\FileStream.cpp" />
     <ClCompile Include="Utility\FileSystem.cpp" />
     <ClCompile Include="Utility\Geometry_Generator.cpp" />

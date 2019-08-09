@@ -12,6 +12,10 @@ void Geometry_Generator::CreateQuad(Geometry<VertexTexture>& geometry)
 	geometry.AddIndex(2); geometry.AddIndex(1); geometry.AddIndex(3);
 }
 
+void Geometry_Generator::CreateScreenQuad(Geometry<struct VertexModel>& geometry)
+{
+}
+
 void Geometry_Generator::CreateCube(Geometry<VertexTexture>& geometry)
 {
 	//front

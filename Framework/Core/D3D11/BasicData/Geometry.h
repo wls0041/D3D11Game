@@ -2,11 +2,11 @@
 #include "Framework.h"
 
 template <class T>
-class Geometry final
+class Geometry 
 {
 public:
     Geometry() = default;
-    ~Geometry();
+    virtual ~Geometry();
 
     //==========================================================
     //Vertex
@@ -36,8 +36,9 @@ public:
 
     void Clear();
 
-private:
+protected:
     std::vector<T> vertices;
     std::vector<uint> indices;
 };
+
 #include "Geometry.inl"
