@@ -61,6 +61,7 @@
     <ClInclude Include="Resource\ProgressReport.h" />
     <ClInclude Include="Shader\Shader.h" />
     <ClInclude Include="Shader\Standard_Shader.h" />
+    <ClInclude Include="Scene\Component\Renderable.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -111,5 +112,6 @@
     <ClCompile Include="Resource\Material.cpp" />
     <ClCompile Include="Shader\Shader.cpp" />
     <ClCompile Include="Shader\Standard_Shader.cpp" />
+    <ClCompile Include="Scene\Component\Renderable.cpp" />
   </ItemGroup>
 </Project>

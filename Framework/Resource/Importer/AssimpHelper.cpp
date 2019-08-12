@@ -56,12 +56,38 @@ void AssimpHelper::ComputeActorTransform(aiNode * node, Actor * actor)
 	actor->GetTransform()->SetLocalTranslation(matrix.GetTranslation());
 }
 
-auto AssimpHelper::Try_Multi_Extension() -> const std::string
+auto AssimpHelper::Try_Multi_Extension(const std::string &path) -> const std::string
 {
-	return std::string();
+	const auto intanct_file_name = FileSystem::GetPathWithoutExtension(path);
+
+	auto supported_formats = FileSystem::GetSupportTextureFormats();
+	for (const auto& format : supported_formats)
+	{
+		auto new_file_path = intanct_file_name + format;
+		auto new_file_path_uppercase = intanct_file_name + FileSystem::ToUpper(format);
+
+		if (FileSystem::IsExistFile(new_file_path)) return new_file_path;
+		if (FileSystem::IsExistFile(new_file_path_uppercase)) return new_file_path_uppercase;
+	}
+
+	return path;
 }
 
 auto AssimpHelper::ValidatePath(const std::string & original_path, const std::string & model_path) -> const std::string
 {
-	return std::string();
+	const auto model_directory = FileSystem::GetDirectoryFromPath(model_path);
+	auto full_texture_path = model_directory + original_path;
+
+	if (FileSystem::IsExistFile(full_texture_path)) return full_texture_path;
+
+	full_texture_path = Try_Multi_Extension(full_texture_path);
+	if (FileSystem::IsExistFile(full_texture_path)) return full_texture_path;
+
+	full_texture_path = model_directory + FileSystem::GetFileNameFromPath(full_texture_path);
+	if (FileSystem::IsExistFile(full_texture_path)) return full_texture_path;
+
+	full_texture_path = Try_Multi_Extension(full_texture_path);
+	if (FileSystem::IsExistFile(full_texture_path)) return full_texture_path;
+
+	return NOT_ASSIGNED_STR;
 }

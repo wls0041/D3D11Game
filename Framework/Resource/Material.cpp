@@ -46,7 +46,7 @@ void Material::SetStandardShader()
 	shader = Standard_Shader::GetMatchingStandardShader(context, shader_flags);
 }
 
-auto Material::GetTexture(const TextureType & type) -> Texture *
+auto Material::GetTexture(const TextureType & type) -> std::shared_ptr<Texture>
 {
 	return HasTexture(type) ? textures[type] : nullptr;
 }
@@ -58,7 +58,7 @@ auto Material::GetTextureShaderResource(const TextureType & type) -> ID3D11Shade
 	return texture ? texture->GetShaderResourceView() : nullptr;
 }
 
-void Material::SetTexture(const TextureType & type, Texture * texture)
+void Material::SetTexture(const TextureType & type, const std::shared_ptr<Texture> &texture)
 {
 	if (!texture)
 	{
@@ -73,7 +73,7 @@ void Material::SetTexture(const TextureType & type, Texture * texture)
 void Material::SetTexture(const TextureType & type, const std::string & path)
 {
 	auto texture = context->GetSubsystem<ResourceManager>()->Load<Texture2D>(path);
-	SetTexture(type, texture.get());
+	SetTexture(type, texture);
 }
 
 auto Material::HasTexture(const TextureType & type) -> const bool

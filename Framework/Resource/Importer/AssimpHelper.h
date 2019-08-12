@@ -18,7 +18,7 @@ public:
 	static void ComputeNodeCount(aiNode *node, int *count); //노드 개수 얻어옴
 	static void ComputeActorTransform(aiNode *node, class Actor *actor); //노드에서 행렬빼서 액터에 집어넣음
 
-	static auto Try_Multi_Extension() -> const std::string; //경로에 대응되는 확장자가 있는지 여러개를 대입해보고 확인
+	static auto Try_Multi_Extension(const std::string &path) -> const std::string; //경로에 대응되는 확장자가 있는지 여러개를 대입해보고 확인
 	static auto ValidatePath(const std::string &original_path, const std::string &model_path) -> const std::string;
 };
 

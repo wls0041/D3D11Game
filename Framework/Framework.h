@@ -98,7 +98,7 @@ typedef unsigned int uint;
 #include "./Shader/Shader.h"
 
 //Resource
-#include "./Resource/Texture.h"
+#include "./Resource/Texture2D.h"
 #include "./Resource/Mesh.h"
 #include "./Resource/Material.h"
 #include "./Resource/Model.h"

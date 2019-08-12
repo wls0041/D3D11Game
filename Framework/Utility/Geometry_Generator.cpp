@@ -1,7 +1,7 @@
 #include "Framework.h"
 #include "Geometry_Generator.h"
 
-void Geometry_Generator::CreateQuad(Geometry<VertexTexture>& geometry)
+void Geometry_Generator::CreateQuad(Geometry<struct VertexTexture>& geometry)
 {
 	geometry.AddVertex(VertexTexture({ -0.5f, -0.5f, 0.0f }, { 0.0f, 1.0f }));
 	geometry.AddVertex(VertexTexture({ -0.5f, +0.5f, 0.0f }, { 0.0f, 0.0f }));
@@ -12,11 +12,7 @@ void Geometry_Generator::CreateQuad(Geometry<VertexTexture>& geometry)
 	geometry.AddIndex(2); geometry.AddIndex(1); geometry.AddIndex(3);
 }
 
-void Geometry_Generator::CreateScreenQuad(Geometry<struct VertexModel>& geometry)
-{
-}
-
-void Geometry_Generator::CreateCube(Geometry<VertexTexture>& geometry)
+void Geometry_Generator::CreateCube(Geometry<struct VertexTexture>& geometry)
 {
 	//front
 	geometry.AddVertex(VertexTexture({ -0.5f, -0.5f, -0.5f }, { 0, 1 }));
@@ -79,7 +75,7 @@ void Geometry_Generator::CreateCube(Geometry<VertexTexture>& geometry)
 	geometry.AddIndex(23); geometry.AddIndex(21); geometry.AddIndex(22);
 }
 
-void Geometry_Generator::CreateSphere(Geometry<VertexTexture>& geometry, const float & radius, const int & slices, const int & stacks)
+void Geometry_Generator::CreateSphere(Geometry<struct VertexTexture>& geometry, const float & radius, const int & slices, const int & stacks)
 {
 	geometry.AddVertex(VertexTexture({ 0, radius, 0 }, { 0, 0 }));
 
@@ -103,7 +99,7 @@ void Geometry_Generator::CreateSphere(Geometry<VertexTexture>& geometry, const f
 
 			Vector2 uv = Vector2
 			(
-				static_cast<float>(theta / Math::PI * 2.0f),
+				static_cast<float>(theta / Math::PI * 2.0),
 				static_cast<float>(phi / Math::PI)
 			);
 

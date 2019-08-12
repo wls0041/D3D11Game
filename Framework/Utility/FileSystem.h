@@ -20,6 +20,12 @@ public:
 	static auto GetParentDirectory(const std::string& path) -> const std::string;
 	static auto GetWorkingDirectory() -> const std::string;
 
+	static auto GetSupportTextureFormats() -> const std::vector<std::string>& { return support_texture_formats; }
+	static auto GetSupportModelFormats() -> const std::vector<std::string>& { return support_model_formats; }
+
+	static auto IsSupportTextureFile(const std::string &path) -> const bool;
+	static auto IsSupportModelFile(const std::string &path) -> const bool;
+
     static auto ToUpper(const std::string& lower) -> const std::string;
     static auto ToLower(const std::string& upper) -> const std::string;
     static auto ToString(const std::wstring& str) -> const std::string;

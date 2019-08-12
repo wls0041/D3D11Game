@@ -121,13 +121,13 @@ void ModelImporter::LoadMesh(const aiScene * assimp_scene, aiMesh * assimp_mesh,
 			indices[i * 3 + 2] = face.mIndices[2];
 		}
 	}
+	auto renderable = actor->AddComponent<Renderable>();
+	//todo : bound box 추가
 
-	//TODO : Renderable 만들고 처리
-	//TODO : Nodel 만들고 처리
-
+	model->AddMesh(vertices, indices, renderable);
 	if (assimp_scene->HasMaterials()) {
 		const auto assimp_material = assimp_scene->mMaterials[assimp_mesh->mMaterialIndex];
-		//TODO : model 만들고 처리
+		model->AddMaterial(LoadMaterial(assimp_scene, assimp_material, model), renderable);
 	}
 }
 
@@ -166,17 +166,31 @@ auto ModelImporter::LoadMaterial(const aiScene * assimp_scene, aiMaterial * assi
 	material->SetAlbedoColor(Color4(diffuse_color.r, diffuse_color.g, diffuse_color.b, opacity.r));
 
 	const auto LoadTexture = [&model, &assimp_scene, &assimp_material, &material, this](const aiTextureType &assimp_type, const TextureType &texture_type) {
+		aiString texture_path;
+		if (assimp_material->GetTextureCount(assimp_type) > 0) //texture가 존재한다
+		{
+			if (AI_SUCCESS == assimp_material->GetTexture(assimp_type, 0, &texture_path)) //파일 경로를 빼줌. texture_path는 디자이너가 만든 path가 나오기 때문에 수정이 필요함
+			{
+				const auto deduced_path = AssimpHelper::ValidatePath(texture_path.data, model_path);
+				if (FileSystem::IsSupportTextureFile(deduced_path))	//있는지 확인
+					model->AddTexture(material, texture_type, deduced_path);
+				else if (const auto embeddedTexture = assimp_scene->GetEmbeddedTexture(FileSystem::GetFileNameFromPath(texture_path.data).c_str())) //없거나 내장되어 있음. 여기서 내장되어 있는지 확인. 있다면 뽑아 씀
+				{
+					//TODO : Day41 마무리
+				}
 
+			}
+		}
 	};
 	/////////////////////요기
 	LoadTexture(aiTextureType_DIFFUSE, TextureType::Albedo);
-	LoadTexture(aiTextureType_DIFFUSE, TextureType::Roughness);
-	LoadTexture(aiTextureType_DIFFUSE, TextureType::Metalic);
-	LoadTexture(aiTextureType_DIFFUSE, TextureType::Normal);
-	LoadTexture(aiTextureType_DIFFUSE, TextureType::Height);
-	LoadTexture(aiTextureType_DIFFUSE, TextureType::Occlusion);
-	LoadTexture(aiTextureType_DIFFUSE, TextureType::Emissive);
-	LoadTexture(aiTextureType_DIFFUSE, TextureType::Mask);
+	LoadTexture(aiTextureType_SHININESS, TextureType::Roughness);
+	LoadTexture(aiTextureType_AMBIENT, TextureType::Metallic);
+	LoadTexture(aiTextureType_NORMALS, TextureType::Normal);
+	LoadTexture(aiTextureType_LIGHTMAP, TextureType::Occlusion);
+	LoadTexture(aiTextureType_EMISSIVE, TextureType::Emissive);
+	LoadTexture(aiTextureType_HEIGHT, TextureType::Height);
+	LoadTexture(aiTextureType_OPACITY, TextureType::Mask);
 
-	return nullptr;
+	return material;
 }

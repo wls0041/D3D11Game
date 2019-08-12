@@ -274,6 +274,30 @@ auto FileSystem::GetWorkingDirectory() -> const std::string
 	return current_path().generic_string() + "/";
 }
 
+auto FileSystem::IsSupportTextureFile(const std::string & path) -> const bool
+{
+	auto file_extension = GetExtensionFromPath(path);
+	auto support_formats = GetSupportTextureFormats();
+
+	for (const auto &format : support_formats)
+	{
+		if (file_extension == format || file_extension == ToUpper(format)) return true;
+	}
+	return false;
+}
+
+auto FileSystem::IsSupportModelFile(const std::string & path) -> const bool
+{
+	auto file_extension = GetExtensionFromPath(path);
+	auto support_formats = GetSupportModelFormats();
+
+	for (const auto &format : support_formats)
+	{
+		if (file_extension == format || file_extension == ToUpper(format)) return true;
+	}
+	return false;
+}
+
 auto FileSystem::ToUpper(const std::string & lower) -> const std::string
 {
 	std::string upper;

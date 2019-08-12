@@ -16,10 +16,10 @@ public:
 	);
 
 	//Mesh¿ë
-	static void CreateCube(Geometry<struct VertexTextureNormaltangentblend> &geometry);
-	static void CreateCylinder(Geometry<struct VertexTextureNormaltangentblend> &geometry);
-	static void CreateCone(Geometry<struct VertexTextureNormaltangentblend> &geometry);
-	static void CreateSphere(Geometry<struct VertexTextureNormaltangentblend> &geometry);
-	static void CreateQuad(Geometry<struct VertexTextureNormaltangentblend> &geometry);
-	static void CreateScreenQuad(Geometry<struct VertexTextureNormaltangentblend> &geometry);
+	static void CreateCube(Geometry<struct VertexTextureNormalTangentBlend> &geometry);
+	static void CreateCylinder(Geometry<struct VertexTextureNormalTangentBlend> &geometry);
+	static void CreateCone(Geometry<struct VertexTextureNormalTangentBlend> &geometry);
+	static void CreateSphere(Geometry<struct VertexTextureNormalTangentBlend> &geometry);
+	static void CreateQuad(Geometry<struct VertexTextureNormalTangentBlend> &geometry);
+	static void CreateScreenQuad(Geometry<struct VertexTextureNormalTangentBlend> &geometry);
 };
