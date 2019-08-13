@@ -42,6 +42,7 @@ public:
 		out.write(reinterpret_cast<const char*>(&value), sizeof(T));
 	}
 
+	void Write(const void *value, const uint &size);
 	void Write(const std::string &value);
 	void Write(const std::vector<std::byte> &value);
 

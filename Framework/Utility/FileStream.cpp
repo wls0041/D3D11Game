@@ -48,6 +48,11 @@ void FileStream::Close()
 	}
 }
 
+void FileStream::Write(const void * value, const uint & size)
+{
+	out.write(reinterpret_cast<const char*>(value), size);
+}
+
 void FileStream::Write(const std::string & value)
 {
 	const auto length = static_cast<uint>(value.length());

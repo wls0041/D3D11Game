@@ -4,6 +4,14 @@
 class Texture2D final : public Texture
 {
 public:
+	static auto SaveTextureToFile(
+		const std::string &path,
+		const std::string &format,
+		const uint &width,
+		const uint &height,
+		void *data
+	) -> const std::string;
+
 	static auto CreateTexture
 	(
 		ID3D11Device* device,

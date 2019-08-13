@@ -69,6 +69,11 @@ auto ModelImporter::Load(Model * model, const std::string & path) -> const bool
 
 void ModelImporter::ReadNodeHierarchy(const aiScene * assimp_scene, aiNode * assimp_node, Model * model, Actor * parent_actor, Actor * new_actor)
 {
+	if (!assimp_node->mParent || !new_actor)
+	{
+		//TODO :
+		new_actor = scene_manager->GetCurrentScene()->
+	}
 }
 
 void ModelImporter::ReadAnimations(const aiScene * assimp_scene, Model * model)
@@ -174,11 +179,21 @@ auto ModelImporter::LoadMaterial(const aiScene * assimp_scene, aiMaterial * assi
 				const auto deduced_path = AssimpHelper::ValidatePath(texture_path.data, model_path);
 				if (FileSystem::IsSupportTextureFile(deduced_path))	//있는지 확인
 					model->AddTexture(material, texture_type, deduced_path);
-				else if (const auto embeddedTexture = assimp_scene->GetEmbeddedTexture(FileSystem::GetFileNameFromPath(texture_path.data).c_str())) //없거나 내장되어 있음. 여기서 내장되어 있는지 확인. 있다면 뽑아 씀
+				else if (const auto embedded_texture = assimp_scene->GetEmbeddedTexture(FileSystem::GetFileNameFromPath(texture_path.data).c_str())) //없거나 내장되어 있음. 여기서 내장되어 있는지 확인. 있다면 뽑아 씀
 				{
-					//TODO : Day41 마무리
+					const auto path = Texture2D::SaveTextureToFile(
+						model->GetTextureDirectory() + FileSystem::GetFileNameFromPath(embedded_texture->mFilename.data),
+						embedded_texture->achFormatHint,
+						embedded_texture->mWidth,
+						embedded_texture->mHeight,
+						embedded_texture->pcData
+					);
+
+					model->AddTexture(material, texture_type, path);
 				}
 
+				if (assimp_type == aiTextureType_DIFFUSE)
+					material->SetAlbedoColor(Color4::White); //곱연산을 하기 때문에 0이라면 색이 나오지 않음. 따라서 1111로 초기화
 			}
 		}
 	};

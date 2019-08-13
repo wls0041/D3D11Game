@@ -1,14 +1,64 @@
 #include "Framework.h"
 #include "Scene.h"
+#include "Actor.h"
 #include "./Component/Camera.h"
+#include "./Component/Transform.h"
 
 Scene::Scene(Context * context)
+	: context(context)
+	, name(NOT_ASSIGNED_STR)
+	, is_editor_mode(true)
+	, is_added(false)
 {
 }
 
 Scene::~Scene()
 {
+	actors.clear();
+	actors.shrink_to_fit();
+}
 
+void Scene::SaveToFile(const std::string & path)
+{
+}
+
+void Scene::LoadFromFile(const std::string & path)
+{
+}
+
+auto Scene::GetRoots() const -> const std::vector<std::shared_ptr<class Actor>>
+{
+	std::vector<std::shared_ptr<Actor>> root_actors; //root만 따로 처리하는 이유 => hierarchy에서 root는 따로 모아 처리하기 때문
+	for (const auto& actor : actors)
+		if (actor->GetTransform()->IsRoot())
+			root_actors.emplace_back(actor);
+	
+	return root_actors;
+}
+
+auto Scene::GetActorFromID(const uint & id) const -> const std::shared_ptr<class Actor>
+{
+	for (const auto& actor : actors)
+		if (actor->GetID() == id) return actor;
+
+	return nullptr;
+}
+
+auto Scene::CreateActor() -> std::shared_ptr<class Actor>&
+{
+	auto actor = std::make_shared<Actor>(context);
+	actor->Initialize(actor->AddComponent<Transform>());
+	AddActor(actor);
+
+	return actor;
+}
+
+void Scene::AddActor(const std::shared_ptr<class Actor>& actor)
+{
+}
+
+void Scene::RemoveActor(const std::shared_ptr<class Actor>& actor)
+{
 }
 
 void Scene::Update()
