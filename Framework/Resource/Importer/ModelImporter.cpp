@@ -71,9 +71,49 @@ void ModelImporter::ReadNodeHierarchy(const aiScene * assimp_scene, aiNode * ass
 {
 	if (!assimp_node->mParent || !new_actor)
 	{
-		//TODO :
-		new_actor = scene_manager->GetCurrentScene()->
+		new_actor = scene_manager->GetCurrentScene()->CreateActor().get();
+		model->SetRootActor(new_actor->shared_from_this());
+
+		int job_count = 0;
+		AssimpHelper::ComputeNodeCount(assimp_node, &job_count);
+		ProgressReport::Get().SetJobCount(ProgressReport::Model, job_count);
 	}
+
+	const auto actor_name = assimp_node->mParent ? assimp_node->mName.C_Str() : FileSystem::GetIntactFileNameFromPath(model_path);
+	new_actor->SetName(actor_name);
+
+	ProgressReport::Get().SetStatus(ProgressReport::Model, "Creating model for " + actor_name);
+	{
+		const auto parent_transform = parent_actor ? parent_actor->GetTransform() : nullptr;
+		new_actor->GetTransform()->SetParent(parent_transform.get());
+
+		AssimpHelper::ComputeActorTransform(assimp_node, new_actor);
+
+		for (uint i = 0; i < assimp_node->mNumMeshes; i++)
+		{
+			auto actor = new_actor;
+			const auto assimp_mesh = assimp_scene->mMeshes[assimp_node->mMeshes[i]];
+			std::string mesh_name = assimp_node->mName.C_Str();
+
+			if (assimp_node->mNumMeshes > 1) //vertex buffer의 개수 한계로 인해 메시를 여러개로 자른 경우
+			{
+				actor = scene_manager->GetCurrentScene()->CreateActor().get();
+				actor->GetTransform()->SetParent(new_actor->GetTransform().get());
+				mesh_name += "_" + std::to_string(i + 1);
+			}
+
+			actor->SetName(mesh_name);
+
+			LoadMesh(assimp_scene, assimp_mesh, model, actor);
+		}
+
+		for (uint i = 0; i < assimp_node->mNumChildren; i++)
+		{
+			auto child = scene_manager->GetCurrentScene()->CreateActor().get();
+			ReadNodeHierarchy(assimp_scene, assimp_node->mChildren[i], model, new_actor, child);
+		}
+	}
+	ProgressReport::Get().IncrementJobsDone(ProgressReport::Model); //작업 끝날 때 마다 하나씩 추가
 }
 
 void ModelImporter::ReadAnimations(const aiScene * assimp_scene, Model * model)

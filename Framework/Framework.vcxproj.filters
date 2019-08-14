@@ -113,5 +113,6 @@
     <ClCompile Include="Shader\Shader.cpp" />
     <ClCompile Include="Shader\Standard_Shader.cpp" />
     <ClCompile Include="Scene\Component\Renderable.cpp" />
+    <ClCompile Include="Core\Subsystem\Renderer_passes.cpp" />
   </ItemGroup>
 </Project>

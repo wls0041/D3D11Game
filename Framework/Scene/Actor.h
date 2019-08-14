@@ -1,8 +1,7 @@
 #pragma once
 #include "./Component/IComponent.h"
 
-//그냥 tempalte 다
-class Actor final
+class Actor final : public std::enable_shared_from_this<Actor> //이렇게 하면 this*사용가능. 그냥 포인터(raw pointer)가 smart pointer를 인식 가능
 {
 public:
 	Actor(class Context* context);

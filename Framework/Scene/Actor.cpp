@@ -20,7 +20,7 @@ Actor::~Actor()
 	components.shrink_to_fit();
 }
 
-void Actor::Initialize(std::shared_ptr<class Transform> transform)
+void Actor::Initialize(const std::shared_ptr<class Transform>& transform)
 {
 	this->transform = transform;
 }

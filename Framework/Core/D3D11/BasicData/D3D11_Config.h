@@ -11,40 +11,19 @@ enum class ShaderScope : uint
     Unknown, Global, VS, PS, GS, DS, HS, CS,
 };
 
-struct CameraData
+struct CPU_GLOBAL_DATA final
 {
-    Matrix view;
-    Matrix projection;
-	Vector3 camera_position;
+	Matrix world_view_projection;
+	Matrix view;
+	Matrix proj;
+	Matrix proj_ortho;
+	Matrix view_proj;
+	Matrix view_proj_inverse;
+	Matrix view_proj_ortho;
+	float camera_near; 
+	float camera_far;
+	Vector2 resolution;
+	Vector3 camera_position; //크기 범위를 안맞추면 데이터가 잘려서 밀려 들어가 제대로 저장되지 않을 수 있음.
+
 	float padding;
-};
-
-struct WorldData
-{
-    Matrix world;
-};
-
-struct BrushData
-{
-    int brush_type;
-    Vector3 brush_position;
-    int brush_range;
-    Vector3 brush_color;
-};
-
-struct MultiData
-{
-	int paint_type;
-	Vector3 index;
-};
-
-struct SkinnedData
-{
-	Matrix skinned_transforms[100];
-};
-
-struct MaterialData
-{
-	float normal_multiplier;
-	Vector3 padding;
 };

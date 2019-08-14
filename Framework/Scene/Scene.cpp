@@ -10,6 +10,7 @@ Scene::Scene(Context * context)
 	, is_editor_mode(true)
 	, is_added(false)
 {
+	renderer = context->GetSubsystem<Renderer>();
 }
 
 Scene::~Scene()
@@ -63,5 +64,14 @@ void Scene::RemoveActor(const std::shared_ptr<class Actor>& actor)
 
 void Scene::Update()
 {
+	bool is_started = Engine::IsFlagsEnabled(EngineFlags_Game) && is_editor_mode;
+	bool is_stopped = !Engine::IsFlagsEnabled(EngineFlags_Game) && !is_editor_mode;
+	is_editor_mode = !Engine::IsFlagsEnabled(EngineFlags_Game);
+
+	if (is_added) { renderer->AcquireRenderables(this); is_added = false; }
+	if (is_started) for (auto& actor : actors) actor->Start();  
+	if (is_stopped) for (auto& actor : actors) actor->Stop(); 
+
+	for (auto& actor : actors) actor->Update();
 
 }

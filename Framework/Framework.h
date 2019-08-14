@@ -85,6 +85,7 @@ typedef unsigned int uint;
 #include "./Core/Subsystem/Graphics.h"
 #include "./Core/Subsystem/ResourceManager.h"
 #include "./Core/Subsystem/SceneManager.h"
+#include "./Core/Subsystem/Renderer.h"
 
 //DirectX pipeline wrapper
 #include "./Core/D3D11/IAStage/VertexBuffer.h"

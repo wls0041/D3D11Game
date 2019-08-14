@@ -38,7 +38,3 @@ void Renderer::Render()
 {
 	PassMain();
 }
-
-void Renderer::PassMain()
-{
-}

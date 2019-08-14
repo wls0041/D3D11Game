@@ -2,8 +2,14 @@
 #include "Engine.h"
 #include "../Scene/Scene.h"
 
+uint  Engine::engine_flags = 0U;
+
 Engine::Engine()
 {
+	engine_flags =
+		EngineFlags_Update |
+		EngineFlags_Render;
+
 	context = new Context();
 
 	context->RegisterSubsystem<Timer>();
@@ -12,6 +18,7 @@ Engine::Engine()
     context->RegisterSubsystem<Graphics>();
 	context->RegisterSubsystem<ResourceManager>();
 	context->RegisterSubsystem<SceneManager>();
+	context->RegisterSubsystem<Renderer>();
 	
 	context->InitializeSubsystems();
 }
@@ -24,7 +31,7 @@ Engine::~Engine()
 void Engine::Update()
 {
 	FIRE_EVENT(EventType::Frame_Start);
-	FIRE_EVENT(EventType::Update);
-	FIRE_EVENT(EventType::Render);
+	if (IsFlagsEnabled(EngineFlags_Update)) FIRE_EVENT(EventType::Update);
+	if (IsFlagsEnabled(EngineFlags_Render)) FIRE_EVENT(EventType::Render);
 	FIRE_EVENT(EventType::Frame_End);
 }
