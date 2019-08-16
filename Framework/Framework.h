@@ -29,6 +29,7 @@
 #include <thread>
 #include <any> 
 #include <variant> 
+#include <atomic> 
 
 //DirectX
 #include <d3dcompiler.h>

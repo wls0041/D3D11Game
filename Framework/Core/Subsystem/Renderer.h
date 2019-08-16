@@ -1,7 +1,7 @@
 #pragma once
 #include "ISubsystem.h"
 
-enum RendererOption : uint //enum은 중복에 주의해야 함
+enum RenderOption : uint //enum은 중복에 주의해야 함
 {
 	Render_Option_Bloom		 = 1U << 0,
 	Render_Option_FXAA		 = 1U << 1, // Fast Approximate Anti Aliasing
@@ -20,7 +20,7 @@ enum class ToneMappingType : uint //일일히 캐스팅해줘야 해서 안전
 	Uncharted2,
 };
 
-enum RendererBufferType : uint
+enum RenderBufferType : uint
 {
 	Render_Buffer_None,
 	Render_Buffer_Albedo,
@@ -63,6 +63,10 @@ public:
 	void Render();
 
 private:
+	void CreateRenderTextures();
+	void CreateShaders();
+
+private:
 	void PassMain();
 
 private:
@@ -73,21 +77,40 @@ private:
 	std::shared_ptr<class Texture> render_target;
 
 private:
+	//Core
+	Matrix post_process_view;
+	Matrix post_process_proj;
+	Matrix post_process_view_proj;
+
 	Matrix camera_view;
 	Matrix camera_proj;
 	Matrix camera_view_proj;
 	Matrix camera_view_proj_inverse;
 	Vector3 camera_position;
-	float camera_near;
-	float camera_far;
-
-	Matrix post_process_view;
-	Matrix post_process_proj;
-	Matrix post_process_view_proj;
-
-	uint render_flags;
+	float camera_near = 0.0f;
+	float camera_far = 0.0f;
+	
+	RenderBufferType debug_buffer_type = RenderBufferType::Render_Buffer_None;
+	uint render_flags = 0;
+	bool is_initialized = false;
+	bool is_reverse_z = true;
+	std::atomic<bool> is_acquire_renderables = false;
+	
 	Vector2 resolution;
 
-	std::map<ShaderType, std::shared_ptr<class Shader>> shaders;
+	//Render Textures
+	//RTT. 속도가 느려지지만 이를 감수할 정도로 좋은 효과를 줄 수 있다.
+	//즉시 렌더링. 빠르지만 효과 적용이 힘듦. (특히 조명)
+	//지연 렌더링. 렌더링 방식은 같지만 효과 계산을 뒤로 미룸. 특히 조명 계산.
+	//원래 방식은 찍으면 모든 색을 한번에 찍었기 때문에 찍기 전 모든 계산을 마쳐야 함.
+	//지연 문맥을 쓰면 조명 계산을 뒤로 빼기 때문에 조명을 제외한 이미지를 찍고 나중에 조명을 넣음.
+	//일단 화면을 찍고 효과를 줄 필요가 없는 부분은 계산을 생략할 수 있음.
+	
+	std::shared_ptr<class Texture> final_render_texture;
+	
+	//Shaders
+	std::map<std::string, std::shared_ptr<class Shader>> shaders;
+	
+	//Actors
 	std::unordered_map<RenderableType, std::vector<class Actor*>> renderables;
 };
