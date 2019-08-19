@@ -12,20 +12,20 @@ auto Standard_Shader::GetMatchingStandardShader(Context * context, const uint & 
 
 	if (pair_ib.second)
 	{
-		auto shader = pair_ib.first->second;
+        auto shader = pair_ib.first->second;
 
-		shader->AddDefine("ALBEDO_TEXTURE", shader_flags & Shader_Flags_Albedo ? "1" : "0"); //flag and연산으로 켜주거나 꺼줌. shader 순열 방식
-		shader->AddDefine("ROUGHNESS_TEXTURE", shader_flags & Shader_Flags_Roughness ? "1" : "0");
-		shader->AddDefine("METALLIC_TEXTURE", shader_flags & Shader_Flags_Metallic ? "1" : "0");
-		shader->AddDefine("NORMAL_TEXTURE", shader_flags & Shader_Flags_Normal ? "1" : "0");
-		shader->AddDefine("HEIGHT_TEXTURE", shader_flags & Shader_Flags_Height ? "1" : "0");
-		shader->AddDefine("OCCLUSION_TEXTURE", shader_flags & Shader_Flags_Occlusion ? "1" : "0");
-		shader->AddDefine("EMISSIVE_TEXTURE", shader_flags & Shader_Flags_Emissive ? "1" : "0");
-		shader->AddDefine("MASK_TEXTURE", shader_flags & Shader_Flags_Mask ? "1" : "0");
+        shader->AddDefine("ALBEDO_TEXTURE",     shader_flags & Shader_Flags_Albedo      ? "1" : "0");
+        shader->AddDefine("ROUGHNESS_TEXTURE",  shader_flags & Shader_Flags_Roughness   ? "1" : "0");
+        shader->AddDefine("METALLIC_TEXTURE",   shader_flags & Shader_Flags_Metallic    ? "1" : "0");
+        shader->AddDefine("NORMAL_TEXTURE",     shader_flags & Shader_Flags_Normal      ? "1" : "0");
+        shader->AddDefine("HEIGHT_TEXTURE",     shader_flags & Shader_Flags_Height      ? "1" : "0");
+        shader->AddDefine("OCCLUSION_TEXTURE",  shader_flags & Shader_Flags_Occlusion   ? "1" : "0");
+        shader->AddDefine("EMISSION_TEXTURE",   shader_flags & Shader_Flags_Emissive    ? "1" : "0");
+        shader->AddDefine("MASK_TEXTURE",       shader_flags & Shader_Flags_Mask        ? "1" : "0");
 
-		auto directory = context->GetSubsystem<ResourceManager>()->GetAssetDirectory + "Shader\\";
+        auto directory = context->GetSubsystem<ResourceManager>()->GetAssetDirectory(AssetType::Shader);
 
-		shader->AddShader<PixelShader>(directory + "GBuffer.hlsl");
+        shader->AddShader<PixelShader>(directory + "GBuffer.hlsl");
 	}
 
 	return pair_ib.first->second;

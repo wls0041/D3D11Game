@@ -59,6 +59,7 @@ public:
 	auto GetFrameResource() -> ID3D11ShaderResourceView*;
 	
 	void AcquireRenderables(class Scene* scene);
+	void SortRenderables(std::vector<class Actor*> *actors);
 
 	void Render();
 
@@ -105,7 +106,8 @@ private:
 	//원래 방식은 찍으면 모든 색을 한번에 찍었기 때문에 찍기 전 모든 계산을 마쳐야 함.
 	//지연 문맥을 쓰면 조명 계산을 뒤로 빼기 때문에 조명을 제외한 이미지를 찍고 나중에 조명을 넣음.
 	//일단 화면을 찍고 효과를 줄 필요가 없는 부분은 계산을 생략할 수 있음.
-	
+	//단. 그려진 걸 뽑기 때문에 투명객체가 그려지지 않음. 안티에일리어싱 불가
+
 	std::shared_ptr<class Texture> final_render_texture;
 	
 	//Shaders

@@ -5,6 +5,7 @@
 #include "../../Scene/Actor.h"
 #include "../../Scene/Component/Camera.h"
 #include "../../Scene/Component/Transform.h"
+#include "../../Scene/Component/Renderable.h"
 
 Renderer::Renderer(Context * context)
 	: ISubsystem(context)
@@ -32,6 +33,52 @@ auto Renderer::GetFrameResource() -> ID3D11ShaderResourceView *
 
 void Renderer::AcquireRenderables(Scene * scene)
 {
+	while (is_acquire_renderables)
+		LOG_WARNING_F("Waiting previous operation to finish ...");
+
+	is_acquire_renderables = true;
+
+	renderables.clear();
+	camera.reset(); //camera = nullptr;
+
+	auto actors = scene->GetAllActors();
+	for (const auto &actor : actors)
+	{
+		if (!actor) continue;
+		auto component_renderable = actor->GetComponent<Renderable>();
+		auto component_camera = actor->GetComponent<Camera>();
+
+		if (component_renderable)
+			renderables[RenderableType::Opaque].emplace_back(actor);
+
+		if (component_camera) { //scene_camera 용
+			renderables[RenderableType::Camera].emplace_back(actor);
+			camera = component_camera;
+		}
+	}
+	is_acquire_renderables = false;
+}
+
+void Renderer::SortRenderables(std::vector<class Actor*>* actors)
+{
+	if (!camera || renderables.size() <= 2ULL) return;
+
+	auto render_hash = [this](Actor *actor) {
+		auto renderable = actor->GetRenderable();
+		if (!renderable) return 0.0f;
+
+		const auto material = renderable->GetMaterial();
+		if (!material) return 0.0f;
+		
+		const float num_depth = 0.0f; //TODO : Boundbox 만들고 처리
+		const auto num_material  = static_cast<float>(material->GetResourceID());
+
+		return std::stof(std::to_string(num_depth) + "-" + std::to_string(num_material));
+	};
+
+	std::sort(actors->begin(), actors->end(), [&render_hash](Actor *lhs, Actor *rhs) {
+		return render_hash(lhs) < render_hash(rhs);
+	});
 }
 
 void Renderer::Render()
@@ -66,5 +113,9 @@ void Renderer::CreateShaders()
 	vs_post_process->AddShader<VertexShader>(shader_directory + "PostProcess.hlsl");
 	shaders["PostProcess"] = vs_post_process;
 
-
+	//pixel shader
+	auto ps_texture = std::make_shared<Shader>(context);
+	ps_texture->AddDefine("PASS_TEXTURE");
+	ps_texture->AddShader<PixelShader>(shader_directory + "PostProcess.hlsl");
+	shaders["ps_texture"] = ps_texture;
 }

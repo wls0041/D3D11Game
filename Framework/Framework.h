@@ -30,6 +30,7 @@
 #include <any> 
 #include <variant> 
 #include <atomic> 
+#include <algorithm>
 
 //DirectX
 #include <d3dcompiler.h>
