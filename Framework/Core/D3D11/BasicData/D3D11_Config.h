@@ -13,7 +13,7 @@ enum class ShaderScope : uint
 
 struct CPU_GLOBAL_DATA final
 {
-	Matrix world_view_projection;
+	Matrix world_view_proj;
 	Matrix view;
 	Matrix proj;
 	Matrix proj_ortho;

@@ -96,9 +96,12 @@ class CommandList final
 public:
 	CommandList(class Context* context);
 	~CommandList();
-
+	
 	void Begin(const std::string& pass_name);
 	void End();
+
+	void Draw(const uint &vertex_count);
+	void DrawIndexed(const uint &index_count, const uint &index_offset = 0, const uint &vertex_offset = 0);
 
 	void SetVertexBuffer(VertexBuffer* buffer);
 	void SetVertexBuffer(const std::shared_ptr<VertexBuffer>& buffer);
@@ -111,13 +114,13 @@ public:
 
 	void SetPrimitiveTopology(const D3D11_PRIMITIVE_TOPOLOGY& primitive_topology);
 
-	//void SetVertexShader(class Shader* shader);
-	//void SetVertexShader(const std::shared_ptr<class Shader>& shader);
+	void SetVertexShader(class Shader* shader);
+	void SetVertexShader(const std::shared_ptr<class Shader>& shader);
 	void SetVertexShader(VertexShader* shader);
 	void SetVertexShader(const std::shared_ptr<VertexShader>& shader);
 
-	//void SetPixelShader(class Shader* shader);
-	//void SetPixelShader(const std::shared_ptr<class Shader>& shader);
+	void SetPixelShader(class Shader* shader);
+	void SetPixelShader(const std::shared_ptr<class Shader>& shader);
 	void SetPixelShader(PixelShader* shader);
 	void SetPixelShader(const std::shared_ptr<PixelShader>& shader);
 

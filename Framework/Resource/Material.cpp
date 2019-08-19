@@ -58,6 +58,24 @@ auto Material::GetTextureShaderResource(const TextureType & type) -> ID3D11Shade
 	return texture ? texture->GetShaderResourceView() : nullptr;
 }
 
+auto Material::GetTextureShaderResource() -> std::vector<ID3D11ShaderResourceView *>
+{
+
+	std::vector<ID3D11ShaderResourceView *> shader_resources
+	{
+		GetTextureShaderResource(TextureType::Albedo),
+		GetTextureShaderResource(TextureType::Roughness),
+		GetTextureShaderResource(TextureType::Metallic),
+		GetTextureShaderResource(TextureType::Normal),
+		GetTextureShaderResource(TextureType::Height),
+		GetTextureShaderResource(TextureType::Occlusion),
+		GetTextureShaderResource(TextureType::Emissive),
+		GetTextureShaderResource(TextureType::Mask),
+	};
+
+	return shader_resources;
+}
+
 void Material::SetTexture(const TextureType & type, const std::shared_ptr<Texture> &texture)
 {
 	if (!texture)

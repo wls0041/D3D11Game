@@ -36,9 +36,21 @@ enum RenderBufferType : uint
 	Render_Buffer_Shadows,
 };
 
-enum ShaderType : uint
+enum class ShaderType : uint
 {
-	Shader_GBuffer_VS,
+	VS_GBUFFER,
+	VS_POST_PROCESS,
+	PS_TEXTURE,
+};
+
+enum class RenderTargetType : uint
+{
+	GBuffer_Albedo,
+	GBuffer_Normal,
+	GBuffer_Material,
+	GBuffer_Velocity,
+	GBuffer_Depth,
+	Final,
 };
 
 enum class RenderableType : uint
@@ -66,9 +78,15 @@ public:
 private:
 	void CreateRenderTextures();
 	void CreateShaders();
+	void CreateConstantBuffers();
+
+	void UpdateGlobalBuffer(const uint& width, const uint& height, const Matrix& world_view_proj = Matrix::Identity);
+
 
 private:
 	void PassMain();
+
+	void PassGBuffer();
 
 private:
 	class Graphics *graphics;
@@ -99,7 +117,11 @@ private:
 	
 	Vector2 resolution;
 
+	//Constant Buffer
+	std::shared_ptr<class ConstantBuffer> global_buffer;
+
 	//Render Textures
+	std::map<RenderTargetType, std::shared_ptr<class Texture>> render_textures;
 	//RTT. 속도가 느려지지만 이를 감수할 정도로 좋은 효과를 줄 수 있다.
 	//즉시 렌더링. 빠르지만 효과 적용이 힘듦. (특히 조명)
 	//지연 렌더링. 렌더링 방식은 같지만 효과 계산을 뒤로 미룸. 특히 조명 계산.
@@ -108,11 +130,9 @@ private:
 	//일단 화면을 찍고 효과를 줄 필요가 없는 부분은 계산을 생략할 수 있음.
 	//단. 그려진 걸 뽑기 때문에 투명객체가 그려지지 않음. 안티에일리어싱 불가
 
-	std::shared_ptr<class Texture> final_render_texture;
-	
 	//Shaders
-	std::map<std::string, std::shared_ptr<class Shader>> shaders;
-	
+	std::map<ShaderType, std::shared_ptr<class Shader>> shaders;
+
 	//Actors
 	std::unordered_map<RenderableType, std::vector<class Actor*>> renderables;
 };

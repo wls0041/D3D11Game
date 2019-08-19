@@ -35,6 +35,7 @@ public:
 
 	auto GetTexture(const TextureType& type)->std::shared_ptr<Texture>; //texture가 없을 수 있으므로 const 참조 x
 	auto GetTextureShaderResource(const TextureType& type)->ID3D11ShaderResourceView*;
+	auto GetTextureShaderResource()-> std::vector<ID3D11ShaderResourceView*>;
 
 	void SetTexture(const TextureType& type, const std::shared_ptr<Texture> &texture);
 	void SetTexture(const TextureType& type, const std::string& path);

@@ -97,7 +97,8 @@ void Renderer::CreateRenderTextures() //RTT. 최소 크기가 4임.
 	}
 
 	//final
-	final_render_texture = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, RTV | SRV);
+	auto final_render_texture = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, RTV | SRV);
+	render_textures[RenderTargetType::Final] = final_render_texture;
 }
 
 void Renderer::CreateShaders()
@@ -107,15 +108,45 @@ void Renderer::CreateShaders()
 	//vertex shader
 	auto vs_gbuffer = std::make_shared<Shader>(context);
 	vs_gbuffer->AddShader<VertexShader>(shader_directory + "GBuffer.hlsl");
-	shaders["vs_gbuffer"] = vs_gbuffer;
+	shaders[ShaderType::VS_GBUFFER] = vs_gbuffer;
 
 	auto vs_post_process = std::make_shared<Shader>(context);
 	vs_post_process->AddShader<VertexShader>(shader_directory + "PostProcess.hlsl");
-	shaders["PostProcess"] = vs_post_process;
+	shaders[ShaderType::VS_POST_PROCESS] = vs_post_process;
 
 	//pixel shader
 	auto ps_texture = std::make_shared<Shader>(context);
 	ps_texture->AddDefine("PASS_TEXTURE");
 	ps_texture->AddShader<PixelShader>(shader_directory + "PostProcess.hlsl");
-	shaders["ps_texture"] = ps_texture;
+	shaders[ShaderType::PS_TEXTURE] = ps_texture;
+}
+
+void Renderer::CreateConstantBuffers()
+{
+    global_buffer = std::make_shared<ConstantBuffer>(context);
+    global_buffer->Create<CPU_GLOBAL_DATA>();
+}
+
+void Renderer::UpdateGlobalBuffer(const uint & width, const uint & height, const Matrix & world_view_proj)
+{
+    auto gpu_buffer = global_buffer->Map<CPU_GLOBAL_DATA>();
+    if (!gpu_buffer)
+    {
+        LOG_ERROR("Failed to map buffer");
+        return;
+    }
+
+    gpu_buffer->world_view_proj     = world_view_proj;
+    gpu_buffer->view                = camera_view;
+    gpu_buffer->proj                = camera_proj;
+    gpu_buffer->view_proj           = camera_view_proj;
+    gpu_buffer->view_proj_inverse   = camera_view_proj_inverse;
+    gpu_buffer->camera_position     = camera_position;
+    gpu_buffer->camera_near         = camera_near;
+    gpu_buffer->camera_far          = camera_far;
+    gpu_buffer->resolution          = Vector2(static_cast<float>(width), static_cast<float>(height));
+    gpu_buffer->proj_ortho          = post_process_proj;
+    gpu_buffer->view_proj_ortho     = post_process_view_proj;
+
+    global_buffer->Unmap();
 }

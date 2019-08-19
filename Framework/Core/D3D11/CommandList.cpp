@@ -98,6 +98,22 @@ void CommandList::End()
 	cmd.command_type = CommandType::End;
 }
 
+void CommandList::Draw(const uint & vertex_count)
+{
+    auto& cmd           = GetCommand();
+    cmd.command_type    = CommandType::Draw;
+    cmd.vertex_count    = vertex_count;
+}
+
+void CommandList::DrawIndexed(const uint & index_count, const uint & index_offset, const uint & vertex_offset)
+{
+    auto& cmd           = GetCommand();
+    cmd.command_type    = CommandType::DrawIndexed;
+    cmd.index_count     = index_count;
+    cmd.index_offset    = index_offset;
+    cmd.vertex_offset   = vertex_offset;
+}
+
 void CommandList::SetVertexBuffer(VertexBuffer * buffer)
 {
 	auto& cmd = GetCommand();
@@ -146,15 +162,15 @@ void CommandList::SetPrimitiveTopology(const D3D11_PRIMITIVE_TOPOLOGY & primitiv
 	cmd.primitive_topology = primitive_topology;
 }
 
-//void CommandList::SetVertexShader(Shader * shader)
-//{
-//    SetVertexShader(shader->GetShader<VertexShader>());
-//}
-//
-//void CommandList::SetVertexShader(const std::shared_ptr<Shader>& shader)
-//{
-//    SetVertexShader(shader.get());
-//}
+void CommandList::SetVertexShader(Shader * shader)
+{
+    SetVertexShader(shader->GetShader<VertexShader>());
+}
+
+void CommandList::SetVertexShader(const std::shared_ptr<Shader>& shader)
+{
+    SetVertexShader(shader.get());
+}
 
 void CommandList::SetVertexShader(VertexShader * shader)
 {
@@ -168,15 +184,15 @@ void CommandList::SetVertexShader(const std::shared_ptr<VertexShader>& shader)
 	SetVertexShader(shader.get());
 }
 
-//void CommandList::SetPixelShader(Shader * shader)
-//{
-//    SetPixelShader(shader->GetShader<PixelShader>());
-//}
-//
-//void CommandList::SetPixelShader(const std::shared_ptr<Shader>& shader)
-//{
-//    SetPixelShader(shader.get());
-//}
+void CommandList::SetPixelShader(Shader * shader)
+{
+    SetPixelShader(shader->GetShader<PixelShader>());
+}
+
+void CommandList::SetPixelShader(const std::shared_ptr<Shader>& shader)
+{
+    SetPixelShader(shader.get());
+}
 
 void CommandList::SetPixelShader(PixelShader * shader)
 {
@@ -402,8 +418,10 @@ auto CommandList::Submit() -> const bool
 		case CommandType::End:
 			break;
 		case CommandType::Draw:
+			device_context->Draw(cmd.vertex_count, 0);
 			break;
 		case CommandType::DrawIndexed:
+			device_context->DrawIndexed(cmd.index_count, cmd.index_offset, cmd.vertex_offset);
 			break;
 		case CommandType::SetVertexBuffer:
 			device_context->IASetVertexBuffers(0, 1, &cmd.vertex_buffer, &cmd.vertex_stride, &cmd.vertex_offset);
