@@ -1,5 +1,7 @@
 #pragma once
 
+#define FREEIMAGE_LIB
+
 class TextureImporter final
 {
 public:

@@ -26,6 +26,7 @@ public:
 	void LoadResourceFromFile();
 
 	auto GetTextureImporter() -> class TextureImporter* { return texture_importer.get(); }
+	auto GetModelImporter() -> class ModelImporter* { return model_importer.get(); }
 
 	template <typename T> auto Load(const std::string& path) -> std::shared_ptr<T>;
 	template <typename T> auto GetResourceFromName(const std::string& name)->std::shared_ptr<T>;
@@ -39,7 +40,7 @@ public:
 	auto GetProjectDirectory() const -> const std::string& { return project_directory; }
 	void SetProjectDirectory(const std::string &directory);
 
-	auto GetAssetDirectory() const -> const std::string& { return "_Assets\\"; }
+	auto GetAssetDirectory() const -> const std::string { return std::string("../../_Assets/"); }
 	auto GetAssetDirectory(const AssetType &asset_type) -> const std::string&;
 
 private:
@@ -51,6 +52,7 @@ private:
 	std::string project_directory; //기본적으로 사용하는 Assets외에 이 프로젝트에서만 사용하는 asset에 대한 폴더를 따로 생성
 
 	std::shared_ptr<class TextureImporter> texture_importer;
+	std::shared_ptr<class ModelImporter> model_importer;
 
 	//std::shared_ptr<IResource> null_resource; 참조가 붙어있었다면 nullptr이 아니라 이렇게 내보내야 함
 };
@@ -73,11 +75,11 @@ inline auto ResourceManager::Load(const std::string & path) -> std::shared_ptr<T
 
 	auto resource = std::make_shared<T>(context);
 	resource->SetResourceName(resource_name);
-	resource->SetResourcePath(resource_path);
+	resource->SetResourcePath(relative_path);
 
-	Cache<T>(resource);
+	RegisterResource<T>(resource);
 
-	if (!resource->:LoadFromFile(relative_path)) {
+	if (!resource->LoadFromFile(relative_path)) {
 		LOG_ERROR_F("Failed to load \"$s\"", relative_path.c_str());
 		return nullptr;
 	}
@@ -91,7 +93,7 @@ inline auto ResourceManager::GetResourceFromName(const std::string & name) -> st
 	static_assert(std::is_base_of<IResource, T>::value, "Provided type does not implement IResource");
 	for (auto& resource : resource_groups[IResource::DeduceResourceType<T>()])
 	{
-		if (resouce->GetResourceName() == name)
+		if (resource->GetResourceName() == name)
 			return std::static_pointer_cast<T>(resource);
 	}
 

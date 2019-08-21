@@ -68,8 +68,14 @@ public:
 
 	const bool Initialize() override;
 
-	auto GetFrameResource() -> ID3D11ShaderResourceView*;
-	
+	auto GetFrameResource()->ID3D11ShaderResourceView*;
+
+	auto GetEditorOffset() const -> const Vector2& { return editor_offset; }
+	void SetEditorOffset(const Vector2 &offset) { this->editor_offset = offset; }
+
+	auto GetResolution() const -> const Vector2& { return resolution; }
+	void SetResolution(const uint &width, const uint &height);
+
 	void AcquireRenderables(class Scene* scene);
 	void SortRenderables(std::vector<class Actor*> *actors);
 
@@ -93,7 +99,6 @@ private:
 
 	std::shared_ptr<class Camera> camera;
 	std::shared_ptr<class CommandList> command_list;
-	std::shared_ptr<class Texture> render_target;
 
 private:
 	//Core
@@ -115,7 +120,8 @@ private:
 	bool is_reverse_z = true;
 	std::atomic<bool> is_acquire_renderables = false;
 	
-	Vector2 resolution;
+	Vector2 resolution = Vector2(1280, 720);
+	Vector2 editor_offset = Vector2::Zero;
 
 	//Constant Buffer
 	std::shared_ptr<class ConstantBuffer> global_buffer;

@@ -64,6 +64,9 @@ public:
 
 	void UpdateTransform();
 
+	///////////////Constant Buffer//////////////////
+	void UpdateConstantBuffer(const Matrix &view_proj);
+	auto GetConstantBuffer() const -> const std::shared_ptr<class ConstantBuffer>&{ return gpu_buffer; }
 private:
 	Vector3 local_scale;
 	Vector3 local_translation;
@@ -74,4 +77,9 @@ private:
 
 	Transform *parent;
 	std::vector<Transform*> childs;
+
+	///////////////Constant Buffer//////////////////
+	Matrix wvp_previous;
+	TRANSFORM_DATA cpu_buffer;
+	std::shared_ptr<class ConstantBuffer> gpu_buffer;
 };

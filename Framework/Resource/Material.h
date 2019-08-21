@@ -61,8 +61,8 @@ public:
 	auto GetHeightCoefficient() const ->const float& { return height_coef; }
 	void SetHeightCoefficient(const float& height_coef) { this->height_coef = height_coef; }
 
-	auto GetAlbedoColor() const ->const Color4& { return aledo_color; }
-	void SetAlbedoColor(const Color4& aledo_color) { this->aledo_color = aledo_color; }
+	auto GetAlbedoColor() const ->const Color4& { return albedo_color; }
+	void SetAlbedoColor(const Color4& aledo_color) { this->albedo_color = aledo_color; }
 
 	auto GetTiling() const ->const Vector2& { return uv_tiling; }
 	void SetTiling(const Vector2& uv_tiling) { this->uv_tiling = uv_tiling; }
@@ -70,13 +70,17 @@ public:
 	auto GetOffset() const ->const Vector2& { return uv_offset; }
 	void SetOffset(const Vector2& uv_offset) { this->uv_offset = uv_offset; }
 
+	///////////////Constant Buffer//////////////////////
+	void UpdateConstantBuffer();
+	auto GetConstantBuffer() const -> const std::shared_ptr<class ConstantBuffer>& { return gpu_buffer; }
+
 private:
 	std::shared_ptr<class Shader> shader;
 
 	ShadingMode shading_mode;
 	D3D11_CULL_MODE cull_mode;
 
-	Color4 aledo_color;
+	Color4 albedo_color;
 	float roughness_coef; //coefficient -> °Ô¼ö
 	float metalic_coef;
 	float normal_coef;
@@ -86,4 +90,8 @@ private:
 	Vector2 uv_offset;
 
 	std::map<TextureType, std::shared_ptr<Texture>> textures;
+
+	///////////////Constant Buffer//////////////////////
+	MATERIAL_DATA cpu_buffer;
+	std::shared_ptr<class ConstantBuffer> gpu_buffer;
 };

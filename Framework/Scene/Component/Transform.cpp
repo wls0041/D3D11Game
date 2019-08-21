@@ -128,3 +128,31 @@ void Transform::UpdateTransform()
 
 	for (const auto& child : childs) child->UpdateTransform();
 }
+
+void Transform::UpdateConstantBuffer(const Matrix & view_proj)
+{
+	if (!gpu_buffer)
+	{
+		gpu_buffer = std::make_shared<ConstantBuffer>(context);
+		gpu_buffer->Create<TRANSFORM_DATA>();
+	}
+
+	const auto wvp_current = world * view_proj;
+
+	//TODO : 
+
+	auto gpu_data = gpu_buffer->Map<TRANSFORM_DATA>();
+	if (!gpu_data) {
+		LOG_ERROR("Failed to map buffer");
+		return;
+	}
+
+	gpu_data->world = cpu_buffer.world = world;
+	gpu_data->wvp_current = cpu_buffer.wvp_current = wvp_current;
+	gpu_data->wvp_previous = cpu_buffer.wvp_previous = wvp_previous;
+
+	gpu_buffer->Unmap();
+
+	wvp_previous = wvp_current;
+
+}

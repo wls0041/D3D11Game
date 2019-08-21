@@ -33,7 +33,7 @@ template<typename T>
 inline void VertexBuffer::Create(const std::vector<T>& vertices, const D3D11_USAGE & usage)
 {
     stride = sizeof(T);
-    count  = vertices.size();
+    count  = static_cast<uint>(vertices.size());
 
     D3D11_BUFFER_DESC desc;
     ZeroMemory(&desc, sizeof(D3D11_BUFFER_DESC));

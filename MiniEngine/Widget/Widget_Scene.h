@@ -10,5 +10,10 @@ public:
     void Render() override;
 
 private:
+	void ShowFrame();
 
+private:
+	class Timer *timer = nullptr;
+	class Renderer *renderer = nullptr;
+	float frame_counter = 0.0f;
 };

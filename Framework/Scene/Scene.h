@@ -20,7 +20,7 @@ public:
 	auto GetRoots() const -> const std::vector<std::shared_ptr<class Actor>>;
 	auto GetActorFromID(const uint& id) const -> const std::shared_ptr<class Actor>;
 	 
-	auto CreateActor()->std::shared_ptr<class Actor>&;
+	auto CreateActor()->std::shared_ptr<class Actor>;
 	void AddActor(const std::shared_ptr<class Actor> &actor);
 	void RemoveActor(const std::shared_ptr<class Actor> &actor);
 

@@ -228,16 +228,6 @@ void CommandList::SetConstantBuffers(const uint & slot, const ShaderScope & scop
 	cmd.command_type = CommandType::SetConstantBuffer;
 	cmd.constant_buffer_slot = slot;
 	cmd.constant_buffer_shader_scope = scope;
-	cmd.constant_buffer_count = buffers.size();
-	cmd.constant_buffers = buffers;
-}
-
-void CommandList::SetConstantBuffers(const uint & slot, const ShaderScope & scope, const std::vector<ID3D11Buffer*>& buffers)
-{
-	auto& cmd = GetCommand();
-	cmd.command_type = CommandType::SetConstantBuffer;
-	cmd.constant_buffer_slot = slot;
-	cmd.constant_buffer_shader_scope = scope;
 	cmd.constant_buffers = buffers;
 	cmd.constant_buffer_count = static_cast<uint>(buffers.size());
 }
@@ -263,7 +253,7 @@ void CommandList::SetShaderResources(const uint & slot, const ShaderScope & stag
 	cmd.command_type = CommandType::SetShaderResource;
 	cmd.shader_resource_slot = slot;
 	cmd.shader_resource_shader_scope = stage;
-	cmd.shader_resource_count = shader_resources.size();
+	cmd.shader_resource_count = static_cast<uint>(shader_resources.size());
 	cmd.shader_resources = shader_resources;
 }
 
@@ -288,7 +278,7 @@ void CommandList::SetSamplerStates(const uint & slot, const ShaderScope & stage,
 	cmd.command_type = CommandType::SetSamplerState;
 	cmd.sampler_slot = slot;
 	cmd.sampler_shader_scope = stage;
-	cmd.sampler_count = sampler_states.size();
+	cmd.sampler_count = static_cast<uint>(sampler_states.size());
 	cmd.samplers = sampler_states;
 }
 
@@ -355,7 +345,7 @@ void CommandList::SetRenderTargets(const std::vector<ID3D11RenderTargetView*>& r
 	cmd.command_type = CommandType::SetRenderTarget;
 	cmd.depth_stencil_target = depth_stencil_target;
 	cmd.render_targets = render_targets;
-	cmd.render_target_count = render_targets.size();
+	cmd.render_target_count = static_cast<uint>(render_targets.size());
 }
 
 void CommandList::ClearRenderTarget(Texture * render_target, const Color4 & clear_color)

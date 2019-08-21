@@ -27,7 +27,7 @@ auto SceneManager::GetCurrentScene() const -> class Scene *
 
 void SceneManager::SetCurrentScene(const std::string & scene_name)
 {
-	if (scenes.find(scene_name) == scenes.end()); {
+	if (scenes.find(scene_name) == scenes.end()) {
 		LOG_ERROR("Failed To Find Scene");
 		return;
 	}

@@ -7,6 +7,7 @@
 #include "Scene/Scene.h"
 #include "Scene/Actor.h"
 #include "Scene/Component/Transform.h"
+#include "Scene/Component/Renderable.h"
 
 ModelImporter::ModelImporter(Context * context) : context(context), model_path(NOT_ASSIGNED_STR), assimp_flags(0)
 {
@@ -194,7 +195,7 @@ auto ModelImporter::LoadMaterial(const aiScene * assimp_scene, aiMaterial * assi
 	int is_two_sided = 0;
 	uint max = 1;
 
-	if (AI_SUCCESS == aiGetMaterialIntegerArray(assimp_material, AI_MATKEY_TWOSIDED, &is_two_sided, &max));
+	if (AI_SUCCESS == aiGetMaterialIntegerArray(assimp_material, AI_MATKEY_TWOSIDED, &is_two_sided, &max))
 	{
 		if (is_two_sided != 0) material->SetCullMode(D3D11_CULL_NONE);
 	}
@@ -237,15 +238,15 @@ auto ModelImporter::LoadMaterial(const aiScene * assimp_scene, aiMaterial * assi
 			}
 		}
 	};
-	/////////////////////¿ä±â
-	LoadTexture(aiTextureType_DIFFUSE, TextureType::Albedo);
-	LoadTexture(aiTextureType_SHININESS, TextureType::Roughness);
-	LoadTexture(aiTextureType_AMBIENT, TextureType::Metallic);
-	LoadTexture(aiTextureType_NORMALS, TextureType::Normal);
-	LoadTexture(aiTextureType_LIGHTMAP, TextureType::Occlusion);
-	LoadTexture(aiTextureType_EMISSIVE, TextureType::Emissive);
-	LoadTexture(aiTextureType_HEIGHT, TextureType::Height);
-	LoadTexture(aiTextureType_OPACITY, TextureType::Mask);
 
-	return material;
+    LoadTexture(aiTextureType_DIFFUSE,      TextureType::Albedo);
+    LoadTexture(aiTextureType_SHININESS,    TextureType::Roughness);
+    LoadTexture(aiTextureType_AMBIENT,      TextureType::Metallic);
+    LoadTexture(aiTextureType_NORMALS,      TextureType::Normal);
+    LoadTexture(aiTextureType_LIGHTMAP,     TextureType::Occlusion);
+    LoadTexture(aiTextureType_EMISSIVE,     TextureType::Emissive);
+    LoadTexture(aiTextureType_HEIGHT,       TextureType::Height);
+    LoadTexture(aiTextureType_OPACITY,      TextureType::Mask);
+
+    return material;
 }

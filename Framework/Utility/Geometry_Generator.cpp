@@ -12,6 +12,10 @@ void Geometry_Generator::CreateQuad(Geometry<struct VertexTexture>& geometry)
 	geometry.AddIndex(2); geometry.AddIndex(1); geometry.AddIndex(3);
 }
 
+void Geometry_Generator::CreateScreenQuad(Geometry<struct VertexTextureNormalTangentBlend>& geometry)
+{
+}
+
 void Geometry_Generator::CreateCube(Geometry<struct VertexTexture>& geometry)
 {
 	//front
@@ -73,6 +77,26 @@ void Geometry_Generator::CreateCube(Geometry<struct VertexTexture>& geometry)
 	//right
 	geometry.AddIndex(22); geometry.AddIndex(21); geometry.AddIndex(20);
 	geometry.AddIndex(23); geometry.AddIndex(21); geometry.AddIndex(22);
+}
+
+void Geometry_Generator::CreateCube(Geometry<struct VertexTextureNormalTangentBlend> &geometry)
+{
+}
+
+void Geometry_Generator::CreateCylinder(Geometry<struct VertexTextureNormalTangentBlend>& geometry)
+{
+}
+
+void Geometry_Generator::CreateCone(Geometry<struct VertexTextureNormalTangentBlend>& geometry)
+{
+}
+
+void Geometry_Generator::CreateQuad(Geometry<struct VertexTextureNormalTangentBlend> &geometry)
+{
+}
+
+void Geometry_Generator::CreateSphere(Geometry<struct VertexTextureNormalTangentBlend>& geometry)
+{
 }
 
 void Geometry_Generator::CreateSphere(Geometry<struct VertexTexture>& geometry, const float & radius, const int & slices, const int & stacks)

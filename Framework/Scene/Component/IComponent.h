@@ -11,8 +11,8 @@ enum class ComponentType : uint
 	Terrain,
 	Light,
 	Collider,
-	RigiBody,
-	Constrain,
+	RigidBody,
+	Constraint,
 };
 
 struct Attribute

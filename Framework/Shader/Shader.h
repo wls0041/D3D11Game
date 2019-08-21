@@ -73,7 +73,7 @@ inline void Shader::AddShader(const std::string & path, const std::string & entr
 		shader->Create(path, entry_point, shader_model, shader_macros.data());
 	}
 
-	if (stage == ShaderScope::VS)
+	if (shader_scope == ShaderScope::VS)
 	{
 		input_layout = std::make_shared<InputLayout>(context); //스마트포인터가 알아서 해제해 주기 때문에 기존에 layout이 있는지 확인 후 삭제할 필요가 없음
 		input_layout->Create(shader->GetBlob());

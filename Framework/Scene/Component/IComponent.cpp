@@ -1,6 +1,8 @@
 #include "Framework.h"
 #include "IComponent.h"
 #include "Camera.h"
+#include "Transform.h"
+#include "Renderable.h"
 
 IComponent::IComponent(Context * context, Actor * actor, Transform * transform)
 	: context(context)
@@ -36,3 +38,5 @@ constexpr ComponentType IComponent::DeduceComponentType()
 #define REGISTER_COMPONENT_TYPE(T, enum_type) template<> ComponentType IComponent::DeduceComponentType<T>() { return enum_type; }
 
 REGISTER_COMPONENT_TYPE(Camera, ComponentType::Camera)
+REGISTER_COMPONENT_TYPE(Transform, ComponentType::Transform)
+REGISTER_COMPONENT_TYPE(Renderable, ComponentType::Renderable)

@@ -179,7 +179,7 @@ void TextureImporter::GenerateMipmaps(FIBITMAP * bitmap, Texture * texture, uint
 		jobs[i].data = texture->GetMipLevel(i + 1);//0번 Mipmap이 기본 이미지 크기이기 때문에 i + 1을 해줌
 
 	//FILTER_LANCZOS3을 사용하는 Rescale함수는 비싸기때문에 다중스레드를 사용해서 Mipmap 생성을 병렬화함
-	//auto threading = context->GetSubsystem<Thread>();
+	auto threading = context->GetSubsystem<Thread>();
 	for (auto& job : jobs)
 	{
 		threading->AddTask([this, &job, &bitmap]()

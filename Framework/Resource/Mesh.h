@@ -22,7 +22,7 @@ public:
 	const bool LoadFromFile(const std::string &path) override;
 
 	auto GetMeshType() const -> const MeshType& { return mesh_type; }
-	auto SetMeshType(const MeshType &type);
+	void SetMeshType(const MeshType &type);
 	
 	auto GetPrimitiveTopology() const -> const D3D11_PRIMITIVE_TOPOLOGY& { return topology; }
 	auto SetPrimitiveTopology(const D3D11_PRIMITIVE_TOPOLOGY &topology) { this->topology = topology; }

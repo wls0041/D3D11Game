@@ -22,7 +22,7 @@ const bool Mesh::LoadFromFile(const std::string & path)
 	return false;
 }
 
-auto Mesh::SetMeshType(const MeshType & type)
+void Mesh::SetMeshType(const MeshType & type)
 {
 	if (mesh_type == type) return;
 

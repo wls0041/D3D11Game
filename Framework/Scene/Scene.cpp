@@ -45,7 +45,7 @@ auto Scene::GetActorFromID(const uint & id) const -> const std::shared_ptr<class
 	return nullptr;
 }
 
-auto Scene::CreateActor() -> std::shared_ptr<class Actor>&
+auto Scene::CreateActor() -> std::shared_ptr<class Actor>
 {
 	auto actor = std::make_shared<Actor>(context);
 	actor->Initialize(actor->AddComponent<Transform>());

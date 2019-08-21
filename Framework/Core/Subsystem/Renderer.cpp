@@ -21,14 +21,35 @@ const bool Renderer::Initialize()
 {
 	graphics = context->GetSubsystem<Graphics>();
 	command_list = std::make_shared<CommandList>(context);
-	render_target = std::make_shared<Texture2D>(context, 1280, 720, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, RTV | SRV);
+
+	CreateRenderTextures();
+	CreateShaders();
+	CreateConstantBuffers();
 
 	return true;
 }
 
 auto Renderer::GetFrameResource() -> ID3D11ShaderResourceView *
 {
+	auto render_target = render_textures[RenderTargetType::GBuffer_Albedo];
 	return render_target ? render_target->GetShaderResourceView() : nullptr;
+}
+
+void Renderer::SetResolution(const uint &width, const uint &height)
+{
+	if (width == 0 || height == 0) {
+		LOG_WARNING_F("%Dx%d is an invalid resolution", width, height);
+		return;
+	}
+
+	if (resolution.x == width && resolution.y == height) return;
+
+	resolution.x = static_cast<float>((width % 2) != 0 ? width - 1 : width);
+	resolution.y = static_cast<float>((height % 2) != 0 ? height - 1 : height);
+
+	CreateRenderTextures();
+
+	LOG_INFO_F("Resolution set to %dx%d", width, height);
 }
 
 void Renderer::AcquireRenderables(Scene * scene)
@@ -49,10 +70,10 @@ void Renderer::AcquireRenderables(Scene * scene)
 		auto component_camera = actor->GetComponent<Camera>();
 
 		if (component_renderable)
-			renderables[RenderableType::Opaque].emplace_back(actor);
+			renderables[RenderableType::Opaque].emplace_back(actor.get());
 
 		if (component_camera) { //scene_camera 용
-			renderables[RenderableType::Camera].emplace_back(actor);
+			renderables[RenderableType::Camera].emplace_back(actor.get());
 			camera = component_camera;
 		}
 	}
@@ -96,6 +117,13 @@ void Renderer::CreateRenderTextures() //RTT. 최소 크기가 4임.
 		return;
 	}
 
+	//GBuffer
+	render_textures[RenderTargetType::GBuffer_Albedo]	= std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 1, RTV | SRV);
+	render_textures[RenderTargetType::GBuffer_Normal]	= std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, RTV | SRV);
+	render_textures[RenderTargetType::GBuffer_Material]	= std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 1, RTV | SRV);
+	render_textures[RenderTargetType::GBuffer_Velocity]	= std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R16G16_FLOAT, 1, RTV | SRV);
+	render_textures[RenderTargetType::GBuffer_Depth]	= std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_D32_FLOAT, 1, DSV | SRV);
+
 	//final
 	auto final_render_texture = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, RTV | SRV);
 	render_textures[RenderTargetType::Final] = final_render_texture;
@@ -124,12 +152,12 @@ void Renderer::CreateShaders()
 void Renderer::CreateConstantBuffers()
 {
     global_buffer = std::make_shared<ConstantBuffer>(context);
-    global_buffer->Create<CPU_GLOBAL_DATA>();
+    global_buffer->Create<GLOBAL_DATA>();
 }
 
 void Renderer::UpdateGlobalBuffer(const uint & width, const uint & height, const Matrix & world_view_proj)
 {
-    auto gpu_buffer = global_buffer->Map<CPU_GLOBAL_DATA>();
+    auto gpu_buffer = global_buffer->Map<GLOBAL_DATA>();
     if (!gpu_buffer)
     {
         LOG_ERROR("Failed to map buffer");

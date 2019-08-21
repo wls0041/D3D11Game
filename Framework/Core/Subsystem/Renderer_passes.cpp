@@ -55,7 +55,7 @@ void Renderer::PassGBuffer()
 		uint current_mesh_id = 0;
 		uint current_shader_id = 0;
 
-		const auto draw_opaque_actor = [this, &current_material_id, &current_mesh_id, &current_shader_id](Actor *actor) {
+		const auto draw_actor = [this, &current_material_id, &current_mesh_id, &current_shader_id](Actor *actor) {
 			const auto &renderable = actor->GetRenderable();
 			if (!renderable) return;
 
@@ -83,12 +83,15 @@ void Renderer::PassGBuffer()
 
 			if (current_material_id != material->GetResourceID()) {
 				command_list->SetShaderResources(0, ShaderScope::PS, material->GetTextureShaderResource());
-				//TODO : Material Buffer Update //Material에 만들어 놓은 roughtness, metallic 등의 요소 업데이트
+				
+				material->UpdateConstantBuffer(); //Material에 만들어 놓은 roughtness, metallic 등의 요소 업데이트
+				command_list->SetConstantBuffer(1, ShaderScope::PS, material->GetConstantBuffer());
 				current_material_id = material->GetResourceID();
 			}
 
 			const auto &transform = actor->GetTransform();
-			//TODO : Transform Buffer Update //Gbuffer.hlsl의 material_buffer, model_buffer 업데이트
+			transform->UpdateConstantBuffer(camera_view_proj); //Gbuffer.hlsl의 material_buffer, model_buffer 업데이트
+			command_list->SetConstantBuffer(2, ShaderScope::VS, transform->GetConstantBuffer());
 
 			command_list->DrawIndexed(mesh->GetIndexBuffer()->GetCount(), mesh->GetIndexBuffer()->GetOffset(), mesh->GetVertexBuffer()->GetCount());
 		};
@@ -103,9 +106,12 @@ void Renderer::PassGBuffer()
 		command_list->SetConstantBuffer(0, ShaderScope::Global, global_buffer);
 	
 		for (const auto &actor : renderables[RenderableType::Opaque])
-			draw_opaque_actor(actor);
+			draw_actor(actor);
 
-		//TODO : 강의 마지막
+		//TODO : blend state 만들고 처리
+
+		for (const auto &actor : renderables[RenderableType::Transparent])
+			draw_actor(actor);
 	}
 	command_list->End();
 	command_list->Submit();

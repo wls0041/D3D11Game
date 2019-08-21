@@ -1,21 +1,23 @@
 #include "Framework.h"
 #include "ResourceManager.h"
+#include "Resource/Importer/TextureImporter.h"
+#include "Resource/Importer/ModelImporter.h"
 
 ResourceManager::ResourceManager(Context * context)
 	: ISubsystem(context)
 {
 	std::string asset_directory = GetAssetDirectory();
 
-	RegisterDirectory(AssetType::Shader,	asset_directory + "Shader\\");
-	RegisterDirectory(AssetType::Texture,	asset_directory + "Texture\\");
-	RegisterDirectory(AssetType::Icon,		asset_directory + "Icon\\");
-	RegisterDirectory(AssetType::Model,		asset_directory + "Model\\");
-	RegisterDirectory(AssetType::Audio,		asset_directory + "Audio\\");
-	RegisterDirectory(AssetType::Cubemap,	asset_directory + "Cubemap\\");
-	RegisterDirectory(AssetType::Font,		asset_directory + "Font\\");
-	RegisterDirectory(AssetType::Script,	asset_directory + "Script\\");
+	RegisterDirectory(AssetType::Shader,	asset_directory + "Shader/");
+	RegisterDirectory(AssetType::Texture,	asset_directory + "Texture/");
+	RegisterDirectory(AssetType::Icon,		asset_directory + "Icon/");
+	RegisterDirectory(AssetType::Model,		asset_directory + "Model/");
+	RegisterDirectory(AssetType::Audio,		asset_directory + "Audio/");
+	RegisterDirectory(AssetType::Cubemap,	asset_directory + "Cubemap/");
+	RegisterDirectory(AssetType::Font,		asset_directory + "Font/");
+	RegisterDirectory(AssetType::Script,	asset_directory + "Script/");
 
-	SetProjectDirectory("_Project\\");
+	SetProjectDirectory("../../_Project/");
 }
 
 ResourceManager::~ResourceManager()
@@ -25,6 +27,7 @@ ResourceManager::~ResourceManager()
 const bool ResourceManager::Initialize()
 {
 	texture_importer = std::make_shared<TextureImporter>(context);
+	model_importer = std::make_shared<ModelImporter>(context);
 	
 	return true;
 }

@@ -65,13 +65,13 @@ inline auto Actor::AddComponent() -> std::shared_ptr<T>
 		(
 			context,
 			this,
-			transform
+			transform.get()
 			)
 	);
 
 	auto new_component = std::static_pointer_cast<T>(components.back());
 	new_component->SetComponentType(type);
-
+	
 	return new_component;
 }
 

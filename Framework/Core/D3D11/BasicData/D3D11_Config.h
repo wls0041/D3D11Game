@@ -11,7 +11,7 @@ enum class ShaderScope : uint
     Unknown, Global, VS, PS, GS, DS, HS, CS,
 };
 
-struct CPU_GLOBAL_DATA final
+struct GLOBAL_DATA final
 {
 	Matrix world_view_proj;
 	Matrix view;
@@ -27,3 +27,25 @@ struct CPU_GLOBAL_DATA final
 
 	float padding;
 };
+
+struct MATERIAL_DATA final
+{
+	Color4 albedo_color;
+	Vector2 tiling;
+	Vector2 offset;
+	float roughness_coef;
+	float metallic_coef;
+	float normal_coef;
+	float height_coef;
+	float shading_mode;
+
+	float padding[3];
+};
+
+struct TRANSFORM_DATA final
+{
+	Matrix world;
+	Matrix wvp_current;
+	Matrix wvp_previous;
+};
+

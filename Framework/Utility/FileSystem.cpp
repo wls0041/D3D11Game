@@ -4,7 +4,7 @@
 
 using namespace std::filesystem;
 
-std::vector<std::string> support_texture_formats
+std::vector<std::string> FileSystem::support_texture_formats
 {
 	".jpg",
 	".png",
@@ -40,7 +40,7 @@ std::vector<std::string> support_texture_formats
 	".xpm"
 };
 
-std::vector<std::string> support_model_formats
+std::vector<std::string> FileSystem::support_model_formats
 {
 	".3ds",
 	".obj",
@@ -78,10 +78,12 @@ std::vector<std::string> support_model_formats
 
 auto FileSystem::Create_Directory(const std::string & path) -> const bool
 {
-	try {
+	try
+	{
 		return create_directories(path);
 	}
-	catch (filesystem_error &error) {
+	catch (filesystem_error& error)
+	{
 		LOG_ERROR_F("%s, %s", error.what(), path.c_str());
 		return false;
 	}
@@ -89,10 +91,12 @@ auto FileSystem::Create_Directory(const std::string & path) -> const bool
 
 auto FileSystem::Delete_Directory(const std::string & path) -> const bool
 {
-	try {
+	try
+	{
 		return remove_all(path) > 0; //지운 파일의 개수가 나옴
 	}
-	catch (filesystem_error &error) {
+	catch (filesystem_error& error)
+	{
 		LOG_ERROR_F("%s, %s", error.what(), path.c_str());
 		return false;
 	}
@@ -100,12 +104,14 @@ auto FileSystem::Delete_Directory(const std::string & path) -> const bool
 
 auto FileSystem::Delete_File(const std::string & path) -> const bool
 {
-	if (is_directory(path)) return false; //file인지 확인
+	if (is_directory(path)) return false;//file인지 확인
 
-	try {
+	try
+	{
 		return remove(path);
 	}
-	catch (filesystem_error &error) {
+	catch (filesystem_error& error)
+	{
 		LOG_ERROR_F("%s, %s", error.what(), path.c_str());
 		return false;
 	}
@@ -113,15 +119,18 @@ auto FileSystem::Delete_File(const std::string & path) -> const bool
 
 auto FileSystem::Copy_File(const std::string & src, const std::string & dst) -> const bool
 {
-	if (src == dst) return false;
+	if (src == dst)
+		return false;
 
 	if (!IsExistDirectory(GetDirectoryFromPath(dst)))
 		Create_Directory(GetDirectoryFromPath(dst));
 
-	try {
+	try
+	{
 		return copy_file(src, dst, copy_options::overwrite_existing);
 	}
-	catch (filesystem_error &error) {
+	catch (filesystem_error& error)
+	{
 		LOG_ERROR("Could not copy \"" + src + "\", " + std::string(error.what()));
 		return false;
 	}
@@ -129,10 +138,12 @@ auto FileSystem::Copy_File(const std::string & src, const std::string & dst) -> 
 
 auto FileSystem::IsDirectory(const std::string & path) -> const bool
 {
-	try {
+	try
+	{
 		return is_directory(path);
 	}
-	catch (filesystem_error &error) {
+	catch (filesystem_error& error)
+	{
 		LOG_ERROR_F("%s, %s", error.what(), path.c_str());
 		return false;
 	}
@@ -140,10 +151,12 @@ auto FileSystem::IsDirectory(const std::string & path) -> const bool
 
 auto FileSystem::IsExistDirectory(const std::string & path) -> const bool
 {
-	try {
+	try
+	{
 		return exists(path);
 	}
-	catch (filesystem_error &error) {
+	catch (filesystem_error& error)
+	{
 		LOG_ERROR_F("%s, %s", error.what(), path.c_str());
 		return false;
 	}
@@ -151,10 +164,12 @@ auto FileSystem::IsExistDirectory(const std::string & path) -> const bool
 
 auto FileSystem::IsExistFile(const std::string & path) -> const bool
 {
-	try {
-		return remove(path);
+	try
+	{
+		return exists(path);
 	}
-	catch (filesystem_error &error) {
+	catch (filesystem_error& error)
+	{
 		LOG_ERROR_F("%s, %s", error.what(), path.c_str());
 		return false;
 	}
@@ -165,7 +180,7 @@ auto FileSystem::GetFileNameFromPath(const std::string & path) -> const std::str
 	auto last_index = path.find_last_of("\\/");
 	auto file_name = path.substr(last_index + 1, path.length());
 
-	return std::string();
+	return file_name;
 }
 
 auto FileSystem::GetIntactFileNameFromPath(const std::string & path) -> const std::string
@@ -179,8 +194,8 @@ auto FileSystem::GetIntactFileNameFromPath(const std::string & path) -> const st
 
 auto FileSystem::GetDirectoryFromPath(const std::string & path) -> const std::string
 {
-	auto lastIndex = path.find_last_of("\\/");
-	auto directory = path.substr(0, lastIndex + 1);
+	auto last_index = path.find_last_of("\\/");
+	auto directory = path.substr(0, last_index + 1);
 
 	return directory;
 }
@@ -190,10 +205,9 @@ auto FileSystem::GetExtensionFromPath(const std::string & path) -> const std::st
 	if (path.empty() || path == NOT_ASSIGNED_STR)
 		return NOT_ASSIGNED_STR;
 
-	auto lastIndex = path.find_last_of('.');
-
-	if (lastIndex != std::string::npos)
-		return path.substr(lastIndex, path.length());
+	auto last_index = path.find_last_of('.');
+	if (last_index != std::string::npos)
+		return path.substr(last_index, path.length());
 
 	return NOT_ASSIGNED_STR;
 }
@@ -201,13 +215,13 @@ auto FileSystem::GetExtensionFromPath(const std::string & path) -> const std::st
 auto FileSystem::GetPathWithoutExtension(const std::string & path) -> const std::string
 {
 	auto directory = GetDirectoryFromPath(path);
-	auto intactFileName = GetIntactFileNameFromPath(path);
+	auto intact_file_name = GetIntactFileNameFromPath(path);
 
-	return directory + intactFileName;
+	return directory + intact_file_name;
 }
 
 auto FileSystem::GetRelativeFromPath(const std::string & absolute_path) -> const std::string
-{   
+{
 	//절대 경로를 만듬
 	path p = absolute(absolute_path);
 	path r = absolute(GetWorkingDirectory());
@@ -277,11 +291,12 @@ auto FileSystem::GetWorkingDirectory() -> const std::string
 auto FileSystem::IsSupportTextureFile(const std::string & path) -> const bool
 {
 	auto file_extension = GetExtensionFromPath(path);
-	auto support_formats = GetSupportTextureFormats();
 
-	for (const auto &format : support_formats)
+	auto support_formats = GetSupportTextureFormats();
+	for (const auto& format : support_formats)
 	{
-		if (file_extension == format || file_extension == ToUpper(format)) return true;
+		if (file_extension == format || file_extension == ToUpper(format))
+			return true;
 	}
 	return false;
 }
@@ -289,11 +304,12 @@ auto FileSystem::IsSupportTextureFile(const std::string & path) -> const bool
 auto FileSystem::IsSupportModelFile(const std::string & path) -> const bool
 {
 	auto file_extension = GetExtensionFromPath(path);
-	auto support_formats = GetSupportModelFormats();
 
-	for (const auto &format : support_formats)
+	auto support_formats = GetSupportModelFormats();
+	for (const auto& format : support_formats)
 	{
-		if (file_extension == format || file_extension == ToUpper(format)) return true;
+		if (file_extension == format || file_extension == ToUpper(format))
+			return true;
 	}
 	return false;
 }
@@ -331,3 +347,4 @@ auto FileSystem::ToWstring(const std::string & str) -> const std::wstring
 
 	return result;
 }
+

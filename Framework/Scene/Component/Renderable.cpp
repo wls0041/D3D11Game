@@ -6,10 +6,6 @@ Renderable::Renderable(Context * context, Actor * actor, Transform * transform)
 {
 }
 
-Renderable::~Renderable()
-{
-}
-
 void Renderable::OnStart()
 {
 }
@@ -50,6 +46,7 @@ void Renderable::SetMesh(const std::string & path)
 
 void Renderable::SetStandardMesh(const MeshType & type)
 {
+	// TODO : 
 	mesh = std::make_shared<Mesh>(context);
 	mesh->SetMeshType(type);
 	mesh->CreateBuffers();

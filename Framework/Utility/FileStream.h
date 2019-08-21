@@ -7,20 +7,22 @@ enum StreamMode : uint
 	Stream_Append = 1U << 2,
 };
 
-class FileStream final // -> file들을 binary 파일로 저장해놓고 불러오거나 내보내는 클래스
+class FileStream final// -> file들을 binary 파일로 저장해놓고 불러오거나 내보내는 클래스
 {
 public:
-	FileStream(const std::string & path, const StreamMode & mode);
+	FileStream(const std::string& path, const uint& flags);
 	~FileStream();
 
 	auto IsOpen() const -> const bool { return is_open; }
 	void Close();
 
-	////////////////////////Write////////////////////////
+	//===============================================================
+	// [Write]
+	//===============================================================
 	template <typename T, typename = typename std::enable_if<
 		std::is_same<T, bool>::value ||
 		std::is_same<T, char>::value ||
-		std::is_same<T, unsigned char>::value ||
+		std::is_same<T, byte>::value ||
 		std::is_same<T, int>::value ||
 		std::is_same<T, uint>::value ||
 		std::is_same<T, long>::value ||
@@ -36,24 +38,24 @@ public:
 		std::is_same<T, Vector4>::value ||
 		std::is_same<T, Color4>::value ||
 		std::is_same<T, Quaternion>::value ||
-		std::is_same<T, Matrix>::value >::type>
-	void Write(const T &value) 
+		std::is_same<T, Matrix>::value>::type>
+		void Write(const T& value)
 	{
 		out.write(reinterpret_cast<const char*>(&value), sizeof(T));
 	}
 
-	void Write(const void *value, const uint &size);
-	void Write(const std::string &value);
-	void Write(const std::vector<std::byte> &value);
+	void Write(const void* value, const uint& size);
+	void Write(const std::string& value);
+	void Write(const std::vector<std::byte>& value);
+	void Skip(const uint& n);
 
-	void Skip(const uint &n);
-
-
-	////////////////////////Read/////////////////////////	
+	//===============================================================
+	// [Read]
+	//===============================================================
 	template <typename T, typename = typename std::enable_if<
 		std::is_same<T, bool>::value ||
 		std::is_same<T, char>::value ||
-		std::is_same<T, unsigned char>::value ||
+		std::is_same<T, byte>::value ||
 		std::is_same<T, int>::value ||
 		std::is_same<T, uint>::value ||
 		std::is_same<T, long>::value ||
@@ -69,19 +71,19 @@ public:
 		std::is_same<T, Vector4>::value ||
 		std::is_same<T, Color4>::value ||
 		std::is_same<T, Quaternion>::value ||
-		std::is_same<T, Matrix>::value > ::type >
-	void Read(T &value) //얘는 읽어온 파일을 value에 넣으므로 const 붙으면 안됨
+		std::is_same<T, Matrix>::value>::type>
+		void Read(T& value)//얘는 읽어온 파일을 value에 넣으므로 const 붙으면 안됨
 	{
-		in.write(reinterpret_cast<char*>(&value), sizeof(T)); //들어온 데이터를 1byte단위로 체크하기 위해 char 씀
+		in.read(reinterpret_cast<char*>(&value), sizeof(T));//들어온 데이터를 1byte단위로 체크하기 위해 char 씀
 	}
 
-	void Read(std::string &value);
-	void Read(std::vector<std::byte> &value);
+	void Read(std::string& value);
+	void Read(std::vector<std::byte>& value);
 
 	template <typename T, typename = typename std::enable_if<
 		std::is_same<T, bool>::value ||
 		std::is_same<T, char>::value ||
-		std::is_same<T, unsigned char>::value ||
+		std::is_same<T, byte>::value ||
 		std::is_same<T, int>::value ||
 		std::is_same<T, uint>::value ||
 		std::is_same<T, long>::value ||
@@ -97,8 +99,8 @@ public:
 		std::is_same<T, Vector4>::value ||
 		std::is_same<T, Color4>::value ||
 		std::is_same<T, Quaternion>::value ||
-		std::is_same<T, Matrix>::value > ::type >
-	const T Read()
+		std::is_same<T, Matrix>::value>::type>
+		const T Read()
 	{
 		T value;
 		Read(value);
@@ -109,7 +111,8 @@ public:
 private:
 	std::ofstream out;
 	std::ifstream in;
-
 	uint flags;
 	bool is_open;
 };
+
+
