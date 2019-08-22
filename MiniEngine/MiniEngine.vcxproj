@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="Helper\Editor_Helper.cpp" />
     <ClCompile Include="Imgui\ImGuizmo.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -202,11 +203,13 @@
     <ClCompile Include="Widget\Widget_Hierarchy.cpp" />
     <ClCompile Include="Widget\Widget_Inspector.cpp" />
     <ClCompile Include="Widget\Widget_MenuBar.cpp" />
+    <ClCompile Include="Widget\Widget_ProgressBar.cpp" />
     <ClCompile Include="Widget\Widget_Project.cpp" />
     <ClCompile Include="Widget\Widget_Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Editor.h" />
+    <ClInclude Include="Helper\Editor_Helper.h" />
     <ClInclude Include="Imgui\ImGuizmo.h" />
     <ClInclude Include="Imgui\imgui_impl_dx11.h" />
     <ClInclude Include="Imgui\imgui_impl_win32.h" />
@@ -224,6 +227,7 @@
     <ClInclude Include="Widget\Widget_Hierarchy.h" />
     <ClInclude Include="Widget\Widget_Inspector.h" />
     <ClInclude Include="Widget\Widget_MenuBar.h" />
+    <ClInclude Include="Widget\Widget_ProgressBar.h" />
     <ClInclude Include="Widget\Widget_Project.h" />
     <ClInclude Include="Widget\Widget_Scene.h" />
   </ItemGroup>

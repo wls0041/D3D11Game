@@ -2,6 +2,7 @@
 #include "Framework.h"
 
 static const std::string NOT_ASSIGNED_STR = "N/A";
+static const std::string MODEL_BIN_EXTENSION = ".model";
 static const std::string TEXTURE_BIN_EXTENSION = ".texture";
 static const std::string MATERIAL_BIN_EXTENSION = ".mat";
 static const std::string MESH_BIN_EXTENSION = ".mesh";

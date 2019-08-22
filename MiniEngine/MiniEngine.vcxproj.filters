@@ -19,6 +19,8 @@
     <ClCompile Include="Widget\Widget_Inspector.cpp" />
     <ClCompile Include="Widget\Widget_Project.cpp" />
     <ClCompile Include="Widget\Widget_Scene.cpp" />
+    <ClCompile Include="Helper\Editor_Helper.cpp" />
+    <ClCompile Include="Widget\Widget_ProgressBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -41,5 +43,7 @@
     <ClInclude Include="Widget\Widget_Inspector.h" />
     <ClInclude Include="Widget\Widget_Project.h" />
     <ClInclude Include="Widget\Widget_Scene.h" />
+    <ClInclude Include="Helper\Editor_Helper.h" />
+    <ClInclude Include="Widget\Widget_ProgressBar.h" />
   </ItemGroup>
 </Project>

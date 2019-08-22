@@ -11,6 +11,9 @@ Widget_Scene::Widget_Scene(Context * context)
 
 	timer = context->GetSubsystem<Timer>();
 	renderer = context->GetSubsystem<Renderer>();
+
+	///////////////////////////////Test//////////////////////////////////
+	Editor_Helper::Get().LoadModel(Editor_Helper::Get().resource_manager->GetAssetDirectory(AssetType::Model) + "Cube.fbx");
 }
 
 void Widget_Scene::Render()
@@ -23,8 +26,8 @@ void Widget_Scene::ShowFrame()
 	auto frame_position_x = static_cast<uint>(ImGui::GetCursorPos().x + ImGui::GetWindowPos().x); //창 기준 마우스 위치이므로 window 포지션을 더해야 현재 위치 나옴
 	auto frame_position_y = static_cast<uint>(ImGui::GetCursorPos().y + ImGui::GetWindowPos().y); 
 
-	auto frame_width = static_cast<uint>(ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMax().x);
-	auto frame_height = static_cast<uint>(ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMax().y);
+	auto frame_width = static_cast<uint>(ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMin().x);
+	auto frame_height = static_cast<uint>(ImGui::GetWindowContentRegionMax().y - ImGui::GetWindowContentRegionMin().y);
 
 	//더 정밀하게 하려면 한계를 잡아줘야함.(0이면 보이지 않고 일정이상 넘어가면 overflow)
 	frame_width -= frame_width % 2 != 0 ? 1 : 0; //기본적으로 이미지 사이즈가 2의 배수이므로 이에 맞춰주기 위한 처리 

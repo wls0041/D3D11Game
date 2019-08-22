@@ -23,6 +23,20 @@ const bool Model::SaveToFile(const std::string & path)
 
 const bool Model::LoadFromFile(const std::string & path)
 {
+	auto resource_manager = context->GetSubsystem<ResourceManager>();
+
+	SetWorkingDirectories(resource_manager->GetProjectDirectory() + FileSystem::GetIntactFileNameFromPath(path));
+																										  //색같이 변경이 필요한 데이터는 xml로 할 수 있다.
+	SetResourcePath(model_directory + FileSystem::GetIntactFileNameFromPath(path) + MODEL_BIN_EXTENSION); //fbx는 모든 데이터를 가지고 있고, 한 번 실행 후에는 필요한 데이터만 뽑아서 바이너리로 따로 저장하고 그걸 불러와서 속도 향상
+	SetResourceName(FileSystem::GetIntactFileNameFromPath(path));
+
+	if (context->GetSubsystem<ResourceManager>()->GetModelImporter()->Load(this, path));
+	{
+		root_actor->GetTransform()->SetScale(Vector3(0.0075f, 0.0075f, 0.0075f));
+		root_actor->GetTransform()->UpdateTransform();
+
+		SaveToFile(GetResourcePath());
+	}
 	return false;
 }
 

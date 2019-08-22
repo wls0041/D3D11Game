@@ -8,6 +8,7 @@
 #include "./Widget/Widget_Inspector.h"
 #include "./Widget/Widget_Project.h"
 #include "./Widget/Widget_Scene.h"
+#include "./Widget/Widget_ProgressBar.h"
 
 #define DOCKING_ENABLED ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable
 
@@ -32,6 +33,10 @@ Editor::Editor()
 	ImGui_ImplDX11_Init(graphics->GetDevice(), graphics->GetDeviceContext());
 	ApplyStyle();
 
+	Editor_Helper::Get().Initialize(context);
+
+	widgets.emplace_back(std::make_unique<Widget_Console>(context));
+	widgets.emplace_back(std::make_unique<Widget_ProgressBar>(context));
 	widgets.emplace_back(std::make_unique<Widget_MenuBar>(context));
 	widgets.emplace_back(std::make_unique<Widget_Console>(context));
 	widgets.emplace_back(std::make_unique<Widget_Hierarchy>(context));

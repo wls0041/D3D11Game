@@ -24,6 +24,8 @@ Widget_Console::Widget_Console(Context * context)
 	logger->SetCallBack([this](const Log_Pair &log_pair) { AddLog(log_pair); });
 
 	Log::SetLogger(logger);
+
+	LOG_TO_FILE(false);
 }
 
 void Widget_Console::Render()
@@ -58,7 +60,7 @@ void Widget_Console::Render()
 	Console::log_filter.Draw("Filter", -100.0f);
 	ImGui::Separator();
 
-	ImGui::BeginChild("Log", ImVec2(0, 0), true, ImGuiWindowFlags_HorizontalScrollbar);
+	ImGui::BeginChild("Log", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 	{
 		for (const auto& log : logs)
 		{

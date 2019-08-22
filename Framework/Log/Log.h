@@ -7,6 +7,8 @@ enum class LogType : uint
 	Error,
 };
 
+#define LOG_TO_FILE(value)			{ Log::is_log_to_file = value; }
+
 #define LOG_INFO(text)              { Log::caller_name = __FUNCTION__; Log::Write(text, LogType::Info); }
 #define LOG_WARNING(text)           { Log::caller_name = __FUNCTION__; Log::Write(text, LogType::Warning); }
 #define LOG_ERROR(text)             { Log::caller_name = __FUNCTION__; Log::Write(text, LogType::Error); }
