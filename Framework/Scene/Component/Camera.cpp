@@ -8,6 +8,9 @@ Camera::Camera(Context * context, Actor * actor, Transform * transform)
 	, fov(Math::ToRadian(45))
 	, near_plane(0.3f)
 	, far_plane(1000.0f)
+	, accelation(1.0f)
+	, drag(accelation * 0.8f)
+	, movement_speed(0, 0, 0)
 {
 	input = context->GetSubsystem<Input>();
 }
@@ -18,28 +21,41 @@ void Camera::OnStart()
 
 void Camera::OnUpdate()
 {
-	//if (input->KeyPress(KeyCode::KEY_W))
-	//	position += forward;
-	//else if (input->KeyPress(KeyCode::KEY_S))
-	//	position -= forward;
+	auto rotation = transform->GetRotation().ToEulerAngle();
+	auto right = transform->GetRight();
+	auto up = transform->GetUp();
+	auto forward = transform->GetForward();
 
-	//if (input->KeyPress(KeyCode::KEY_A))
-	//	position -= right;
-	//else if (input->KeyPress(KeyCode::KEY_D))
-	//	position += right;
 
-	//if (input->KeyPress(KeyCode::KEY_E))
-	//	position += up;
-	//else if (input->KeyPress(KeyCode::KEY_Q))
-	//	position -= up;
+	if (input->BtnPress(KeyCode::CLICK_RIGHT))
+	{
+		if (input->KeyPress(KeyCode::KEY_W))
+			movement_speed += forward * accelation;
+		else if (input->KeyPress(KeyCode::KEY_S))
+			movement_speed -= forward * accelation;
 
-	//if (input->BtnPress(KeyCode::CLICK_RIGHT))
-	//{
-	//	auto delta = input->GetMouseMoveValue();
+		if (input->KeyPress(KeyCode::KEY_A))
+			movement_speed -= right * accelation;
+		else if (input->KeyPress(KeyCode::KEY_D))
+			movement_speed += right * accelation;
 
-	//	rotation.x += delta.y * 0.005f;
-	//	rotation.y += delta.x * 0.005f;
-	//}
+		if (input->KeyPress(KeyCode::KEY_E))
+			movement_speed += up * accelation;
+		else if (input->KeyPress(KeyCode::KEY_Q))
+			movement_speed -= up * accelation;
+
+		transform->Translate(movement_speed);
+		movement_speed *= drag;
+
+		auto delta = input->GetMouseMoveValue();
+
+		rotation.x += delta.y * 0.1f;
+		rotation.y += delta.x * 0.1f;
+
+		rotation.x = Math::Clamp(rotation.x, -90.0f, 90.0f);
+
+		transform->SetRotation(Quaternion::QuaternionFromEulerAngle(rotation));
+	}
 
 	UpdateViewMatrix();
 	UpdateProjectionMatrix();

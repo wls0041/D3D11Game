@@ -67,6 +67,10 @@ public:
 	///////////////Constant Buffer//////////////////
 	void UpdateConstantBuffer(const Matrix &view_proj);
 	auto GetConstantBuffer() const -> const std::shared_ptr<class ConstantBuffer>&{ return gpu_buffer; }
+
+	/////////////////////mics///////////////////////
+	void Translate(const Vector3 &delta);
+
 private:
 	Vector3 local_scale;
 	Vector3 local_translation;

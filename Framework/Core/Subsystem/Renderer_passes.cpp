@@ -82,7 +82,7 @@ void Renderer::PassGBuffer()
 			}
 
 			if (current_material_id != material->GetResourceID()) {
-				command_list->SetShaderResources(0, ShaderScope::PS, material->GetTextureShaderResource());
+				command_list->SetShaderResources(0, ShaderScope::PS, material->GetTextureShaderResources());
 				
 				material->UpdateConstantBuffer(); //Material에 만들어 놓은 roughtness, metallic 등의 요소 업데이트
 				command_list->SetConstantBuffer(1, ShaderScope::PS, material->GetConstantBuffer());

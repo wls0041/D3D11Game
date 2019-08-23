@@ -7,6 +7,7 @@ Transform::Transform(Context * context, Actor * actor, Transform * transform)
 	, local_scale(1.0f)
 	, parent(nullptr)
 {
+	ZeroMemory(&cpu_buffer, sizeof(TRANSFORM_DATA));
 }
 
 void Transform::OnStart()
@@ -155,4 +156,13 @@ void Transform::UpdateConstantBuffer(const Matrix & view_proj)
 
 	wvp_previous = wvp_current;
 
+}
+
+void Transform::Translate(const Vector3 & delta)
+{
+	if (HasParent()) {
+	auto position = Vector3::TransformCoord(delta, parent->GetWorldMatrix().Inverse());
+	SetLocalTranslation(local_translation + position);
+	}
+	else SetLocalTranslation(local_translation + delta);
 }

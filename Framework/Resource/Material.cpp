@@ -58,7 +58,7 @@ auto Material::GetTextureShaderResource(const TextureType & type) -> ID3D11Shade
 	return texture ? texture->GetShaderResourceView() : nullptr;
 }
 
-auto Material::GetTextureShaderResource() -> std::vector<ID3D11ShaderResourceView *>
+auto Material::GetTextureShaderResources() -> std::vector<ID3D11ShaderResourceView *>
 {
 
 	std::vector<ID3D11ShaderResourceView *> shader_resources

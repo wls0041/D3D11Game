@@ -72,6 +72,10 @@ inline auto Actor::AddComponent() -> std::shared_ptr<T>
 	auto new_component = std::static_pointer_cast<T>(components.back());
 	new_component->SetComponentType(type);
 	
+	if constexpr (std::is_same<T, Renderable>::value) {
+		renderable = new_component;
+	}
+
 	return new_component;
 }
 

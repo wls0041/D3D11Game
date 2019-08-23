@@ -2,7 +2,8 @@
 #include "Framework.h"
 #include "ILogger.h"
 
-struct Log_Pair {
+struct Log_Pair final
+{
 	std::string text;
 	int type;
 };
@@ -13,16 +14,17 @@ public:
 	typedef std::function<void(const Log_Pair&)> log_function;
 
 public:
-	void SetCallBack(log_function &&func) {
+	void SetCallback(log_function&& func)
+	{
 		function = std::forward<log_function>(func);
 	}
 
-	void Log(const std::string &text, const uint &type) override {
+	void Log(const std::string& text, const uint& type) override
+	{
 		Log_Pair log_pair;
 		log_pair.text = text;
 		log_pair.type = type;
 
-		//원래는 null체크 필요
 		function(log_pair);
 	}
 

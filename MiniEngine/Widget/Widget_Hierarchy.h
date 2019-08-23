@@ -10,5 +10,13 @@ public:
     void Render() override;
 
 private:
+	void ShowHierarchy();
+	void ShowPopup();
 
+private:
+	void AddActor(const  std::shared_ptr<class Actor> &actor);
+
+private:
+	auto CreateEmpty() -> std::shared_ptr<class Actor>;
+	void CreateStandardMesh(const MeshType &type);
 };

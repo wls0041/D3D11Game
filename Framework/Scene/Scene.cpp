@@ -56,6 +56,8 @@ auto Scene::CreateActor() -> std::shared_ptr<class Actor>
 
 void Scene::AddActor(const std::shared_ptr<class Actor>& actor)
 {
+	actors.emplace_back(actor);
+	is_added = true;
 }
 
 void Scene::RemoveActor(const std::shared_ptr<class Actor>& actor)

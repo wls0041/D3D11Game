@@ -50,4 +50,9 @@ private:
 
     Matrix view;
     Matrix proj;
+
+	////////юс╫ц////////
+	float accelation;
+	float drag;
+	Vector3 movement_speed;
 };
