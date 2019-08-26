@@ -9,6 +9,7 @@ public:
 
     void Render() override;
 
-private:
 
+private:
+	void ShowTransform(std::shared_ptr<class Transform> &transform) const;
 };

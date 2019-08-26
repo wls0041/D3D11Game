@@ -21,6 +21,7 @@
     <ClCompile Include="Widget\Widget_Scene.cpp" />
     <ClCompile Include="Helper\Editor_Helper.cpp" />
     <ClCompile Include="Widget\Widget_ProgressBar.cpp" />
+    <ClCompile Include="Helper\Icon_Provider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -45,5 +46,6 @@
     <ClInclude Include="Widget\Widget_Scene.h" />
     <ClInclude Include="Helper\Editor_Helper.h" />
     <ClInclude Include="Widget\Widget_ProgressBar.h" />
+    <ClInclude Include="Helper\Icon_Provider.h" />
   </ItemGroup>
 </Project>

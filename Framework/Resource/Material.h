@@ -52,8 +52,8 @@ public:
 	auto GetRoughnessCoefficient() const -> const float& { return roughness_coef; }
 	void SetRoughnessCoefficient(const float& roughness_coef) { this->roughness_coef = roughness_coef; }
 
-	auto GetMetallicCoefficient() const -> const float& { return metalic_coef; }
-	void SetMetallicCoefficient(const float& metalic_coef) { this->metalic_coef = metalic_coef; }
+	auto GetMetallicCoefficient() const -> const float& { return metallic_coef; }
+	void SetMetallicCoefficient(const float& metallic_coef) { this->metallic_coef = metallic_coef; }
 
 	auto GetNormalCoefficient() const -> const float& { return normal_coef; }
 	void SetNormalCoefficient(const float& normal_coef) { this->normal_coef = normal_coef; }
@@ -82,7 +82,7 @@ private:
 
 	Color4 albedo_color;
 	float roughness_coef; //coefficient -> °Ô¼ö
-	float metalic_coef;
+	float metallic_coef;
 	float normal_coef;
 	float height_coef;
 

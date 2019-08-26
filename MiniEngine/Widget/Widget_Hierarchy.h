@@ -11,12 +11,20 @@ public:
 
 private:
 	void ShowHierarchy();
-	void ShowPopup();
+	void ShowMenuPopup();
 
 private:
-	void AddActor(const  std::shared_ptr<class Actor> &actor);
+	void AddActor(const std::shared_ptr<class Actor> &actor);
+
+	void ClickedItem();
+	void SelectedItem(const std::shared_ptr<class Actor> &actor);
 
 private:
 	auto CreateEmpty() -> std::shared_ptr<class Actor>;
 	void CreateStandardMesh(const MeshType &type);
+	void CreateCamera();
+
+private:
+	bool is_expand_to_show_actor = false;
+	std::shared_ptr<class Actor> empty_actor;
 };

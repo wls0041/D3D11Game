@@ -8,12 +8,15 @@ Material::Material(Context * context)
 	, cull_mode(D3D11_CULL_BACK)
 	, albedo_color(1.0f)
 	, roughness_coef(1.0f)
-	, metalic_coef(0.0f)
+	, metallic_coef(0.0f)
 	, normal_coef(0.0f)
 	, height_coef(0.0f)
 	, uv_tiling(1.0f)
 	, uv_offset(0.0f)
 {
+	ZeroMemory(&cpu_buffer, sizeof(MATERIAL_DATA));
+
+	SetStandardShader();
 }
 
 Material::~Material()
@@ -113,7 +116,7 @@ void Material::UpdateConstantBuffer()
 	if (!gpu_buffer)
 	{
 		gpu_buffer = std::make_shared<ConstantBuffer>(context);
-		gpu_buffer->Create<TRANSFORM_DATA>();
+		gpu_buffer->Create<MATERIAL_DATA>();
 	}
 
 	auto is_update = false; //같으면 갱신할 필요 없으므로 체크
@@ -121,7 +124,7 @@ void Material::UpdateConstantBuffer()
 	is_update |= cpu_buffer.tiling			!= uv_tiling ? true : false;
 	is_update |= cpu_buffer.offset			!= uv_offset ? true : false;
 	is_update |= cpu_buffer.roughness_coef	!= roughness_coef ? true : false;
-	is_update |= cpu_buffer.metallic_coef	!= metalic_coef ? true : false;
+	is_update |= cpu_buffer.metallic_coef	!= metallic_coef ? true : false;
 	is_update |= cpu_buffer.normal_coef		!= normal_coef ? true : false;
 	is_update |= cpu_buffer.height_coef		!= height_coef ? true : false;
 	is_update |= cpu_buffer.shading_mode	!= static_cast<float>(shading_mode) ? true : false;
@@ -138,7 +141,7 @@ void Material::UpdateConstantBuffer()
 	gpu_data->tiling		= cpu_buffer.tiling = uv_tiling;
 	gpu_data->offset		= cpu_buffer.offset = uv_offset;
 	gpu_data->roughness_coef= cpu_buffer.roughness_coef = roughness_coef;
-	gpu_data->metallic_coef	= cpu_buffer.metallic_coef = metalic_coef;
+	gpu_data->metallic_coef	= cpu_buffer.metallic_coef = metallic_coef;
 	gpu_data->normal_coef	= cpu_buffer.normal_coef = normal_coef;
 	gpu_data->height_coef	= cpu_buffer.height_coef = height_coef;
 	gpu_data->shading_mode	= cpu_buffer.shading_mode	= static_cast<float>(shading_mode);

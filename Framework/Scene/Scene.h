@@ -27,6 +27,9 @@ public:
 	void Update();
 
 private:
+	auto CreateCamera()->std::shared_ptr<class Actor>;
+
+private:
 	class Context* context;
 	class Renderer* renderer;
 

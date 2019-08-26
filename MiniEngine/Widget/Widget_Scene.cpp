@@ -5,15 +5,12 @@ Widget_Scene::Widget_Scene(Context * context)
     : IWidget(context)
 {
     title = "Scene";
-	window_flags |=
-		ImGuiWindowFlags_NoScrollbar |
-		ImGuiWindowFlags_NoScrollWithMouse; //마우스 움직일 때 자동으로 스크롤 되는 것 방지
+	window_flags |= ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse; //마우스 움직일 때 자동으로 스크롤 되는 것 방지
 
 	timer = context->GetSubsystem<Timer>();
 	renderer = context->GetSubsystem<Renderer>();
 
 	///////////////////////////////Test//////////////////////////////////
-	Editor_Helper::Get().LoadModel(Editor_Helper::Get().resource_manager->GetAssetDirectory(AssetType::Model) + "Cube.fbx");
 }
 
 void Widget_Scene::Render()
@@ -46,7 +43,7 @@ void Widget_Scene::ShowFrame()
 		renderer->GetFrameResource(),
 		ImVec2(static_cast<float>(frame_width), static_cast<float>(frame_height)),
 		ImVec2(0, 0),
-		ImVec2(0, 1),
+		ImVec2(1, 1),
 		ImVec4(1, 1, 1, 1),
 		ImColor(255, 0, 0, 255)
 	);

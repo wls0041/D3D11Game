@@ -8,6 +8,8 @@ enum class MeshType : uint
 	Cylinder,
 	Cone,
 	Sphere,
+	Plane,
+	Capsule,
 	Quad,
 	ScreenQuad,
 };

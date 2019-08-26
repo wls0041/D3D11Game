@@ -11,6 +11,7 @@ Scene::Scene(Context * context)
 	, is_added(false)
 {
 	renderer = context->GetSubsystem<Renderer>();
+	CreateCamera();
 }
 
 Scene::~Scene()
@@ -76,4 +77,14 @@ void Scene::Update()
 
 	for (auto& actor : actors) actor->Update();
 
+}
+
+auto Scene::CreateCamera() -> std::shared_ptr<class Actor>
+{
+	auto camera = CreateActor();
+	camera->SetName("MainCamera");
+	camera->GetTransform()->SetTranslation(Vector3(0.0f, 0.0f, -2.0));
+	camera->AddComponent<Camera>();
+
+	return camera;
 }

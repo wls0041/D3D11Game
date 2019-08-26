@@ -93,7 +93,7 @@ void Renderer::PassGBuffer()
 			transform->UpdateConstantBuffer(camera_view_proj); //Gbuffer.hlsl의 material_buffer, model_buffer 업데이트
 			command_list->SetConstantBuffer(2, ShaderScope::VS, transform->GetConstantBuffer());
 
-			command_list->DrawIndexed(mesh->GetIndexBuffer()->GetCount(), mesh->GetIndexBuffer()->GetOffset(), mesh->GetVertexBuffer()->GetCount());
+			command_list->DrawIndexed(mesh->GetIndexBuffer()->GetCount(), mesh->GetIndexBuffer()->GetOffset(), mesh->GetVertexBuffer()->GetOffset());
 		};
 
 		command_list->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

@@ -60,7 +60,7 @@ void Renderer::AcquireRenderables(Scene * scene)
 	is_acquire_renderables = true;
 
 	renderables.clear();
-	camera.reset(); //camera = nullptr;
+	camera = nullptr; //camera.reset();
 
 	auto actors = scene->GetAllActors();
 	for (const auto &actor : actors)
@@ -104,6 +104,30 @@ void Renderer::SortRenderables(std::vector<class Actor*>* actors)
 
 void Renderer::Render()
 {
+	if (!camera)
+	{
+		command_list->ClearRenderTarget(render_textures[RenderTargetType::Final], Color4::Black);
+		return;
+	}
+
+	if (renderables.empty())
+	{
+		command_list->ClearRenderTarget(render_textures[RenderTargetType::Final], Color4::Black);
+		return;
+	}
+
+	camera_near = camera->GetNearPlane();
+	camera_far = camera->GetFarPlane();
+	camera_view = camera->GetViewMatrix();
+	camera_proj = camera->GetProjectionMatrix();
+	camera_view_proj = camera_view * camera_proj;
+	camera_view_proj_inverse = camera_view_proj.Inverse();
+	camera_position = camera->GetTransform()->GetTranslation();
+
+	post_process_view = Matrix::LookAtLH(Vector3(0.0f, 0.0f, -camera_near), Vector3::Forward, Vector3::Up);
+	post_process_proj = Matrix::OrthoLH(resolution.x, resolution.y, camera_near, camera_far);
+	post_process_view_proj = post_process_view * post_process_proj;
+
 	PassMain();
 }
 

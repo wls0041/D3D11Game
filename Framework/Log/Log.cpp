@@ -2,16 +2,15 @@
 #include "Log.h"
 #include "ILogger.h"
 
-std::string Log::caller_name;
-bool Log::is_log_to_file = true;
+std::string                     Log::caller_name;
+bool                            Log::is_log_to_file = true;
 
-std::weak_ptr<class ILogger> Log::logger;
-std::ofstream Log::fout;
-std::mutex Log::log_mutex;
-std::string Log::log_file_name = "log.txt";
-std::vector<LogCommand> Log::log_buffer;
-bool Log::is_first_log = true;
-
+std::weak_ptr<class ILogger>    Log::logger;
+std::ofstream                   Log::fout;
+std::mutex                      Log::log_mutex;
+std::string                     Log::log_file_name = "log.txt";
+std::vector<LogCommand>         Log::log_buffer;
+bool                            Log::is_first_log = true;
 
 void Log::SetLogger(const std::weak_ptr<ILogger>& i_logger)
 {
@@ -35,13 +34,13 @@ void Log::Write(const char * text, const LogType & type) //*라 null체크 필요함
 
 	if (log_to_file) {
 		log_buffer.emplace_back(formatted_text, type);
-		log_buffer.emplace_back(formatted_text.c_str(), type);
+		LogToFile(formatted_text.c_str(), type);
 	}
 	else { 
 		//Editor에서 engine이 만들어진 후 log를 만들면 engine의 log가 파일로만 빠짐.
 		//화면에는 출력되지 않으므로 확인이 어려운데 이를 해결하기 위해 FlushBuffer()함수를 만듦
 		FlushBuffer();
-		log_buffer.emplace_back(formatted_text.c_str(), type);
+		LogToLogger(formatted_text.c_str(), type);
 	}
 
 	caller_name.clear();
