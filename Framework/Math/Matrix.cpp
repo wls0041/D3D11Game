@@ -309,9 +309,9 @@ Matrix::Matrix(const float & _11, const float & _12, const float & _13, const fl
 
 auto Matrix::GetScale() -> const Vector3
 {
-	int sign_x = Math::Sign(_11 * _12 * _13) < 0 ? -1 : 1;
-	int sign_y = Math::Sign(_21 * _22 * _23) < 0 ? -1 : 1;
-	int sign_z = Math::Sign(_31 * _32 * _33) < 0 ? -1 : 1;
+	int sign_x = Math::Sign(_11 * _12 * _13 * _14) < 0 ? -1 : 1;
+	int sign_y = Math::Sign(_21 * _22 * _23 * _24) < 0 ? -1 : 1;
+	int sign_z = Math::Sign(_31 * _32 * _33 * _34) < 0 ? -1 : 1;
 
 	return Vector3
 	(

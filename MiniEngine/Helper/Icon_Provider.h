@@ -2,10 +2,122 @@
 
 enum class IconType : uint
 {
+	Component_Option,
+	Component_Camera,
 	Component_Transform,
+	Component_Renderable,
+	Console_Info,
+	Console_Warning,
+	Console_Error,
+	Button_Play,
+	Button_Stop,
+	Button_Pause,
+	Thumbnail_Folder,
+	Thumbnail_File,
+	Thumbnail_Custom,
+};
+
+struct Thumbnail
+{
+	Thumbnail() = default;
+	Thumbnail(const IconType& type, std::shared_ptr<Texture> texture, const std::string& path)
+		: type(type), texture(texture), path(path)
+	{}
+
+	IconType type;
+	std::shared_ptr<Texture> texture;
+	std::string path;
 };
 
 class Icon_Provider final
 {
+public:
+	static Icon_Provider& Get()
+	{
+		static Icon_Provider instance;
+		return instance;
+	}
 
+	void Initialize(class Context* context);
+
+	auto GetShaderResourceFromType(const IconType& type)->ID3D11ShaderResourceView*;
+	auto GetShaderResourceFromPath(const std::string& path)->ID3D11ShaderResourceView*;
+	auto GetShaderResourceFromThumbnail(const Thumbnail& thumbnail)->ID3D11ShaderResourceView*;
+
+	auto Load(const std::string& path, const IconType& type = IconType::Thumbnail_Custom)->Thumbnail*;
+
+	auto ImageButton(const IconType& type, const float& size) -> const bool
+	{
+		bool is_pressed = ImGui::ImageButton
+		(
+			Icon_Provider::Get().GetShaderResourceFromType(type),
+			ImVec2(size, size)
+		);
+
+		return is_pressed;
+	}
+
+	auto ImageButton(const IconType& type, const ImVec2& size) -> const bool
+	{
+		bool is_pressed = ImGui::ImageButton
+		(
+			Icon_Provider::Get().GetShaderResourceFromType(type),
+			size
+		);
+
+		return is_pressed;
+	}
+
+	auto ImageButton(const Thumbnail& thumbnail, const float& size) -> const bool
+	{
+		bool is_pressed = ImGui::ImageButton
+		(
+			Icon_Provider::Get().GetShaderResourceFromThumbnail(thumbnail),
+			ImVec2(size, size)
+		);
+
+		return is_pressed;
+	}
+
+	auto ImageButton(const Thumbnail& thumbnail, const ImVec2& size) -> const bool
+	{
+		bool is_pressed = ImGui::ImageButton
+		(
+			Icon_Provider::Get().GetShaderResourceFromThumbnail(thumbnail),
+			size
+		);
+
+		return is_pressed;
+	}
+
+	auto ImageButton(const std::string& path, const float& size) -> const bool
+	{
+		bool is_pressed = ImGui::ImageButton
+		(
+			Icon_Provider::Get().GetShaderResourceFromPath(path),
+			ImVec2(size, size)
+		);
+
+		return is_pressed;
+	}
+
+	auto ImageButton(const std::string& path, const ImVec2& size) -> const bool
+	{
+		bool is_pressed = ImGui::ImageButton
+		(
+			Icon_Provider::Get().GetShaderResourceFromPath(path),
+			size
+		);
+
+		return is_pressed;
+	}
+private:
+	Icon_Provider() = default;
+	~Icon_Provider() = default;
+
+	auto GetThumbnailFromType(const IconType& type)->Thumbnail*;
+
+private:
+	class Context* context;
+	std::vector<Thumbnail> thumbnails;
 };

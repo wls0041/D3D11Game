@@ -34,6 +34,7 @@ Editor::Editor()
 	ApplyStyle();
 
 	Editor_Helper::Get().Initialize(context);
+	Icon_Provider::Get().Initialize(context);
 
 	widgets.emplace_back(std::make_unique<Widget_Console>(context));
 	widgets.emplace_back(std::make_unique<Widget_ProgressBar>(context));

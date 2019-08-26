@@ -45,7 +45,7 @@ void Widget_Console::Render()
             ImGui::GetStyle().Colors[*toggle ? ImGuiCol_ButtonActive : ImGuiCol_Button]
         );
 
-        if (ImGui::Button(type.c_str()))
+		if (ImGuiEx::ImageButton(type, 15.0f))
         {
             *toggle = !(*toggle);
             Console::is_update_scroll = true;
