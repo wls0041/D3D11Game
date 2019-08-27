@@ -37,13 +37,16 @@ namespace Inspector {
 		const auto original_pen_y = ImGui::GetCursorPosY();
 		ImGui::SetCursorPosY(original_pen_y + 5.0f);
 
-		//TODO : IconButton
+		Icon_Provider::Get().Image(type, 15.0f);
 
 		if (option) {
 			ImGui::SameLine(ImGui::GetWindowContentRegionWidth() * 0.973f);
 			ImGui::SetCursorPosY(original_pen_y + 1.5f);
 
-			//TOdO : IconButton
+			if (Icon_Provider::Get().ImageButton(name.c_str(), IconType::Component_Option, 12.0f)) {
+				Inspector::menu_id = name;
+				//ImGui::OpenPopup
+			}
 
 			if (menu_id == name) ComponentMenuOption(menu_id, component, removable);
 		}
@@ -75,7 +78,37 @@ void Widget_Inspector::Render()
 void Widget_Inspector::ShowTransform(std::shared_ptr<class Transform>& transform) const
 {
 	if (Inspector::ComponentBegin("Transform",  IconType::Component_Transform, transform, true, false)) {
+		auto position = transform->GetTranslation();
+		auto rotation = transform->GetRotation().ToEulerAngle();
+		auto scale = transform->GetScale();
+		
+		const auto show_float = [](const char *id, const char *label, float *value) { //id. 같은 xyz사용 하므로 헷갈리지 않도록 id사용
+			ImGui::PushItemWidth(100.0f);
+			ImGui::PushID(id);
+			ImGui::InputFloat(label, value, 1.0f, 1.0f, "%.3", ImGuiInputTextFlags_CharsDecimal);
+			ImGui::PopID();
+			ImGui::PopItemWidth();
+		};
 
+		ImGui::TextUnformatted("Position");
+		ImGui::SameLine(70.0f); show_float("##pos_x", "X", &position.x);
+		ImGui::SameLine();		show_float("##pos_y", "Y", &position.y);
+		ImGui::SameLine();		show_float("##pos_z", "Z", &position.z);
+
+		ImGui::TextUnformatted("Rotation");
+		ImGui::SameLine(70.0f); show_float("##rot_x", "X", &rotation.x);
+		ImGui::SameLine();		show_float("##rot_y", "Y", &rotation.y);
+		ImGui::SameLine();		show_float("##rot_z", "Z", &rotation.z);
+
+		ImGui::TextUnformatted("Scale");
+		ImGui::SameLine(70.0f); show_float("##sck_x", "X", &scale.x);
+		ImGui::SameLine();		show_float("##sck_y", "Y", &scale.y);
+		ImGui::SameLine();		show_float("##sck_z", "Z", &scale.z);
+	
+		transform->SetTranslation(position);
+		transform->SetRotation(Quaternion::QuaternionFromEulerAngle(rotation));
+		transform->SetScale(scale);
 	}
+
 	Inspector::ComponentEnd();
 }

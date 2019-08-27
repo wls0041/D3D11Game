@@ -37,7 +37,7 @@ void Widget_Console::Render()
 
     ImGui::SameLine();
 
-    const auto display_button = [this](const std::string& type, bool* toggle)
+    const auto display_button = [this](const IconType& type, bool* toggle)
     {
         ImGui::PushStyleColor
         (
@@ -45,7 +45,7 @@ void Widget_Console::Render()
             ImGui::GetStyle().Colors[*toggle ? ImGuiCol_ButtonActive : ImGuiCol_Button]
         );
 
-		if (ImGuiEx::ImageButton(type, 15.0f))
+		if (Icon_Provider::Get().ImageButton(type, 15.0f))
         {
             *toggle = !(*toggle);
             Console::is_update_scroll = true;
@@ -55,9 +55,9 @@ void Widget_Console::Render()
         ImGui::SameLine();
     };
 
-    display_button("Info", &is_show_info);
-    display_button("Warning", &is_show_warning);
-    display_button("Error", &is_show_error);
+    display_button(IconType::Console_Info, &is_show_info);
+    display_button(IconType::Console_Warning, &is_show_warning);
+    display_button(IconType::Console_Error, &is_show_error);
 
     Console::log_filter.Draw("Filter", -100.0f);
     ImGui::Separator();

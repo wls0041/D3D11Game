@@ -23,6 +23,12 @@ void Widget_Hierarchy::Render()
 	if (!is_visible) return;
 
 	ShowHierarchy();
+	if (ImGui::IsMouseReleased(0) && Hierarchy::clicked_actor) {
+		if (Hierarchy::hovered_actor && Hierarchy::hovered_actor->GetID() == Hierarchy::clicked_actor->GetID())
+			SelectedItem(Hierarchy::clicked_actor->shared_from_this());
+
+		Hierarchy::clicked_actor = nullptr;
+	}
 }
 
 void Widget_Hierarchy::ShowHierarchy()

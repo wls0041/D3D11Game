@@ -1,0 +1,1 @@
+Error : Texture2D::CreateTexture : Invalid parameter, failed to create ID3D11Texture2D, E_INVALIDARG

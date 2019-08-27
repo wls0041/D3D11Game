@@ -9,7 +9,7 @@ Texture::Texture(Context * context)
     , width(0)
     , height(0)
     , channels(0)
-    , array_size(0)
+    , array_size(1)
     , is_gray_scale(false)
     , is_transparent(false)
     , is_generate_mip_chain(true)
@@ -76,7 +76,34 @@ const bool Texture::SaveToFile(const std::string & path)
 
 const bool Texture::LoadFromFile(const std::string & path)
 {
-	return false;
+	auto file_path = FileSystem::GetRelativeFromPath(path);
+	if (!FileSystem::IsExistFile(file_path)) {
+		LOG_ERROR_F("Path \%s\" is invalid", file_path.c_str());
+		return false;
+	}
+	ClearMipChain();
+	
+	auto is_loading = false;
+	if (FileSystem::GetExtensionFromPath(file_path) == TEXTURE_BIN_EXTENSION) is_loading = Load_Native(file_path); //.texture는 우리가 binary로 바꾼 우리 파일
+	else if (FileSystem::IsSupportTextureFile(file_path)) is_loading = Load_Foreign(file_path, is_generate_mip_chain); //.png등은 우리가 바꾼 파일이 아닌 foreign파일
+
+	if (!is_loading) {
+		LOG_ERROR_F("Failed to Load \"%s\"", file_path.c_str());
+		return false;
+	}
+	if (width == 0 || height == 0 || channels == 0 || mip_chain.empty() || mip_chain.front().empty()) { //front->원본 이미지가 있는지 체크. if문 특성 때문에 이렇게 사용가능
+		LOG_ERROR_F("Invalid parameter");
+		return false;
+	}
+	
+	if (!CreateGpuResource()) {
+		LOG_ERROR_F("Failed to create gpu resource \"%s\"", resource_path.c_str());
+		return false;
+	}
+
+	if (FileSystem::GetExtensionFromPath(file_path) == TEXTURE_BIN_EXTENSION) ClearMipChain();
+
+	return true;
 }
 
 void Texture::SetViewport(const float & x, const float & y, const float & width, const float & height)
@@ -133,7 +160,15 @@ auto Texture::GetMipLevel(const uint & level) -> mip_level *
 
 auto Texture::Load_Foreign(const std::string & path, const bool & is_generate_mip_chain) -> const bool
 {
-	return false;
+	auto importer = context->GetSubsystem<ResourceManager>()->GetTextureImporter();
+	if (!importer->Load(path, this)) {
+		LOG_ERROR("Failed to load Texture");
+		return false;
+	}
+	SetResourcePath(FileSystem::GetPathWithoutExtension(path) + TEXTURE_BIN_EXTENSION);
+	SetResourceName(FileSystem::GetIntactFileNameFromPath(GetResourcePath()));
+
+	return true;
 }
 
 auto Texture::Load_Native(const std::string & path) -> const bool
