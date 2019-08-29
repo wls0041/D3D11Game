@@ -68,6 +68,8 @@ public:
 
 	const bool Initialize() override;
 
+	auto GetCamera() -> class Camera* { return camera.get(); }
+
 	auto GetFrameResource()->ID3D11ShaderResourceView*;
 
 	auto GetEditorOffset() const -> const Vector2& { return editor_offset; }

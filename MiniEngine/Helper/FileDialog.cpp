@@ -9,8 +9,7 @@ namespace Dialog
 	static bool is_hovered_window;
 	static std::string hovered_item_path;
 	static uint popup_id;
-
-	//TODO : Dragdrop
+	static DragDropPayload payload;
 }
 
 #define OPERATION_NAME  (operation == FileDialogOperation::Open) ? "Open" : (operation == FileDialogOperation::Load) ? "Load" : (operation == FileDialogOperation::Save) ? "Save" : "View"
@@ -299,14 +298,60 @@ void FileDialog::ShowBottom(bool * is_visible)
 
 void FileDialog::ItemDrag(FileDialogItem * item) const
 {
+	if (!item || type != FileDialogType::Browser) return;
+
+	if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) //id 없어도 dragdrop가능하게 함
+	{
+		const auto set_payload = [](const PayloadType& type, const std::string& path)
+		{
+			Dialog::payload.type = type;
+			Dialog::payload.data = path.c_str();
+			DragDropEvent::CreateDragDropPayload(Dialog::payload);
+		};
+
+		if (FileSystem::IsSupportModelFile(item->GetPath()))	set_payload(PayloadType::Model, item->GetPath());
+		if (FileSystem::IsSupportTextureFile(item->GetPath()))  set_payload(PayloadType::Texture, item->GetPath());
+
+		ImGui::Image(item->GetTexture()->GetShaderResourceView(), ImVec2(50.0f, 50.0f));
+
+		ImGui::EndDragDropSource();
+	}
 }
 
 void FileDialog::ItemClick(FileDialogItem * item) const
 {
+	if (!item || !Dialog::is_hovered_window) return; 
+	if (ImGui::IsItemClicked(1))
+	{
+		Dialog::popup_id = item->GetID();
+		ImGui::OpenPopup("##FileDialogPopup");
+	}
 }
 
 void FileDialog::ItemMenu(FileDialogItem * item)
 {
+	if (Dialog::popup_id != item->GetID()) return; 
+	if (!ImGui::BeginPopup("##FileDialogPopup")) return;
+
+	if (ImGui::MenuItem("Delete"))
+	{
+		if (item->IsDirectory())
+		{
+			FileSystem::Delete_Directory(item->GetPath());
+			is_update = true;
+		}
+		else
+		{
+			FileSystem::Delete_File(item->GetPath());
+			is_update = true;
+		}
+	}
+
+	ImGui::Separator();
+
+	if (ImGui::MenuItem("File Explorer")) FileSystem::OpenDirectoryWindow(item->GetPath());
+
+	ImGui::EndPopup();
 }
 
 auto FileDialog::SetDialogCurrentPath(const std::string & path) -> const bool
@@ -328,15 +373,50 @@ auto FileDialog::UpdateDialogFromDirectory(const std::string & path) -> const bo
 	items.clear();
 	items.shrink_to_fit();
 
-	//Get directories
 	auto directories = FileSystem::GetDirectoriesInDirectory(path);
 	for (const auto& directory : directories)
 		items.emplace_back(directory, *Icon_Provider::Get().Load(directory, IconType::Thumbnail_Folder));
 
-	//TODO : getfile
+	//Get files
+	std::vector<std::string> files;
+	switch (filter)
+	{
+	case FileDialogFilter::All:
+	{
+		files = FileSystem::GetFilesInDirectory(path);
+		for (const auto& file : files)
+			items.emplace_back(file, *Icon_Provider::Get().Load(file, IconType::Thumbnail_Custom));
+		break;
+	}
+	case FileDialogFilter::Scene:
+		break;
+	case FileDialogFilter::Model:
+	{
+		files = FileSystem::GetSupportModelFilesInDirectory(path);
+		for (const auto& file : files)
+			items.emplace_back(file, *Icon_Provider::Get().Load(file, IconType::Thumbnail_Custom));
+		break;
+	}
+	case FileDialogFilter::Texture:
+		files = FileSystem::GetSupportTextureFilesInDirectory(path);
+		for (const auto& file : files)
+			items.emplace_back(file, *Icon_Provider::Get().Load(file, IconType::Thumbnail_Custom));
+		break;
+	}
+
 	return true;
 }
 
 void FileDialog::MenuPopup()
 {
+	if (ImGui::IsMouseClicked(1) && Dialog::is_hovered_window && !Dialog::is_hovered_item) ImGui::OpenPopup("##MenuPopup");
+	if (!ImGui::BeginPopup("##MenuPopup")) return;
+	if (ImGui::MenuItem("Create Folder"))
+	{
+		FileSystem::Create_Directory(current_directory + "New_Folder");
+		is_update = true;
+	}
+	if (ImGui::MenuItem("File Explorer")) FileSystem::OpenDirectoryWindow(current_directory);
+
+	ImGui::EndPopup();
 }

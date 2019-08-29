@@ -211,6 +211,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Editor.h" />
+    <ClInclude Include="Helper\DragDropEvent.h" />
     <ClInclude Include="Helper\Editor_Helper.h" />
     <ClInclude Include="Helper\FileDialog.h" />
     <ClInclude Include="Helper\Icon_Provider.h" />

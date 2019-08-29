@@ -36,6 +36,7 @@ const bool Model::LoadFromFile(const std::string & path)
 		root_actor->GetTransform()->UpdateTransform();
 
 		SaveToFile(GetResourcePath());
+		return true;
 	}
 	return false;
 }

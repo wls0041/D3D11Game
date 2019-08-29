@@ -1,5 +1,9 @@
 #include "stdafx.h"
 #include "Widget_Scene.h"
+#include "Imgui/ImGuizmo.h"
+#include "Scene/Actor.h"
+#include "Scene/Component/Camera.h"
+#include "Scene/Component/Transform.h"
 
 Widget_Scene::Widget_Scene(Context * context)
     : IWidget(context)
@@ -16,6 +20,7 @@ Widget_Scene::Widget_Scene(Context * context)
 void Widget_Scene::Render()
 {
 	ShowFrame();
+	ShowTransformGizmo();
 }
 
 void Widget_Scene::ShowFrame()
@@ -47,4 +52,42 @@ void Widget_Scene::ShowFrame()
 		ImVec4(1, 1, 1, 1),
 		ImColor(255, 0, 0, 255)
 	);
+
+	if (auto payload = DragDropEvent::ReceiveDragDropPayload(PayloadType::Model))
+		Editor_Helper::Get().LoadModel(std::get<const char*>(payload->data));
+}
+
+void Widget_Scene::ShowTransformGizmo()
+{
+	if (Editor_Helper::Get().select_actor.expired()) return;
+
+	auto camera = renderer->GetCamera();
+	auto transform = Editor_Helper::Get().select_actor.lock()->GetTransform();
+
+	if (!camera || !transform) return;
+
+	static ImGuizmo::OPERATION operation(ImGuizmo::TRANSLATE);
+	static ImGuizmo::MODE mode(ImGuizmo::WORLD);
+
+	if (ImGui::IsKeyPressed(87)) //w
+		operation = ImGuizmo::TRANSLATE;
+	if (ImGui::IsKeyPressed(69)) //e
+		operation = ImGuizmo::ROTATE;
+	if (ImGui::IsKeyPressed(82)) //r
+		operation = ImGuizmo::SCALE;
+
+	auto offset = renderer->GetEditorOffset();
+	auto size = renderer->GetResolution();
+	auto view = camera->GetViewMatrix().Transpose();
+	auto proj = camera->GetProjectionMatrix().Transpose();
+	auto world = transform->GetWorldMatrix().Transpose();
+	
+	ImGuizmo::SetDrawlist();
+	ImGuizmo::SetRect(offset.x, offset.y, size.x, size.y);
+	ImGuizmo::Manipulate(view, proj, operation, mode, world);
+
+	world.Transpose();
+	transform->SetTranslation(world.GetTranslation());
+	transform->SetRotation(world.GetRotation());
+	transform->SetScale(world.GetScale());
 }

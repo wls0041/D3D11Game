@@ -11,6 +11,7 @@ public:
 
 private:
 	void ShowFrame();
+	void ShowTransformGizmo();
 
 private:
 	class Timer *timer = nullptr;

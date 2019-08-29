@@ -3,6 +3,8 @@
 class FileSystem final
 {
 public:
+	static void OpenDirectoryWindow(const std::string &directory);
+
 	static auto Create_Directory(const std::string& path) -> const bool;
 	static auto Delete_Directory(const std::string& path) -> const bool;
 	static auto Delete_File(const std::string& path) -> const bool;
@@ -22,9 +24,14 @@ public:
 
 	static auto GetDirectoriesInDirectory(const std::string& directory) -> const std::vector<std::string>;
 	static auto GetFilesInDirectory(const std::string& directory) -> const std::vector<std::string>;
+	static auto GetSupportModelFilesInDirectory(const std::string &directory) -> const std::vector<std::string>;
+	static auto GetSupportTextureFilesInDirectory(const std::string &directory) -> const std::vector<std::string>;
 
 	static auto GetSupportTextureFormats() -> const std::vector<std::string>& { return support_texture_formats; }
 	static auto GetSupportModelFormats() -> const std::vector<std::string>& { return support_model_formats; }
+
+	static auto GetSupportModelFilesFromPaths(const std::vector<std::string> &paths) -> const std::vector<std::string>;
+	static auto GetSupportTextureFilesFromPaths(const std::vector<std::string> &paths) -> const std::vector<std::string>;
 
 	static auto IsSupportTextureFile(const std::string& path) -> const bool;
 	static auto IsSupportModelFile(const std::string& path) -> const bool;

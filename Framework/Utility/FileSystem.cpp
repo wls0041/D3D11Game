@@ -1,6 +1,7 @@
 #include "Framework.h"
 #include "FileSystem.h"
 #include <filesystem>
+#include <shellapi.h>
 
 using namespace std::filesystem;
 
@@ -75,6 +76,11 @@ std::vector<std::string> FileSystem::support_model_formats
 	".b3d",
 	".ndo"
 };
+
+void FileSystem::OpenDirectoryWindow(const std::string & directory)
+{
+	ShellExecuteA(nullptr, nullptr, directory.c_str(), nullptr, nullptr, SW_SHOW);
+}
 
 auto FileSystem::Create_Directory(const std::string & path) -> const bool
 {
@@ -316,6 +322,40 @@ auto FileSystem::GetFilesInDirectory(const std::string & directory) -> const std
 		files.emplace_back(iter->path().generic_string());
 	}
 	return files;
+}
+
+auto FileSystem::GetSupportModelFilesInDirectory(const std::string & directory) -> const std::vector<std::string>
+{
+	return GetSupportModelFilesFromPaths(GetFilesInDirectory(directory));
+}
+
+auto FileSystem::GetSupportTextureFilesInDirectory(const std::string & directory) -> const std::vector<std::string>
+{
+	return GetSupportTextureFilesFromPaths(GetFilesInDirectory(directory));
+}
+
+auto FileSystem::GetSupportModelFilesFromPaths(const std::vector<std::string>& paths) -> const std::vector<std::string>
+{
+	std::vector<std::string> model_files;
+	for (const auto &path : paths)
+	{
+		if (!IsSupportModelFile(path)) continue; //path의 xml등 여타 파일은 무시하고 fbx만 뽑아옴
+		model_files.emplace_back(path);
+	}
+
+	return model_files;
+}
+
+auto FileSystem::GetSupportTextureFilesFromPaths(const std::vector<std::string>& paths) -> const std::vector<std::string>
+{
+	std::vector<std::string> texture_files;
+	for (const auto &path : paths)
+	{
+		if (!IsSupportTextureFile(path)) continue; 
+		texture_files.emplace_back(path);
+	}
+
+	return texture_files;
 }
 
 auto FileSystem::IsSupportTextureFile(const std::string & path) -> const bool

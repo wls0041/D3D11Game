@@ -5,7 +5,7 @@ class Widget_Project final : public IWidget
 {
 public:
     Widget_Project(class Context* context);
-    ~Widget_Project() = default;
+    ~Widget_Project();
 
     void Render() override;
 

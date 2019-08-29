@@ -14,7 +14,7 @@ enum class AssetType : uint
 	Script,
 };
 
-class ResourceManager : public ISubsystem
+class ResourceManager final : public ISubsystem
 {
 public:
 	ResourceManager(class Context* context);
@@ -28,20 +28,26 @@ public:
 	auto GetTextureImporter() -> class TextureImporter* { return texture_importer.get(); }
 	auto GetModelImporter() -> class ModelImporter* { return model_importer.get(); }
 
-	template <typename T> auto Load(const std::string& path) -> std::shared_ptr<T>;
-	template <typename T> auto GetResourceFromName(const std::string& name)->std::shared_ptr<T>;
-	template <typename T> auto GetResourceFromPath(const std::string& path)->std::shared_ptr<T>;
-	template <typename T> void RegisterResource(std::shared_ptr<T>& resource);
-	
-	void RegisterDirectory(const AssetType &asset_type, const std::string &directory);
+	template <typename T>
+	auto Load(const std::string& path)->std::shared_ptr<T>;
 
-	auto HasResource(const std::string &resource_name, const ResourceType &resource_type) -> const bool;
+	template <typename T>
+	auto GetResourceFromName(const std::string& name)->std::shared_ptr<T>;
+
+	template <typename T>
+	auto GetResourceFromPath(const std::string& path)->std::shared_ptr<T>;
+
+	template <typename T>
+	void RegisterResource(std::shared_ptr<T>& resource);
+	void RegisterDirectory(const AssetType& asset_type, const std::string& directory);
+
+	auto HasResource(const std::string& resource_name, const ResourceType& resource_type) -> const bool;
 
 	auto GetProjectDirectory() const -> const std::string& { return project_directory; }
-	void SetProjectDirectory(const std::string &directory);
+	void SetProjectDirectory(const std::string& directory);
 
 	auto GetAssetDirectory() const -> const std::string { return std::string("../../_Assets/"); }
-	auto GetAssetDirectory(const AssetType &asset_type) -> const std::string&;
+	auto GetAssetDirectory(const AssetType& asset_type) -> const std::string&;
 
 private:
 	typedef std::vector<std::shared_ptr<IResource>> resource_group;
@@ -49,24 +55,23 @@ private:
 	std::mutex resource_mutex;
 
 	std::map<AssetType, std::string> resource_directories;
-	std::string project_directory; //기본적으로 사용하는 Assets외에 이 프로젝트에서만 사용하는 asset에 대한 폴더를 따로 생성
+	std::string project_directory;
 
 	std::shared_ptr<class TextureImporter> texture_importer;
 	std::shared_ptr<class ModelImporter> model_importer;
-
-	//std::shared_ptr<IResource> null_resource; 참조가 붙어있었다면 nullptr이 아니라 이렇게 내보내야 함
 };
 
 template<typename T>
 inline auto ResourceManager::Load(const std::string & path) -> std::shared_ptr<T>
 {
-	static_assert(std::is_base_of<IResource, T>::value, "Provided type doesn't implement IResource");
+	static_assert(std::is_base_of<IResource, T>::value, "Provided type does not implement IResource");
 
 	if (!FileSystem::IsExistFile(path))
 	{
 		LOG_ERROR_F("Path \"%s\" is invalid", path.c_str());
 		return nullptr;
 	}
+
 	auto relative_path = FileSystem::GetRelativeFromPath(path);
 	auto resource_name = FileSystem::GetIntactFileNameFromPath(relative_path);
 
@@ -79,8 +84,9 @@ inline auto ResourceManager::Load(const std::string & path) -> std::shared_ptr<T
 
 	RegisterResource<T>(resource);
 
-	if (!resource->LoadFromFile(relative_path)) {
-		LOG_ERROR_F("Failed to load \"$s\"", relative_path.c_str());
+	if (!resource->LoadFromFile(relative_path))
+	{
+		LOG_ERROR_F("Failed to load \"%s\"", relative_path.c_str());
 		return nullptr;
 	}
 
@@ -106,7 +112,7 @@ inline auto ResourceManager::GetResourceFromPath(const std::string & path) -> st
 	static_assert(std::is_base_of<IResource, T>::value, "Provided type does not implement IResource");
 	for (auto& resource : resource_groups[IResource::DeduceResourceType<T>()])
 	{
-		if (resouce->GetResourcePath() == path)
+		if (resource->GetResourcePath() == path)
 			return std::static_pointer_cast<T>(resource);
 	}
 

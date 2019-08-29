@@ -32,7 +32,7 @@ void Renderable::SetStandardMaterial()
 	}
 
 	material = std::make_shared<Material>(context);
-	material->SetAlbedoColor({ 0.6f, 0.6f, 0.6f, 1.0f });
+	material->SetAlbedoColor(Color4(0.6f, 0.6f, 0.6f, 1.0f));
 	material->SetStandardShader();
 	material->SetResourceName("Standard");
 

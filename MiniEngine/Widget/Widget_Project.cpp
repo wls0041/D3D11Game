@@ -18,6 +18,8 @@ Widget_Project::Widget_Project(Context * context)
 	file_dialog_view = std::make_unique<FileDialog>(context, FileDialogType::Browser, FileDialogOperation::Load, FileDialogFilter::All, false);
 }
 
+Widget_Project::~Widget_Project() = default;
+
 void Widget_Project::Render()
 {
 	if (!is_visible) return;
