@@ -11,4 +11,7 @@ public:
 
 private:
 
+private:
+	std::unique_ptr<class FileDialog> file_dialog_view;
+	std::unique_ptr<class FileDialog> file_dialog_load;
 };

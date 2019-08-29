@@ -288,6 +288,36 @@ auto FileSystem::GetWorkingDirectory() -> const std::string
 	return current_path().generic_string() + "/";
 }
 
+auto FileSystem::GetDirectoriesInDirectory(const std::string & directory) -> const std::vector<std::string>
+{
+	std::vector<std::string> subDirectories;
+
+	directory_iterator endIter;
+	for (directory_iterator iter(directory); iter != endIter; iter++)
+	{
+		if (!is_directory(iter->status())) continue;
+
+		subDirectories.emplace_back(iter->path().generic_string());
+	}
+
+	return subDirectories;
+}
+
+auto FileSystem::GetFilesInDirectory(const std::string & directory) -> const std::vector<std::string>
+{
+	std::vector<std::string> files;
+
+	directory_iterator endIter;
+	for (directory_iterator iter(directory); iter != endIter; iter++)
+	{
+		if (!is_regular_file(iter->status()))
+			continue;
+
+		files.emplace_back(iter->path().generic_string());
+	}
+	return files;
+}
+
 auto FileSystem::IsSupportTextureFile(const std::string & path) -> const bool
 {
 	auto file_extension = GetExtensionFromPath(path);

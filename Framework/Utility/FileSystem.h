@@ -20,6 +20,9 @@ public:
 	static auto GetParentDirectory(const std::string& path) -> const std::string;
 	static auto GetWorkingDirectory() -> const std::string;
 
+	static auto GetDirectoriesInDirectory(const std::string& directory) -> const std::vector<std::string>;
+	static auto GetFilesInDirectory(const std::string& directory) -> const std::vector<std::string>;
+
 	static auto GetSupportTextureFormats() -> const std::vector<std::string>& { return support_texture_formats; }
 	static auto GetSupportModelFormats() -> const std::vector<std::string>& { return support_model_formats; }
 
