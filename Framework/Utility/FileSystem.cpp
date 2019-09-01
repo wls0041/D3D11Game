@@ -79,7 +79,7 @@ std::vector<std::string> FileSystem::support_model_formats
 
 void FileSystem::OpenDirectoryWindow(const std::string & directory)
 {
-	ShellExecuteA(nullptr, nullptr, directory.c_str(), nullptr, nullptr, SW_SHOW);
+	ShellExecuteA(nullptr, nullptr, nullptr, nullptr, directory.c_str(), SW_SHOW);
 }
 
 auto FileSystem::Create_Directory(const std::string & path) -> const bool

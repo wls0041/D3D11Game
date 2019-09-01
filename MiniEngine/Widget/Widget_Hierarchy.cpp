@@ -86,8 +86,21 @@ void Widget_Hierarchy::AddActor(const std::shared_ptr<class Actor>& actor)
 	ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_AllowItemOverlap;
 	flags = childs.empty() ? ImGuiTreeNodeFlags_Leaf : ImGuiTreeNodeFlags_OpenOnArrow; //자식이 있으면 옆에 삼각형 만들고 누르면 열리게 함
 
-	if (const auto selected_actor = Editor_Helper::Get().select_actor.lock()) {
-		//TODO : transform 만들고 //클릭관련 세팅
+	if (const auto selected_actor = Editor_Helper::Get().select_actor.lock()) 
+	{
+		const auto is_selected = selected_actor->GetID() == actor->GetID();
+		flags |= is_selected ? ImGuiTreeNodeFlags_Selected : ImGuiTreeNodeFlags_None;
+
+		if (is_expand_to_show_actor)
+		{
+			if (selected_actor->GetTransform()->IsDescendant(actor->GetTransform().get()))
+			{
+				ImGui::SetNextTreeNodeOpen(true);
+
+				if (is_selected)
+					is_expand_to_show_actor = false;
+			}
+		}
 	}
 
 	const auto is_node_open = ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<intptr_t>(actor->GetID())), flags, actor->GetName().c_str());

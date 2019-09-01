@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Transform.h"
 #include "Renderable.h"
+#include "Scene/Actor.h"
 
 IComponent::IComponent(Context * context, Actor * actor, Transform * transform)
 	: context(context)
@@ -12,6 +13,14 @@ IComponent::IComponent(Context * context, Actor * actor, Transform * transform)
 	, is_enabled(true)
 {
 	id = GUID_Generator::Generate();
+}
+
+auto IComponent::GetActorName() const -> const std::string
+{
+	if (!actor)
+		return "";
+
+	return actor->GetName();
 }
 
 void IComponent::SetAttributes(const std::vector<Attribute>& attributes)

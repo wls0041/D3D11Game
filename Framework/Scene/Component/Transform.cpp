@@ -1,6 +1,7 @@
 #include "Framework.h"
 #include "Transform.h"
-#include "../Actor.h"
+#include "Scene/Scene.h"
+#include "Scene/Actor.h"
 
 Transform::Transform(Context * context, Actor * actor, Transform * transform)
 	: IComponent(context, actor, transform)
@@ -90,29 +91,136 @@ auto Transform::GetForward() -> const Vector3
 	return local_rotation * Vector3::Forward;
 }
 
-void Transform::SetParent(Transform * transform)
+void Transform::SetParent(Transform * new_parent)
 {
+	if (!new_parent)
+	{
+		DetatchChild();
+		return;
+	}
+
+	if (new_parent->GetID() == GetID())
+		return;
+
+	if (HasParent())
+	{
+		if (parent->GetID() == new_parent->GetID())
+			return;
+	}
+
+	if (new_parent->IsDescendant(this))
+	{
+		if (HasParent())
+		{
+			for (const auto& child : childs)
+				child->SetParent(parent);
+		}
+		else
+		{
+			for (const auto& child : childs)
+				child->DetatchChild();
+		}
+	}
+
+	auto old_parent = parent;
+	parent = new_parent;
+
+	if (old_parent)
+		old_parent->AcquireChild();
+
+	if (parent)
+		parent->AcquireChild();
+
+	UpdateTransform();
 }
 
 auto Transform::GetChildFromIndex(const uint & index) -> Transform *
 {
+	if (!HasChilds())
+	{
+		LOG_WARNING(GetActorName() + "has no children");
+		return nullptr;
+	}
+
+	if (index >= GetChildCount())
+	{
+		LOG_WARNING("There is no child width an index of \"" + std::to_string(index) + "\"");
+		return nullptr;
+	}
+
+	return childs[index];
+}
+
+auto Transform::GetChildFromName(const std::string & name) -> Transform *
+{
+	for (const auto& child : childs)
+	{
+		if (child->GetActorName() == name)
+			return child;
+	}
 	return nullptr;
 }
 
 void Transform::AddChild(Transform * child)
 {
+	if (!child)
+		return;
+
+	if (child->GetID() == GetID())
+		return;
+
+	child->SetParent(this);
 }
 
-void Transform::DetachChild()
+void Transform::DetatchChild()
 {
+	if (!HasParent())
+		return;
+
+	auto temp_parent = parent;
+	parent = nullptr;
+
+	UpdateTransform();
+	if (temp_parent)
+		temp_parent->AcquireChild();
 }
 
 void Transform::AcquireChild()
 {
+	childs.clear();
+	childs.shrink_to_fit();
+
+	auto scene = context->GetSubsystem<SceneManager>()->GetCurrentScene();
+	if (scene)
+	{
+		auto actors = scene->GetAllActors();
+		for (const auto& actor : actors)
+		{
+			if (!actor)
+				continue;
+
+			auto child = actor->GetTransform();
+
+			if (!child->HasParent())
+				continue;
+
+			if (child->GetParent()->GetID() == GetID())
+			{
+				childs.emplace_back(child.get());
+				child->AcquireChild();
+			}
+		}
+	}
 }
 
 auto Transform::IsDescendant(Transform * transform) const -> const bool
 {
+	auto descendants = transform->GetChilds();
+	for (const auto& descendant : descendants)
+	{
+		if (descendant->GetID() == GetID())
+			return true;
+	}
 	return false;
 }
 

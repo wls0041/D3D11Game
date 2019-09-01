@@ -208,6 +208,7 @@
     <ClCompile Include="Widget\Widget_ProgressBar.cpp" />
     <ClCompile Include="Widget\Widget_Project.cpp" />
     <ClCompile Include="Widget\Widget_Scene.cpp" />
+    <ClCompile Include="Widget\Widget_ToolBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Editor.h" />
@@ -235,6 +236,7 @@
     <ClInclude Include="Widget\Widget_ProgressBar.h" />
     <ClInclude Include="Widget\Widget_Project.h" />
     <ClInclude Include="Widget\Widget_Scene.h" />
+    <ClInclude Include="Widget\Widget_ToolBar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

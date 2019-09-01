@@ -42,6 +42,7 @@ public:
 
 	auto GetID() const -> const uint& { return id; }
 	auto GetActor() const -> class Actor* { return actor; }
+	auto GetActorName() const -> const std::string;
 	auto GetTransform() const -> class Transform* { return transform; }
 
 	auto GetComponentType() const -> const ComponentType& { return component_type; }

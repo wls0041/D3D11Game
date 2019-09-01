@@ -1,16 +1,23 @@
 #include "stdafx.h"
 #include "Editor.h"
-#include "./ImGui/imgui_impl_win32.h"
-#include "./ImGui/imgui_impl_dx11.h"
-#include "./Widget/Widget_MenuBar.h"
-#include "./Widget/Widget_Console.h"
-#include "./Widget/Widget_Hierarchy.h"
-#include "./Widget/Widget_Inspector.h"
-#include "./Widget/Widget_Project.h"
-#include "./Widget/Widget_Scene.h"
-#include "./Widget/Widget_ProgressBar.h"
+#include "ImGui/imgui_impl_win32.h"
+#include "ImGui/imgui_impl_dx11.h"
+#include "Widget/Widget_MenuBar.h"
+#include "Widget/Widget_Console.h"
+#include "Widget/Widget_Hierarchy.h"
+#include "Widget/Widget_Inspector.h"
+#include "Widget/Widget_Project.h"
+#include "Widget/Widget_Scene.h"
+#include "Widget/Widget_ProgressBar.h"
+#include "Widget/Widget_ToolBar.h"
 
 #define DOCKING_ENABLED ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable
+
+namespace _Editor
+{
+	IWidget* menu_bar = nullptr;
+	IWidget* tool_bar = nullptr;
+}
 
 Editor::Editor()
 	: is_using_dock_space(true)
@@ -36,10 +43,15 @@ Editor::Editor()
 	Editor_Helper::Get().Initialize(context);
 	Icon_Provider::Get().Initialize(context);
 
+	widgets.emplace_back(std::make_unique<Widget_MenuBar>(context));
+	_Editor::menu_bar = widgets.back().get();
+
+	widgets.emplace_back(std::make_unique<Widget_ToolBar>(context));
+	_Editor::tool_bar = widgets.back().get();
+
 	widgets.emplace_back(std::make_unique<Widget_Console>(context));
 	widgets.emplace_back(std::make_unique<Widget_ProgressBar>(context));
-	widgets.emplace_back(std::make_unique<Widget_MenuBar>(context));
-	widgets.emplace_back(std::make_unique<Widget_Console>(context));
+
 	widgets.emplace_back(std::make_unique<Widget_Hierarchy>(context));
 	widgets.emplace_back(std::make_unique<Widget_Inspector>(context));
 	widgets.emplace_back(std::make_unique<Widget_Project>(context));
@@ -107,8 +119,10 @@ void Editor::BeginDockspace()
 
 	auto viewport = ImGui::GetMainViewport();
 
-	ImGui::SetNextWindowPos(viewport->Pos);
-	ImGui::SetNextWindowSize(viewport->Size);
+	ImVec2 offset = ImVec2(0.0f, _Editor::menu_bar->GetHeight() + _Editor::tool_bar->GetHeight());
+
+	ImGui::SetNextWindowPos(viewport->Pos + offset);
+	ImGui::SetNextWindowSize(viewport->Size - offset);
 	ImGui::SetNextWindowViewport(viewport->ID);
 	ImGui::SetNextWindowBgAlpha(0.0f);
 

@@ -32,8 +32,8 @@ const bool Model::LoadFromFile(const std::string & path)
 
 	if (context->GetSubsystem<ResourceManager>()->GetModelImporter()->Load(this, path))
 	{
-		root_actor->GetTransform()->SetScale(Vector3(0.0075f, 0.0075f, 0.0075f));
-		root_actor->GetTransform()->UpdateTransform();
+		//root_actor->GetTransform()->SetScale(Vector3(0.0075f, 0.0075f, 0.0075f));
+		//root_actor->GetTransform()->UpdateTransform();
 
 		SaveToFile(GetResourcePath());
 		return true;

@@ -121,7 +121,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderFile>Framework.h</PrecompiledHeaderFile>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
-      <AdditionalIncludeDirectories>.\;$(SolutionDir)..\_Libraries\Assimp_5.0.0\;$(SolutionDir)..\_Libraries\FreeImage_3.18.0\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;$(SolutionDir)..\_Libraries\Assimp_5.0.0\;$(SolutionDir)..\_Libraries\FreeImage_3.18.0\;$(SolutionDir)..\_Libraries\AngelScript_2.33.0\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -129,7 +129,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\_Libraries\Lib_x64;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp_debug.lib;FreeImageLib_debug.lib;IrrXML_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp_debug.lib;FreeImageLib_debug.lib;IrrXML_debug.lib;angelscript_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
       <Command>copy /Y "$(OutDir)$(ProjectName).lib" "..\..\_Libraries\Lib_x64\"</Command>
@@ -194,6 +194,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\Subsystem\Renderer.h" />
     <ClInclude Include="Core\Subsystem\ResourceManager.h" />
     <ClInclude Include="Core\Subsystem\SceneManager.h" />
+    <ClInclude Include="Core\Subsystem\Scripting.h" />
     <ClInclude Include="Core\Subsystem\Thread.h" />
     <ClInclude Include="Core\Subsystem\Timer.h" />
     <ClInclude Include="Core\Window.h" />
@@ -224,8 +225,12 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Scene\Component\Camera.h" />
     <ClInclude Include="Scene\Component\IComponent.h" />
     <ClInclude Include="Scene\Component\Renderable.h" />
+    <ClInclude Include="Scene\Component\Script.h" />
     <ClInclude Include="Scene\Component\Transform.h" />
     <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Script\Script_Instance.h" />
+    <ClInclude Include="Script\Script_Interface.h" />
+    <ClInclude Include="Script\Script_Module.h" />
     <ClInclude Include="Shader\Shader.h" />
     <ClInclude Include="Shader\Standard_Shader.h" />
     <ClInclude Include="Utility\FileStream.h" />
@@ -250,6 +255,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Core\Subsystem\Renderer_passes.cpp" />
     <ClCompile Include="Core\Subsystem\ResourceManager.cpp" />
     <ClCompile Include="Core\Subsystem\SceneManager.cpp" />
+    <ClCompile Include="Core\Subsystem\Scripting.cpp" />
     <ClCompile Include="Core\Subsystem\Thread.cpp" />
     <ClCompile Include="Core\Subsystem\Timer.cpp" />
     <ClCompile Include="Framework.cpp">
@@ -279,8 +285,12 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Scene\Component\Camera.cpp" />
     <ClCompile Include="Scene\Component\IComponent.cpp" />
     <ClCompile Include="Scene\Component\Renderable.cpp" />
+    <ClCompile Include="Scene\Component\Script.cpp" />
     <ClCompile Include="Scene\Component\Transform.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Script\Script_Instance.cpp" />
+    <ClCompile Include="Script\Script_Interface.cpp" />
+    <ClCompile Include="Script\Script_Module.cpp" />
     <ClCompile Include="Shader\Shader.cpp" />
     <ClCompile Include="Shader\Standard_Shader.cpp" />
     <ClCompile Include="Utility\FileStream.cpp" />

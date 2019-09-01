@@ -46,14 +46,15 @@ public:
 	//////////////////Hierarchy//////////////////
 	auto GetRoot() -> Transform* { return HasParent() ? parent->GetRoot() : this; }
 	auto GetParent() -> Transform* { return parent; }
-	void SetParent(Transform *transform);
+	void SetParent(Transform* new_parent);
 
 	auto GetChilds() const -> const std::vector<Transform*>& { return childs; }
-	auto GetChildFromIndex(const uint &index) -> Transform*;
+	auto GetChildFromIndex(const uint& index)->Transform*;
+	auto GetChildFromName(const std::string& name)->Transform*;
 	auto GetChildCount() const -> const uint { return static_cast<uint>(childs.size()); }
 	void AddChild(Transform *child);
 
-	void DetachChild();
+	void DetatchChild();
 	void AcquireChild();
 
 	auto IsRoot() const -> const bool { return !HasParent(); }

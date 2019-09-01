@@ -16,6 +16,7 @@ Engine::Engine()
 	context->RegisterSubsystem<Input>();
 	context->RegisterSubsystem<Thread>();
     context->RegisterSubsystem<Graphics>();
+	context->RegisterSubsystem<Scripting>();
 	context->RegisterSubsystem<ResourceManager>();
 	context->RegisterSubsystem<SceneManager>();
 	context->RegisterSubsystem<Renderer>();

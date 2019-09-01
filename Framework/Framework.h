@@ -85,6 +85,7 @@ typedef unsigned int uint;
 #include "./Core/Subsystem/Input.h"
 #include "./Core/Subsystem/Thread.h"
 #include "./Core/Subsystem/Graphics.h"
+#include "./Core/Subsystem/Scripting.h"
 #include "./Core/Subsystem/ResourceManager.h"
 #include "./Core/Subsystem/SceneManager.h"
 #include "./Core/Subsystem/Renderer.h"

@@ -78,7 +78,7 @@ const bool Texture::LoadFromFile(const std::string & path)
 {
 	auto file_path = FileSystem::GetRelativeFromPath(path);
 	if (!FileSystem::IsExistFile(file_path)) {
-		LOG_ERROR_F("Path \%s\" is invalid", file_path.c_str());
+		LOG_ERROR_F("Path \"%s\" is invalid", file_path.c_str());
 		return false;
 	}
 	ClearMipChain();

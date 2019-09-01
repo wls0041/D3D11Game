@@ -62,6 +62,11 @@
     <ClInclude Include="Shader\Shader.h" />
     <ClInclude Include="Shader\Standard_Shader.h" />
     <ClInclude Include="Scene\Component\Renderable.h" />
+    <ClInclude Include="Scene\Component\Script.h" />
+    <ClInclude Include="Core\Subsystem\Scripting.h" />
+    <ClInclude Include="Script\Script_Instance.h" />
+    <ClInclude Include="Script\Script_Interface.h" />
+    <ClInclude Include="Script\Script_Module.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -114,5 +119,10 @@
     <ClCompile Include="Shader\Standard_Shader.cpp" />
     <ClCompile Include="Scene\Component\Renderable.cpp" />
     <ClCompile Include="Core\Subsystem\Renderer_passes.cpp" />
+    <ClCompile Include="Scene\Component\Script.cpp" />
+    <ClCompile Include="Core\Subsystem\Scripting.cpp" />
+    <ClCompile Include="Script\Script_Instance.cpp" />
+    <ClCompile Include="Script\Script_Interface.cpp" />
+    <ClCompile Include="Script\Script_Module.cpp" />
   </ItemGroup>
 </Project>
