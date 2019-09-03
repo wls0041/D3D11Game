@@ -311,6 +311,7 @@ void FileDialog::ItemDrag(FileDialogItem * item) const
 
 		if (FileSystem::IsSupportModelFile(item->GetPath()))	set_payload(PayloadType::Model, item->GetPath());
 		if (FileSystem::IsSupportTextureFile(item->GetPath()))  set_payload(PayloadType::Texture, item->GetPath());
+		if (FileSystem::IsSupportScriptFile(item->GetPath()))	set_payload(PayloadType::Script, item->GetPath());
 
 		ImGui::Image(item->GetTexture()->GetShaderResourceView(), ImVec2(50.0f, 50.0f));
 

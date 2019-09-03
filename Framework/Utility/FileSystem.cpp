@@ -76,6 +76,8 @@ std::vector<std::string> FileSystem::support_model_formats
 	".b3d",
 	".ndo"
 };
+	
+std::vector<std::string> FileSystem::support_script_formats { ".as" };
 
 void FileSystem::OpenDirectoryWindow(const std::string & directory)
 {
@@ -376,6 +378,19 @@ auto FileSystem::IsSupportModelFile(const std::string & path) -> const bool
 	auto file_extension = GetExtensionFromPath(path);
 
 	auto support_formats = GetSupportModelFormats();
+	for (const auto& format : support_formats)
+	{
+		if (file_extension == format || file_extension == ToUpper(format))
+			return true;
+	}
+	return false;
+}
+
+auto FileSystem::IsSupportScriptFile(const std::string & path) -> const bool
+{
+	auto file_extension = GetExtensionFromPath(path);
+
+	auto support_formats = GetSupportScriptFormats();
 	for (const auto& format : support_formats)
 	{
 		if (file_extension == format || file_extension == ToUpper(format))

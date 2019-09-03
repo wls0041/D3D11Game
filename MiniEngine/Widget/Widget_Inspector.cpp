@@ -2,6 +2,7 @@
 #include "Widget_Inspector.h"
 #include "Scene/Actor.h"
 #include "Scene/Component/Transform.h"
+#include "Scene/Component/Script.h"
 
 namespace Inspector {
 	static std::string menu_id;
@@ -45,7 +46,7 @@ namespace Inspector {
 
 			if (Icon_Provider::Get().ImageButton(name.c_str(), IconType::Component_Option, 12.0f)) {
 				Inspector::menu_id = name;
-				//ImGui::OpenPopup
+				ImGui::OpenPopup(Inspector::menu_id.c_str());
 			}
 
 			if (menu_id == name) ComponentMenuOption(menu_id, component, removable);
@@ -69,14 +70,22 @@ void Widget_Inspector::Render()
 {
 	ImGui::PushItemWidth(Inspector::max_width);
 
-	if (auto actor = Editor_Helper::Get().select_actor.lock()) {
+	if (auto actor = Editor_Helper::Get().select_actor.lock())
+	{
 		ShowTransform(actor->GetComponent<Transform>());
+		ShowScript(actor->GetComponent<Script>());
 	}
+
+	ShowAddComponentButton();
+	AddComponentDragDrop();
+
 	ImGui::PopItemWidth();
 }
 
 void Widget_Inspector::ShowTransform(std::shared_ptr<class Transform>& transform) const
 {
+	if (!transform) return;
+
 	if (Inspector::ComponentBegin("Transform",  IconType::Component_Transform, transform, true, false)) {
 		auto position = transform->GetTranslation();
 		auto rotation = transform->GetRotation().ToEulerAngle();
@@ -85,7 +94,7 @@ void Widget_Inspector::ShowTransform(std::shared_ptr<class Transform>& transform
 		const auto show_float = [](const char *id, const char *label, float *value) { //id. 같은 xyz사용 하므로 헷갈리지 않도록 id사용
 			ImGui::PushItemWidth(100.0f);
 			ImGui::PushID(id);
-			ImGui::InputFloat(label, value, 1.0f, 1.0f, "%.3", ImGuiInputTextFlags_CharsDecimal);
+			ImGui::InputFloat(label, value, 1.0f, 1.0f, "%.3f", ImGuiInputTextFlags_CharsDecimal);
 			ImGui::PopID();
 			ImGui::PopItemWidth();
 		};
@@ -111,4 +120,61 @@ void Widget_Inspector::ShowTransform(std::shared_ptr<class Transform>& transform
 	}
 
 	Inspector::ComponentEnd();
+}
+
+void Widget_Inspector::ShowScript(std::shared_ptr<class Script>& script)
+{
+	if (!script) return;
+	if (Inspector::ComponentBegin(script->GetScriptName(), IconType::Component_Script, script)) {
+		auto script_name = script->GetScriptName();
+
+		ImGui::TextUnformatted("Script");
+		ImGui::SameLine();
+		ImGui::PushID("##ScriptName");
+		ImGui::PushItemWidth(200.0f);
+		{
+			ImGui::InputText("", &script_name, ImGuiInputTextFlags_ReadOnly);
+
+			if (auto payload = DragDropEvent::ReceiveDragDropPayload(PayloadType::Script))
+				script->SetScript(std::get<const char*>(payload->data)); //dragdrop은 바로 위의 특정 아이템에 이어지므로 inputText바로 아래에 적어야 한다.
+
+			ImGui::SameLine();
+			if (ImGui::Button("Edit"))
+			{
+
+			}
+		}
+		ImGui::PopItemWidth();
+		ImGui::PopID();
+	}
+	Inspector::ComponentEnd();
+}
+
+void Widget_Inspector::ShowAddComponentButton()
+{
+	ImGui::SetCursorPosX(ImGui::GetWindowWidth() * 0.5f - 50.0f);
+	ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f);
+
+	if (ImGui::Button("Add Component")) ImGui::OpenPopup("##ComponentPopup");
+
+	ShowComponentPopup();
+}
+
+void Widget_Inspector::ShowComponentPopup()
+{
+	if (ImGui::BeginPopup("##ComponentPopup")) {
+		if (auto actor = Editor_Helper::Get().select_actor.lock()) {
+			if (ImGui::MenuItem("Script")) actor->AddComponent<Script>();
+		}
+
+		ImGui::EndPopup();
+	}
+}
+
+void Widget_Inspector::AddComponentDragDrop()
+{
+	if (auto payload = DragDropEvent::ReceiveDragDropPayload(PayloadType::Script)) {
+		if (auto script_component = Editor_Helper::Get().select_actor.lock()->AddComponent<Script>())
+			script_component->SetScript(std::get<const char*>(payload->data));
+	}
 }

@@ -26,8 +26,8 @@ public:
 	auto GetMeshType() const -> const MeshType& { return mesh_type; }
 	void SetMeshType(const MeshType &type);
 	
-	auto GetPrimitiveTopology() const -> const D3D11_PRIMITIVE_TOPOLOGY& { return topology; }
-	auto SetPrimitiveTopology(const D3D11_PRIMITIVE_TOPOLOGY &topology) { this->topology = topology; }
+	auto GetPrimitiveTopology() const -> const D3D11_PRIMITIVE_TOPOLOGY& { return primitive_topology; }
+	auto SetPrimitiveTopology(const D3D11_PRIMITIVE_TOPOLOGY &primitive_topology) { this->primitive_topology = primitive_topology; }
 
 	auto GetVertexBuffer() -> const std::shared_ptr<VertexBuffer>& { return vertex_buffer; }
 	auto GetIndexBuffer() -> const std::shared_ptr<IndexBuffer>& { return index_buffer; }
@@ -37,6 +37,6 @@ public:
 private:
 	std::shared_ptr<VertexBuffer> vertex_buffer;
 	std::shared_ptr<IndexBuffer> index_buffer;
-	D3D11_PRIMITIVE_TOPOLOGY topology;
+	D3D11_PRIMITIVE_TOPOLOGY primitive_topology;
 	MeshType mesh_type;
 };

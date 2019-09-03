@@ -3,7 +3,7 @@
 
 Mesh::Mesh(Context * context)
 	: IResource(context, ResourceType::Mesh)
-	, topology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
+	, primitive_topology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST)
 	, mesh_type(MeshType::Custom)
 {
 }

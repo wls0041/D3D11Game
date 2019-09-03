@@ -29,12 +29,14 @@ public:
 
 	static auto GetSupportTextureFormats() -> const std::vector<std::string>& { return support_texture_formats; }
 	static auto GetSupportModelFormats() -> const std::vector<std::string>& { return support_model_formats; }
+	static auto GetSupportScriptFormats() -> const std::vector<std::string>& { return support_script_formats; }
 
 	static auto GetSupportModelFilesFromPaths(const std::vector<std::string> &paths) -> const std::vector<std::string>;
 	static auto GetSupportTextureFilesFromPaths(const std::vector<std::string> &paths) -> const std::vector<std::string>;
 
 	static auto IsSupportTextureFile(const std::string& path) -> const bool;
 	static auto IsSupportModelFile(const std::string& path) -> const bool;
+	static auto IsSupportScriptFile(const std::string& path) -> const bool;
 
 	static auto ToUpper(const std::string& lower) -> const std::string;
 	static auto ToLower(const std::string& upper) -> const std::string;
@@ -44,4 +46,5 @@ public:
 private:
 	static std::vector<std::string> support_texture_formats;
 	static std::vector<std::string> support_model_formats;
+	static std::vector<std::string> support_script_formats;
 };

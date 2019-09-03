@@ -119,7 +119,7 @@ void Editor::BeginDockspace()
 
 	auto viewport = ImGui::GetMainViewport();
 
-	ImVec2 offset = ImVec2(0.0f, _Editor::menu_bar->GetHeight() + _Editor::tool_bar->GetHeight());
+	ImVec2 offset = ImVec2(0.0f, _Editor::menu_bar->GetHeight() + _Editor::tool_bar->GetHeight()); //상단 툴바에 넣을 버튼만큼 내리고 변한 사이즈만큼 조정
 
 	ImGui::SetNextWindowPos(viewport->Pos + offset);
 	ImGui::SetNextWindowSize(viewport->Size - offset);

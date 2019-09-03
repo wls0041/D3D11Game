@@ -11,6 +11,7 @@ void Icon_Provider::Initialize(Context * context)
 	Load(directory + "Icon/component_Camera.png", IconType::Component_Camera);
 	Load(directory + "Icon/component_Transform.png", IconType::Component_Transform);
 	Load(directory + "Icon/component_renderable.png", IconType::Component_Renderable);
+	Load(directory + "Icon/component_Script.png", IconType::Component_Renderable);
 	Load(directory + "Icon/log_info.png", IconType::Console_Info);
 	Load(directory + "Icon/log_warning.png", IconType::Console_Warning);
 	Load(directory + "Icon/log_error.png", IconType::Console_Error);

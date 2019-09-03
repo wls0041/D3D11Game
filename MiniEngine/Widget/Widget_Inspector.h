@@ -12,4 +12,10 @@ public:
 
 private:
 	void ShowTransform(std::shared_ptr<class Transform> &transform) const;
+	void ShowScript(std::shared_ptr<class Script> &script);
+
+private:
+	void ShowAddComponentButton();
+	void ShowComponentPopup();
+	void AddComponentDragDrop();
 };

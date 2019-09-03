@@ -22,7 +22,10 @@ public:
 	void SetIsActive(const bool& is_active) { this->is_active = is_active; }
 
 	auto GetTransform() const -> const std::shared_ptr<class Transform>& { return transform; }
+	auto GetTransform_Raw() const -> class Transform* { return transform.get(); }
+
 	auto GetRenderable() const -> const std::shared_ptr<class Renderable>& { return renderable; }
+	auto GetRenderable_Raw() const -> class Renderable* { return renderable.get(); }
 
 	auto AddComponent(const ComponentType& type)->std::shared_ptr<IComponent>;
 
