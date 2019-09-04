@@ -41,6 +41,7 @@ enum class ShaderType : uint
 	VS_GBUFFER,
 	VS_POST_PROCESS,
 	PS_TEXTURE,
+	VPS_COLOR,
 };
 
 enum class RenderTargetType : uint
@@ -90,15 +91,17 @@ private:
 
 	void UpdateGlobalBuffer(const uint& width, const uint& height, const Matrix& world_view_proj = Matrix::Identity);
 
-
 private:
 	void PassMain();
 
 	void PassGBuffer();
+	
+	void PassLine(std::shared_ptr<class Texture> &out);
 
 private:
 	class Graphics *graphics;
 
+	std::shared_ptr<class Grid> grid;
 	std::shared_ptr<class Camera> camera;
 	std::shared_ptr<class CommandList> command_list;
 

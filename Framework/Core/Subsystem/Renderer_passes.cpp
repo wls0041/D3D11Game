@@ -6,12 +6,14 @@
 #include "../../Scene/Component/Camera.h"
 #include "../../Scene/Component/Transform.h"
 #include "../../Scene/Component/Renderable.h"
+#include "Gizmo/Grid.h"
 
 void Renderer::PassMain()
 {
 	command_list->Begin("PassMain");
 	{
 		PassGBuffer();
+		PassLine(render_textures[RenderTargetType::GBuffer_Albedo]);
 	}
 	command_list->End();
 	command_list->Submit();
@@ -113,6 +115,36 @@ void Renderer::PassGBuffer()
 		for (const auto &actor : renderables[RenderableType::Transparent])
 			draw_actor(actor);
 	}
+	command_list->End();
+	command_list->Submit();
+}
+
+void Renderer::PassLine(std::shared_ptr<class Texture>& out)
+{
+	const auto &shader = shaders[ShaderType::VPS_COLOR];
+	if (!shader) return;
+
+	command_list->Begin("PassLine");
+
+	command_list->SetViewport(out->GetViewport());
+	command_list->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	command_list->SetVertexShader(shader);
+	command_list->SetPixelShader(shader);
+	command_list->SetInputLayout(shader->GetInputLayout());
+	command_list->SetRenderTarget(out);
+
+	UpdateGlobalBuffer
+	(
+		out->GetWidth(),
+		out->GetHeight(),
+		grid->GetComputeWorldMatrix(camera->GetTransform()) * camera_view_proj
+	);
+
+	command_list->SetVertexBuffer(grid->GetVertexBuffer());
+	command_list->SetIndexBuffer(grid->GetIndexBuffer());
+	command_list->SetConstantBuffer(0, ShaderScope::Global, global_buffer);
+	command_list->DrawIndexed(grid->GetIndexCount(), 0, 0);
+
 	command_list->End();
 	command_list->Submit();
 }

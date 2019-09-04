@@ -1,6 +1,7 @@
 #include "Framework.h"
 #include "Renderer.h"
 #include "../D3D11/CommandList.h"
+#include "Gizmo/Grid.h"
 #include "../../Scene/Scene.h"
 #include "../../Scene/Actor.h"
 #include "../../Scene/Component/Camera.h"
@@ -19,7 +20,8 @@ Renderer::~Renderer()
 
 const bool Renderer::Initialize()
 {
-	graphics = context->GetSubsystem<Graphics>();
+	graphics	 = context->GetSubsystem<Graphics>();
+	grid		 = std::make_unique<Grid>(context);
 	command_list = std::make_shared<CommandList>(context);
 
 	CreateRenderTextures();
@@ -171,6 +173,11 @@ void Renderer::CreateShaders()
 	ps_texture->AddDefine("PASS_TEXTURE");
 	ps_texture->AddShader<PixelShader>(shader_directory + "PostProcess.hlsl");
 	shaders[ShaderType::PS_TEXTURE] = ps_texture;
+
+	//vertex_pixel shader
+	auto vps_color = std::make_shared<Shader>(context);
+	vps_color->AddShader<VertexShader>(shader_directory + "Color.hlsl");
+	vps_color->AddShader<PixelShader>(shader_directory + "Color.hlsl");
 }
 
 void Renderer::CreateConstantBuffers()

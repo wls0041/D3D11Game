@@ -121,7 +121,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeaderFile>Framework.h</PrecompiledHeaderFile>
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
-      <AdditionalIncludeDirectories>.\;$(SolutionDir)..\_Libraries\Assimp_5.0.0\;$(SolutionDir)..\_Libraries\FreeImage_3.18.0\;$(SolutionDir)..\_Libraries\AngelScript_2.33.0\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;$(SolutionDir)..\_Libraries\Assimp_5.0.0\;$(SolutionDir)..\_Libraries\FreeImage_3.18.0\;$(SolutionDir)..\_Libraries\AngelScript_2.33.0\;$(SolutionDir)..\_Libraries\Bullet_2.88\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -129,7 +129,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     </Link>
     <Lib>
       <AdditionalLibraryDirectories>$(SolutionDir)..\_Libraries\Lib_x64;</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp_debug.lib;FreeImageLib_debug.lib;IrrXML_debug.lib;angelscript_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp_debug.lib;FreeImageLib_debug.lib;IrrXML_debug.lib;angelscript_debug.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;BulletSoftBody_debug.lib;LinearMath_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
       <Command>copy /Y "$(OutDir)$(ProjectName).lib" "..\..\_Libraries\Lib_x64\"</Command>
@@ -191,6 +191,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\Subsystem\Graphics.h" />
     <ClInclude Include="Core\Subsystem\Input.h" />
     <ClInclude Include="Core\Subsystem\ISubsystem.h" />
+    <ClInclude Include="Core\Subsystem\Physics.h" />
     <ClInclude Include="Core\Subsystem\Renderer.h" />
     <ClInclude Include="Core\Subsystem\ResourceManager.h" />
     <ClInclude Include="Core\Subsystem\SceneManager.h" />
@@ -199,6 +200,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\Subsystem\Timer.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Framework.h" />
+    <ClInclude Include="Gizmo\Grid.h" />
     <ClInclude Include="Log\Engine_Logger.h" />
     <ClInclude Include="Log\ILogger.h" />
     <ClInclude Include="Log\Log.h" />
@@ -209,6 +211,8 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Math\Vector2.h" />
     <ClInclude Include="Math\Vector3.h" />
     <ClInclude Include="Math\Vector4.h" />
+    <ClInclude Include="Physics\BulletPhysicsHelper.h" />
+    <ClInclude Include="Physics\PhysicsDebugDraw.h" />
     <ClInclude Include="Resource\Importer\AssimpHelper.h" />
     <ClInclude Include="Resource\Importer\ModelImporter.h" />
     <ClInclude Include="Resource\Importer\TextureImporter.h" />
@@ -251,6 +255,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Core\Engine.cpp" />
     <ClCompile Include="Core\Subsystem\Graphics.cpp" />
     <ClCompile Include="Core\Subsystem\Input.cpp" />
+    <ClCompile Include="Core\Subsystem\Physics.cpp" />
     <ClCompile Include="Core\Subsystem\Renderer.cpp" />
     <ClCompile Include="Core\Subsystem\Renderer_passes.cpp" />
     <ClCompile Include="Core\Subsystem\ResourceManager.cpp" />
@@ -262,6 +267,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Gizmo\Grid.cpp" />
     <ClCompile Include="Log\Log.cpp" />
     <ClCompile Include="Math\Color4.cpp" />
     <ClCompile Include="Math\Math.cpp" />
@@ -270,6 +276,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Math\Vector2.cpp" />
     <ClCompile Include="Math\Vector3.cpp" />
     <ClCompile Include="Math\Vector4.cpp" />
+    <ClCompile Include="Physics\PhysicsDebugDraw.cpp" />
     <ClCompile Include="Resource\Importer\AssimpHelper.cpp" />
     <ClCompile Include="Resource\Importer\ModelImporter.cpp" />
     <ClCompile Include="Resource\Importer\TextureImporter.cpp" />

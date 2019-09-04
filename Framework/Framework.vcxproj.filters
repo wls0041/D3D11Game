@@ -67,6 +67,10 @@
     <ClInclude Include="Script\Script_Instance.h" />
     <ClInclude Include="Script\Script_Interface.h" />
     <ClInclude Include="Script\Script_Module.h" />
+    <ClInclude Include="Gizmo\Grid.h" />
+    <ClInclude Include="Core\Subsystem\Physics.h" />
+    <ClInclude Include="Physics\BulletPhysicsHelper.h" />
+    <ClInclude Include="Physics\PhysicsDebugDraw.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -124,5 +128,8 @@
     <ClCompile Include="Script\Script_Instance.cpp" />
     <ClCompile Include="Script\Script_Interface.cpp" />
     <ClCompile Include="Script\Script_Module.cpp" />
+    <ClCompile Include="Gizmo\Grid.cpp" />
+    <ClCompile Include="Core\Subsystem\Physics.cpp" />
+    <ClCompile Include="Physics\PhysicsDebugDraw.cpp" />
   </ItemGroup>
 </Project>

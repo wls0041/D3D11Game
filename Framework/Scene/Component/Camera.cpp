@@ -8,7 +8,7 @@ Camera::Camera(Context * context, Actor * actor, Transform * transform)
 	, fov(Math::ToRadian(45))
 	, near_plane(0.3f)
 	, far_plane(1000.0f)
-	, accelation(1.0f)
+	, accelation(0.3f)
 	, drag(accelation * 0.8f)
 	, movement_speed(0, 0, 0)
 {
