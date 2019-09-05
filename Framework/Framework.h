@@ -91,12 +91,14 @@ typedef unsigned int uint;
 #include "./Core/Subsystem/Renderer.h"
 
 //DirectX pipeline wrapper
+#include "./Core/D3D11/D3D11_Object.h"
 #include "./Core/D3D11/IAStage/VertexBuffer.h"
 #include "./Core/D3D11/IAStage/IndexBuffer.h"
 #include "./Core/D3D11/IAStage/InputLayout.h"
 #include "./Core/D3D11/ShaderStage/VertexShader.h"
 #include "./Core/D3D11/ShaderStage/PixelShader.h"
 #include "./Core/D3D11/ShaderStage/ConstantBuffer.h"
+#include "./Core/D3D11/OMStage/DepthStencilState.h"
 
 //Shader
 #include "./Shader/Shader.h"

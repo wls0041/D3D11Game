@@ -15,6 +15,30 @@ VertexBuffer::~VertexBuffer()
     Clear();
 }
 
+auto VertexBuffer::Map() -> void *
+{
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	auto result = SUCCEEDED(graphics->GetDeviceContext()->Map
+	(
+		buffer,
+		0,
+		D3D11_MAP_WRITE_DISCARD,
+		0,
+		&mappedResource
+	));
+
+	if (!result) {
+		LOG_ERROR("Failed to Map");
+		return nullptr;
+	}
+	return mappedResource.pData;
+}
+
+void VertexBuffer::Unmap()
+{
+	graphics->GetDeviceContext()->Unmap(buffer, 0);
+}
+
 void VertexBuffer::Clear()
 {
     SAFE_RELEASE(buffer);

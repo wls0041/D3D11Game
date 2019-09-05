@@ -10,6 +10,7 @@ enum RenderOption : uint //enum은 중복에 주의해야 함
 	Render_Option_Sharpening = 1U << 4,
 	Render_Option_MotionBlur = 1U << 5,
 	Render_Option_SSR		 = 1U << 6,
+	Render_Option_Debug_Physics = 1U << 7,
 };
 
 enum class ToneMappingType : uint //일일히 캐스팅해줘야 해서 안전
@@ -82,12 +83,21 @@ public:
 	void AcquireRenderables(class Scene* scene);
 	void SortRenderables(std::vector<class Actor*> *actors);
 
+	void DrawLine(
+		const Vector3 &from,
+		const Vector3 &to,
+		const Color4 &from_color = Color4(0.41f, 0.86f, 1.0f, 1.0f),
+		const Color4 &to_color = Color4(0.41f, 0.86f, 1.0f, 1.0f),
+		const bool &is_depth = true
+	);
+
 	void Render();
 
 private:
 	void CreateRenderTextures();
 	void CreateShaders();
 	void CreateConstantBuffers();
+	void CreateDepthStencilStates();
 
 	void UpdateGlobalBuffer(const uint& width, const uint& height, const Matrix& world_view_proj = Matrix::Identity);
 
@@ -104,6 +114,10 @@ private:
 	std::shared_ptr<class Grid> grid;
 	std::shared_ptr<class Camera> camera;
 	std::shared_ptr<class CommandList> command_list;
+
+	std::vector<struct VertexColor> depth_enabled_line_vertices;
+	std::vector<struct VertexColor> depth_disabled_line_vertices;
+	std::shared_ptr<class VertexBuffer> line_vertex_buffer;
 
 private:
 	//Core
@@ -130,6 +144,10 @@ private:
 
 	//Constant Buffer
 	std::shared_ptr<class ConstantBuffer> global_buffer;
+
+	//Depth Stencil State
+	std::shared_ptr<class DepthStencilState> depth_stencil_enabled_state;
+	std::shared_ptr<class DepthStencilState> depth_stencil_disabled_state;
 
 	//Render Textures
 	std::map<RenderTargetType, std::shared_ptr<class Texture>> render_textures;

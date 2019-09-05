@@ -11,6 +11,9 @@ public:
     auto GetOffset() const -> const uint& { return offset; }
     auto GetCount() const -> const uint& { return count; }
 
+	auto Map() -> void*;
+	void Unmap();
+
     template <typename T>
     void Create
     (

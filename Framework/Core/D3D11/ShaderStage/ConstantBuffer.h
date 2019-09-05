@@ -1,6 +1,6 @@
 #pragma once
 
-class ConstantBuffer final
+class ConstantBuffer final : public D3D11_Object
 {
 public:
     ConstantBuffer(class Context* context);

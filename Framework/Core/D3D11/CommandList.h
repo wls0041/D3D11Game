@@ -144,8 +144,8 @@ public:
 	//void SetBlendState(BlendState* blend_state);
 	//void SetBlendState(const std::shared_ptr<BlendState>& blend_state);
 
-	//void SetDepthStencilState(DepthStencilState* depth_stencil_state);
-	//void SetDepthStencilState(const std::shared_ptr<DepthStencilState>& depth_stencil_state);
+	void SetDepthStencilState(DepthStencilState* depth_stencil_state);
+	void SetDepthStencilState(const std::shared_ptr<DepthStencilState>& depth_stencil_state);
 
 	void SetRenderTarget(Texture* render_target, Texture* depth_stencil_target = nullptr);
 	void SetRenderTarget(const std::shared_ptr<Texture>& render_target, const std::shared_ptr<Texture>& depth_stencil_target = nullptr);

@@ -312,18 +312,18 @@ void CommandList::SetViewport(const D3D11_VIEWPORT & viewport)
 //{
 //    SetBlendState(blend_state.get());
 //}
-//
-//void CommandList::SetDepthStencilState(DepthStencilState * depth_stencil_state)
-//{
-//    auto& cmd = GetCommand();
-//    cmd.command_type = CommandType::SetDepthStencilState;
-//    cmd.depth_stencil_state = depth_stencil_state ? depth_stencil_state->GetResource() : nullptr;
-//}
-//
-//void CommandList::SetDepthStencilState(const std::shared_ptr<DepthStencilState>& depth_stencil_state)
-//{
-//    SetDepthStencilState(depth_stencil_state.get());
-//}
+
+void CommandList::SetDepthStencilState(DepthStencilState * depth_stencil_state)
+{
+    auto& cmd = GetCommand();
+    cmd.command_type = CommandType::SetDepthStencilState;
+    cmd.depth_stencil_state = depth_stencil_state ? depth_stencil_state->GetResource() : nullptr;
+}
+
+void CommandList::SetDepthStencilState(const std::shared_ptr<DepthStencilState>& depth_stencil_state)
+{
+    SetDepthStencilState(depth_stencil_state.get());
+}
 
 void CommandList::SetRenderTarget(Texture * render_target, Texture * depth_stencil_target)
 {

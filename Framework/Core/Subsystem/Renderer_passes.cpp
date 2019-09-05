@@ -121,8 +121,9 @@ void Renderer::PassGBuffer()
 
 void Renderer::PassLine(std::shared_ptr<class Texture>& out)
 {
-	const auto &shader = shaders[ShaderType::VPS_COLOR];
-	if (!shader) return;
+	const auto& shader = shaders[ShaderType::VPS_COLOR];
+	if (!shader)
+		return;
 
 	command_list->Begin("PassLine");
 
@@ -131,19 +132,81 @@ void Renderer::PassLine(std::shared_ptr<class Texture>& out)
 	command_list->SetVertexShader(shader);
 	command_list->SetPixelShader(shader);
 	command_list->SetInputLayout(shader->GetInputLayout());
+
+	//depth enabled
+	command_list->SetDepthStencilState(depth_stencil_enabled_state);
+	command_list->SetRenderTarget(out, render_textures[RenderTargetType::GBuffer_Depth]);
+	{
+		//grid
+		{
+			UpdateGlobalBuffer
+			(
+				out->GetWidth(),
+				out->GetHeight(),
+				grid->GetComputeWorldMatrix(camera->GetTransform()) * camera_view_proj
+			);
+
+			command_list->SetVertexBuffer(grid->GetVertexBuffer());
+			command_list->SetIndexBuffer(grid->GetIndexBuffer());
+			command_list->SetConstantBuffer(0, ShaderScope::Global, global_buffer);
+			command_list->DrawIndexed(grid->GetIndexCount(), 0, 0);
+		}
+
+		//line
+		{
+			const uint vertex_count = static_cast<uint>(depth_enabled_line_vertices.size());
+			if (vertex_count)
+			{
+				if (vertex_count > line_vertex_buffer->GetCount())
+				{
+					line_vertex_buffer->Clear();
+					line_vertex_buffer->Create(depth_enabled_line_vertices, D3D11_USAGE_DYNAMIC);
+				}
+
+				auto data = static_cast<VertexColor*>(line_vertex_buffer->Map());
+				std::copy(depth_enabled_line_vertices.begin(), depth_enabled_line_vertices.end(), data);
+				line_vertex_buffer->Unmap();
+
+				UpdateGlobalBuffer(out->GetWidth(), out->GetHeight(), camera_view_proj);
+
+				command_list->SetVertexBuffer(line_vertex_buffer);
+				command_list->SetConstantBuffer(0, ShaderScope::Global, global_buffer);
+				command_list->Draw(vertex_count);
+
+				depth_enabled_line_vertices.clear();
+			}
+		}
+	}
+
+	//depth disabled
+	command_list->SetDepthStencilState(depth_stencil_disabled_state);
 	command_list->SetRenderTarget(out);
+	{
+		//line
+		{
+			const uint vertex_count = static_cast<uint>(depth_disabled_line_vertices.size());
+			if (vertex_count)
+			{
+				if (vertex_count > line_vertex_buffer->GetCount())
+				{
+					line_vertex_buffer->Clear();
+					line_vertex_buffer->Create(depth_disabled_line_vertices, D3D11_USAGE_DYNAMIC);
+				}
 
-	UpdateGlobalBuffer
-	(
-		out->GetWidth(),
-		out->GetHeight(),
-		grid->GetComputeWorldMatrix(camera->GetTransform()) * camera_view_proj
-	);
+				auto data = static_cast<VertexColor*>(line_vertex_buffer->Map());
+				std::copy(depth_disabled_line_vertices.begin(), depth_disabled_line_vertices.end(), data);
+				line_vertex_buffer->Unmap();
 
-	command_list->SetVertexBuffer(grid->GetVertexBuffer());
-	command_list->SetIndexBuffer(grid->GetIndexBuffer());
-	command_list->SetConstantBuffer(0, ShaderScope::Global, global_buffer);
-	command_list->DrawIndexed(grid->GetIndexCount(), 0, 0);
+				UpdateGlobalBuffer(out->GetWidth(), out->GetHeight(), camera_view_proj);
+
+				command_list->SetVertexBuffer(line_vertex_buffer);
+				command_list->SetConstantBuffer(0, ShaderScope::Global, global_buffer);
+				command_list->Draw(vertex_count);
+
+				depth_disabled_line_vertices.clear();
+			}
+		}
+	}
 
 	command_list->End();
 	command_list->Submit();

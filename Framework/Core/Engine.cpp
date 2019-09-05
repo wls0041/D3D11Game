@@ -8,7 +8,8 @@ Engine::Engine()
 {
 	engine_flags =
 		EngineFlags_Update |
-		EngineFlags_Render;
+		EngineFlags_Render |
+		EngineFlags_Physics;
 
 	context = new Context();
 

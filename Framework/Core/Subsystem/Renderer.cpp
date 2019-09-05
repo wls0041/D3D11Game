@@ -20,10 +20,11 @@ Renderer::~Renderer()
 
 const bool Renderer::Initialize()
 {
-	graphics	 = context->GetSubsystem<Graphics>();
-	grid		 = std::make_unique<Grid>(context);
-	command_list = std::make_shared<CommandList>(context);
-
+	graphics			= context->GetSubsystem<Graphics>();
+	grid				= std::make_unique<Grid>(context);
+	command_list		= std::make_shared<CommandList>(context);
+	line_vertex_buffer  = std::make_shared<VertexBuffer>(context);
+	
 	CreateRenderTextures();
 	CreateShaders();
 	CreateConstantBuffers();
@@ -102,6 +103,18 @@ void Renderer::SortRenderables(std::vector<class Actor*>* actors)
 	std::sort(actors->begin(), actors->end(), [&render_hash](Actor *lhs, Actor *rhs) {
 		return render_hash(lhs) < render_hash(rhs);
 	});
+}
+
+void Renderer::DrawLine(const Vector3 & from, const Vector3 & to, const Color4 & from_color, const Color4 & to_color, const bool & is_depth)
+{
+	if (is_depth) {
+		depth_enabled_line_vertices.emplace_back(from, from_color);
+		depth_enabled_line_vertices.emplace_back(to, to_color);
+	}
+	else{
+		depth_disabled_line_vertices.emplace_back(from, from_color);
+		depth_disabled_line_vertices.emplace_back(to, to_color);
+	}
 }
 
 void Renderer::Render()
@@ -184,6 +197,15 @@ void Renderer::CreateConstantBuffers()
 {
     global_buffer = std::make_shared<ConstantBuffer>(context);
     global_buffer->Create<GLOBAL_DATA>();
+}
+
+void Renderer::CreateDepthStencilStates()
+{
+	depth_stencil_enabled_state = std::make_shared<DepthStencilState>(context);
+	depth_stencil_enabled_state->Create(true);
+
+	depth_stencil_disabled_state = std::make_shared<DepthStencilState>(context);
+	depth_stencil_disabled_state->Create(true);
 }
 
 void Renderer::UpdateGlobalBuffer(const uint & width, const uint & height, const Matrix & world_view_proj)

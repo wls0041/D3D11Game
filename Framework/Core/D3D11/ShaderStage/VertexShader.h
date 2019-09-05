@@ -1,7 +1,7 @@
 #pragma once
 #include "IShaderStage.h"
 
-class VertexShader final : public IShaderStage
+class VertexShader final : public IShaderStage, public D3D11_Object
 {
 public:
     VertexShader(class Context* context);

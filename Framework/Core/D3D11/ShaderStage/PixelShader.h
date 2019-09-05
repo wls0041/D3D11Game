@@ -1,7 +1,7 @@
 #pragma once
 #include "IShaderStage.h"
 
-class PixelShader final : public IShaderStage
+class PixelShader final : public IShaderStage, public D3D11_Object
 {
 public:
     PixelShader(class Context* context);
