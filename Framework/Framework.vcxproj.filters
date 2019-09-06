@@ -73,6 +73,7 @@
     <ClInclude Include="Physics\PhysicsDebugDraw.h" />
     <ClInclude Include="Core\D3D11\OMStage\DepthStencilState.h" />
     <ClInclude Include="Core\D3D11\D3D11_Object.h" />
+    <ClInclude Include="Scene\Component\RigidBody.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -134,5 +135,6 @@
     <ClCompile Include="Core\Subsystem\Physics.cpp" />
     <ClCompile Include="Physics\PhysicsDebugDraw.cpp" />
     <ClCompile Include="Core\D3D11\OMStage\DepthStencilState.cpp" />
+    <ClCompile Include="Scene\Component\RigidBody.cpp" />
   </ItemGroup>
 </Project>

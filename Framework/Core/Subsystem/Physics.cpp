@@ -59,7 +59,7 @@ const bool Physics::Initialize()
 	*/
 	world->getSolverInfo().m_numIterations	 = MAX_SOLVER_ITERATIONS; //보다 정확한 결과를 위해 계산을 반복하는 횟수. 256인 이유는 못 찾음. 
 
-	//Get Version
+	//Get  - 상업용으로 copy right 같은게 필요할 때 표시할 이유가 있다면 이렇게 뽑아 쓰면 됨. 
 	const auto major = std::to_string(btGetVersion() / 100); //이걸 쓰는 코드가 없어서 왜 뽑는 건지 모르겠음.
 	const auto minor = std::to_string(btGetVersion()).erase(0, 1); //0번째부터 1개의 문자를 지움. 마찬가지로 이유는 모르겠음.
 
@@ -71,9 +71,34 @@ const bool Physics::Initialize()
 
 auto Physics::GetGravity() const -> const Vector3
 {
-	return Vector3();
+	if (!world) {
+		LOG_ERROR("Physics world is nullptr");
+		return Vector3::Zero;
+	}
+
+	auto gravity = world->getGravity();
+	if (!gravity) {
+		LOG_ERROR("Unable To Get Gravity, ensure physics are properly initialized");
+		return Vector3::Zero;
+	}
+
+	return ToVector3(gravity);
 }
 
 void Physics::Update()
 {
+	if (!world) return;
+	if (!Engine::IsFlagsEnabled(EngineFlags::EngineFlags_Physics) || !Engine::IsFlagsEnabled(EngineFlags::EngineFlags_Game)) return;
+
+	auto delta_time = timer->GetDeltaTimeSec();
+	auto internal_time_step = 1.0f / INTERNAL_FPS;
+	auto max_substeps = static_cast<int>(delta_time * INTERNAL_FPS);
+
+	if (max_sub_step < 0) { //위의max_substeps아님
+		internal_time_step = delta_time;
+		max_substeps = 1;
+	}
+	else if (max_sub_step > 0) max_substeps = Math::Max(max_substeps, max_sub_step); //물리 계산하는 측정 시간에 관한 처리
+	
+	world->stepSimulation(delta_time, max_substeps, internal_time_step);
 }
