@@ -17,11 +17,11 @@ enum class ComponentType : uint
 
 struct Attribute
 {
-	std::function<std::any()> getter; //괄호 붙어있지만 함수 x
+	std::function<std::any()> getter;//괄호 붙어 있지만 함수x
 	std::function<void(std::any)> setter;
 };
 
-class IComponent 
+class IComponent
 {
 public:
 	template <typename T>
@@ -49,13 +49,13 @@ public:
 	void SetComponentType(const ComponentType& type) { this->component_type = type; }
 
 	auto IsEnabled() const -> const bool& { return is_enabled; }
-	void SetEnabled(const bool &is_enabled) { this->is_enabled = is_enabled; }
+	void SetEnabled(const bool& is_enabled) { this->is_enabled = is_enabled; }
 
 	auto GetAttributes() const -> const std::vector<Attribute>& { return attributes; }
-	void SetAttributes(const std::vector<Attribute> &attributes);
+	void SetAttributes(const std::vector<Attribute>& attributes);
 
 protected:
-	void RegisterAttribute(std::function<std::any()> &&getter, std::function<void(std::any)> &&setter);
+	void RegisterAttribute(std::function<std::any()>&& getter, std::function<void(std::any)>&& setter);
 
 protected:
 	class Context* context;

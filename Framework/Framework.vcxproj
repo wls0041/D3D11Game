@@ -206,6 +206,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Log\Engine_Logger.h" />
     <ClInclude Include="Log\ILogger.h" />
     <ClInclude Include="Log\Log.h" />
+    <ClInclude Include="Math\BoundBox.h" />
     <ClInclude Include="Math\Color4.h" />
     <ClInclude Include="Math\Math.h" />
     <ClInclude Include="Math\Matrix.h" />
@@ -229,6 +230,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Resource\TextureCube.h" />
     <ClInclude Include="Scene\Actor.h" />
     <ClInclude Include="Scene\Component\Camera.h" />
+    <ClInclude Include="Scene\Component\Collider.h" />
     <ClInclude Include="Scene\Component\IComponent.h" />
     <ClInclude Include="Scene\Component\Renderable.h" />
     <ClInclude Include="Scene\Component\RigidBody.h" />
@@ -273,6 +275,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     </ClCompile>
     <ClCompile Include="Gizmo\Grid.cpp" />
     <ClCompile Include="Log\Log.cpp" />
+    <ClCompile Include="Math\BoundBox.cpp" />
     <ClCompile Include="Math\Color4.cpp" />
     <ClCompile Include="Math\Math.cpp" />
     <ClCompile Include="Math\Matrix.cpp" />
@@ -294,6 +297,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Resource\TextureCube.cpp" />
     <ClCompile Include="Scene\Actor.cpp" />
     <ClCompile Include="Scene\Component\Camera.cpp" />
+    <ClCompile Include="Scene\Component\Collider.cpp" />
     <ClCompile Include="Scene\Component\IComponent.cpp" />
     <ClCompile Include="Scene\Component\Renderable.cpp" />
     <ClCompile Include="Scene\Component\RigidBody.cpp" />

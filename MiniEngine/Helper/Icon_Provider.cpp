@@ -7,19 +7,22 @@ void Icon_Provider::Initialize(Context * context)
 
 	auto directory = context->GetSubsystem<ResourceManager>()->GetAssetDirectory();
 
-	Load(directory + "Icon/option_button.png", IconType::Component_Option);
-	Load(directory + "Icon/component_Camera.png", IconType::Component_Camera);
-	Load(directory + "Icon/component_Transform.png", IconType::Component_Transform);
-	Load(directory + "Icon/component_renderable.png", IconType::Component_Renderable);
-	Load(directory + "Icon/component_Script.png", IconType::Component_Renderable);
-	Load(directory + "Icon/log_info.png", IconType::Console_Info);
-	Load(directory + "Icon/log_warning.png", IconType::Console_Warning);
-	Load(directory + "Icon/log_error.png", IconType::Console_Error);
-	Load(directory + "Icon/big_play_button.png", IconType::Button_Play);
-	Load(directory + "Icon/stopButton.png", IconType::Button_Stop);
-	Load(directory + "Icon/pauseButton.png", IconType::Button_Pause);
-	Load(directory + "Icon/folder.png", IconType::Thumbnail_Folder);
-	Load(directory + "Icon/file.png", IconType::Thumbnail_File);
+    Load(directory + "Icon/option_button.png",          IconType::Component_Option);
+    Load(directory + "Icon/component_Camera.png",       IconType::Component_Camera);
+    Load(directory + "Icon/component_Transform.png",    IconType::Component_Transform);
+    Load(directory + "Icon/component_renderable.png",   IconType::Component_Renderable);
+    Load(directory + "Icon/component_RigidBody.png",    IconType::Component_RigidBody);
+    Load(directory + "Icon/component_Collider.png",     IconType::Component_Collider);
+    Load(directory + "Icon/component_Material.png",     IconType::Component_Material);
+    Load(directory + "Icon/component_Script.png",       IconType::Component_Script);
+    Load(directory + "Icon/log_info.png",               IconType::Console_Info);
+    Load(directory + "Icon/log_warning.png",            IconType::Console_Warning);
+    Load(directory + "Icon/log_error.png",              IconType::Console_Error);
+    Load(directory + "Icon/big_play_button.png",        IconType::Button_Play);
+    Load(directory + "Icon/stopButton.png",             IconType::Button_Stop);
+    Load(directory + "Icon/pauseButton.png",            IconType::Button_Pause);
+    Load(directory + "Icon/folder.png",                 IconType::Thumbnail_Folder);
+    Load(directory + "Icon/file.png",                   IconType::Thumbnail_File);
 }
 
 auto Icon_Provider::GetShaderResourceFromType(const IconType & type) -> ID3D11ShaderResourceView *

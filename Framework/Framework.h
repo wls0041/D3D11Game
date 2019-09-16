@@ -57,6 +57,7 @@ typedef unsigned int uint;
 #include "./Math/Color4.h"
 #include "./Math/Quaternion.h"
 #include "./Math/Matrix.h"
+#include "./Math/BoundBox.h"
 
 //Utility
 #include "./Utility/FileSystem.h"

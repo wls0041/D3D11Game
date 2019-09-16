@@ -3,7 +3,9 @@
 #include "Camera.h"
 #include "Transform.h"
 #include "Renderable.h"
-#include "Scene/Component/Script.h"
+#include "Script.h"
+#include "RigidBody.h"
+#include "Collider.h"
 #include "Scene/Actor.h"
 
 IComponent::IComponent(Context * context, Actor * actor, Transform * transform)
@@ -45,9 +47,11 @@ constexpr ComponentType IComponent::DeduceComponentType()
 	return ComponentType::Unknown;
 }
 
-#define REGISTER_COMPONENT_TYPE(T, enum_type) template<> ComponentType IComponent::DeduceComponentType<T>() { return enum_type; }
+#define REGISTER_COMPONENT_TYPE(T, enum_type) template <> ComponentType IComponent::DeduceComponentType<T>() { return enum_type; }
 
-REGISTER_COMPONENT_TYPE(Camera,		ComponentType::Camera)
-REGISTER_COMPONENT_TYPE(Transform,	ComponentType::Transform)
+REGISTER_COMPONENT_TYPE(Camera,     ComponentType::Camera)
+REGISTER_COMPONENT_TYPE(Transform,  ComponentType::Transform)
 REGISTER_COMPONENT_TYPE(Renderable, ComponentType::Renderable)
-REGISTER_COMPONENT_TYPE(Script,		ComponentType::Script)
+REGISTER_COMPONENT_TYPE(Script,     ComponentType::Script)
+REGISTER_COMPONENT_TYPE(RigidBody,  ComponentType::RigidBody)
+REGISTER_COMPONENT_TYPE(Collider,   ComponentType::Collider)

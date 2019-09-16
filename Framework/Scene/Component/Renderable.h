@@ -26,7 +26,12 @@ public:
 	void SetMesh(const std::string& path);
 	void SetStandardMesh(const MeshType& type);
 
+	auto GetBoundBox() -> const BoundBox;
+	void SetBoundBox(const BoundBox& box) { this->bound_box = box; }
+
 private:
 	std::shared_ptr<Material> material;
 	std::shared_ptr<Mesh> mesh;
+
+	BoundBox bound_box;
 };

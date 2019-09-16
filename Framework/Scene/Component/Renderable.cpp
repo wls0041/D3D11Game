@@ -1,5 +1,6 @@
 #include "Framework.h"
 #include "Renderable.h"
+#include "Transform.h"
 
 Renderable::Renderable(Context * context, Actor * actor, Transform * transform)
 	: IComponent(context, actor, transform)
@@ -52,4 +53,9 @@ void Renderable::SetStandardMesh(const MeshType & type)
 	mesh->CreateBuffers();
 
 	context->GetSubsystem<ResourceManager>()->RegisterResource(mesh);
+}
+
+auto Renderable::GetBoundBox() -> const BoundBox
+{
+	return bound_box.Transformed(transform->GetWorldMatrix());
 }

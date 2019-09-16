@@ -168,7 +168,7 @@ void ModelImporter::LoadMesh(const aiScene * assimp_scene, aiMesh * assimp_mesh,
 		}
 	}
 	auto renderable = actor->AddComponent<Renderable>();
-	//todo : bound box Ãß°¡
+	renderable->SetBoundBox(BoundBox(vertices));
 
 	model->AddMesh(vertices, indices, renderable);
 	if (assimp_scene->HasMaterials()) {
