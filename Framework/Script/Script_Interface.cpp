@@ -193,9 +193,9 @@ void Script_Interface::RegisterActor()
 	script_engine->RegisterObjectMethod("Actor", "const bool& IsActive()", asMETHOD(Actor, IsActive), asCALL_THISCALL);
 	script_engine->RegisterObjectMethod("Actor", "void SetIsActive(const bool& in)", asMETHOD(Actor, SetIsActive), asCALL_THISCALL);
 	script_engine->RegisterObjectMethod("Actor", "Transform &GetTransform()", asMETHOD(Actor, GetTransform_Raw), asCALL_THISCALL);
-	script_engine->RegisterObjectMethod("Actor", "Camera &GetCamera()", asMETHOD(Actor, GetComponent<Camera>), asCALL_THISCALL);
-	script_engine->RegisterObjectMethod("Actor", "Renderable &GetRenderable()", asMETHOD(Actor, GetComponent<Renderable>), asCALL_THISCALL);
-	script_engine->RegisterObjectMethod("Actor", "RigidBody &GetRigidBody()", asMETHOD(Actor, GetComponent<RigidBody>), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "Camera &GetCamera()", asMETHOD(Actor, GetComponent_Raw<Camera>), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "Renderable &GetRenderable()", asMETHOD(Actor, GetComponent_Raw<Renderable>), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "RigidBody &GetRigidBody()", asMETHOD(Actor, GetComponent_Raw<RigidBody>), asCALL_THISCALL);
 }
 
 void ConstructorVector2(Vector2* other)

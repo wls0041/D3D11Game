@@ -34,10 +34,13 @@ private:
 	~Editor_Script() = default;
 
 	void CreateNewScript();
+	void OpenScript(const std::string& path);
 	void SaveToScript();
+	void SaveAsToScript();
 
 private:
 	class Context* context;
 	std::string path;
+	std::string new_name;
 	bool is_visible;
 };

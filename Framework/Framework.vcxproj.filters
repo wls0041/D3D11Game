@@ -76,6 +76,7 @@
     <ClInclude Include="Scene\Component\RigidBody.h" />
     <ClInclude Include="Scene\Component\Collider.h" />
     <ClInclude Include="Math\BoundBox.h" />
+    <ClInclude Include="Scene\Component\Light.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -140,5 +141,6 @@
     <ClCompile Include="Scene\Component\RigidBody.cpp" />
     <ClCompile Include="Scene\Component\Collider.cpp" />
     <ClCompile Include="Math\BoundBox.cpp" />
+    <ClCompile Include="Scene\Component\Light.cpp" />
   </ItemGroup>
 </Project>

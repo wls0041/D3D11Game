@@ -18,6 +18,7 @@
 #include <typeinfo>
 #include <map>
 #include <unordered_map>
+#include <array>
 #include <vector>
 #include <queue>
 #include <deque>

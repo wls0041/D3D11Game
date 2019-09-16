@@ -164,7 +164,8 @@ void Widget_Inspector::ShowScript(std::shared_ptr<class Script>& script)
 			ImGui::SameLine();
 			if (ImGui::Button("Edit"))
 			{
-				//TODO :
+				Editor_Script::Get().SetScript(script->GetScriptPath());
+				Editor_Script::Get().SetVisible(true);
 			}
 		}
 		ImGui::PopItemWidth();

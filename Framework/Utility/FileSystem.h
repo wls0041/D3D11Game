@@ -38,6 +38,8 @@ public:
 	static auto IsSupportModelFile(const std::string& path) -> const bool;
 	static auto IsSupportScriptFile(const std::string& path) -> const bool;
 
+	static void Replace_All(std::string & inout_str, const std::string & from, const std::string & to);
+
 	static auto ToUpper(const std::string& lower) -> const std::string;
 	static auto ToLower(const std::string& upper) -> const std::string;
 	static auto ToString(const std::wstring& str) -> const std::string;

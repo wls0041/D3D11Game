@@ -399,6 +399,17 @@ auto FileSystem::IsSupportScriptFile(const std::string & path) -> const bool
 	return false;
 }
 
+void FileSystem::Replace_All(std::string & inout_str, const std::string & from, const std::string & to)
+{
+	size_t start_pos = 0;
+
+	while ((start_pos = inout_str.find(from, start_pos)) != std::string::npos)
+	{
+		inout_str.replace(start_pos, from.length(), to);
+		start_pos += to.length();
+	}
+}
+
 auto FileSystem::ToUpper(const std::string & lower) -> const std::string
 {
 	std::string upper;

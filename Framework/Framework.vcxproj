@@ -232,6 +232,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Scene\Component\Camera.h" />
     <ClInclude Include="Scene\Component\Collider.h" />
     <ClInclude Include="Scene\Component\IComponent.h" />
+    <ClInclude Include="Scene\Component\Light.h" />
     <ClInclude Include="Scene\Component\Renderable.h" />
     <ClInclude Include="Scene\Component\RigidBody.h" />
     <ClInclude Include="Scene\Component\Script.h" />
@@ -299,6 +300,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Scene\Component\Camera.cpp" />
     <ClCompile Include="Scene\Component\Collider.cpp" />
     <ClCompile Include="Scene\Component\IComponent.cpp" />
+    <ClCompile Include="Scene\Component\Light.cpp" />
     <ClCompile Include="Scene\Component\Renderable.cpp" />
     <ClCompile Include="Scene\Component\RigidBody.cpp" />
     <ClCompile Include="Scene\Component\Script.cpp" />

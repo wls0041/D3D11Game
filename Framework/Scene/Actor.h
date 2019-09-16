@@ -29,6 +29,8 @@ public:
 
 	auto AddComponent(const ComponentType& type)->std::shared_ptr<IComponent>;
 
+	template<typename T> auto GetComponent_Raw()->T*;
+
 	template<typename T> auto AddComponent()->std::shared_ptr<T>;
 	template<typename T> auto GetComponent()->std::shared_ptr<T>;
 	template<typename T> auto GetComponents()->std::vector<std::shared_ptr<T>>;
@@ -51,6 +53,20 @@ private:
 
 	std::vector<std::shared_ptr<IComponent>> components;
 };
+
+template<typename T>
+inline auto Actor::GetComponent_Raw() -> T *
+{
+	static_assert(std::is_base_of<IComponent, T>::value, "Provided type does not implement IComponent");
+
+	auto type = IComponent::DeduceComponentType<T>();
+	for (const auto& component : components)
+	{
+		if (component->GetComponentType() == type)
+			return std::static_pointer_cast<T>(component).get();
+	}
+	return nullptr;
+}
 
 template<typename T>
 inline auto Actor::AddComponent() -> std::shared_ptr<T>

@@ -26,9 +26,10 @@ namespace Editor_Script_Data
 
 void Editor_Script::Initialize(Context * context)
 {
-	this->context = context;
-	this->path = "";
-	this->is_visible = false;
+	this->context		= context;
+	this->path			= "";
+    this->new_name      = "";
+	this->is_visible	= false;
 
 	SetScriptLanguage(ScriptLanguage::AngelScript);
 	//SetScript("./ImGui/TextEditor.cpp");
@@ -240,13 +241,59 @@ void Editor_Script::CreateNewScript()
 	SetScript(path);
 }
 
+void Editor_Script::OpenScript(const std::string & path)
+{
+	//fix - 유석
+	this->path = path;
+	SetScript(path);
+}
+
 void Editor_Script::SaveToScript()
 {
+	//fix - 유석
+	std::string temp(Editor_Script_Data::editor.GetText());
+
+	FileSystem::Replace_All(temp, "\r", "");
+
 	std::ofstream out;
 	out.open(path, std::ios::out);
+
 	if (out.fail())
 		return;
 
-	out << Editor_Script_Data::editor.GetText() << std::endl;
+	out << temp;
+	out.flush();
 	out.close();
+}
+
+void Editor_Script::SaveAsToScript()
+{
+	//fix - 유석
+	std::string old_name = path;
+	path = "../../_Assets/Script/";
+
+	if (new_name.size() < 1)
+	{
+		return;
+	}
+
+	new_name = path + new_name + ".as";
+
+	std::string temp(Editor_Script_Data::editor.GetText());
+
+	FileSystem::Replace_All(temp, FileSystem::GetIntactFileNameFromPath(old_name), FileSystem::GetIntactFileNameFromPath(new_name));
+	FileSystem::Replace_All(temp, "\r", "");
+
+	std::ofstream out;
+	out.open(new_name, std::ios::out);
+
+	if (out.fail())
+		return;
+
+	out << temp;
+	out.flush();
+	out.close();
+
+	path = old_name;
+	new_name = "";
 }

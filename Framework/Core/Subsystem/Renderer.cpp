@@ -34,7 +34,7 @@ const bool Renderer::Initialize()
 
 auto Renderer::GetFrameResource() -> ID3D11ShaderResourceView *
 {
-	auto render_target = render_textures[RenderTargetType::GBuffer_Albedo];
+	auto render_target = render_textures[RenderTargetType::GBuffer_Normal];
 	return render_target ? render_target->GetShaderResourceView() : nullptr;
 }
 
