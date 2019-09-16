@@ -9,14 +9,16 @@ public:
     void Register(class Context* context, class asIScriptEngine* script_engine);
 
 private:
-    void RegisterEnumerations();
-    void RegisterTypes();
-    void RegisterVector2();
-    void RegisterVector3();
-    void RegisterTimer();
-    void RegisterInput();
-    void RegisterTransform();
-    void RegisterActor();
+	void RegisterEnumerations();
+	void RegisterTypes();
+	void RegisterVector2();
+	void RegisterVector3();
+	void RegisterQuaternion();
+	void RegisterTimer();
+	void RegisterInput();
+	void RegisterTransform();
+	void RegisterRigidBody();
+	void RegisterActor();
 
 private:
     class Context* context;

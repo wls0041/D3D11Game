@@ -6,6 +6,7 @@
 #include "Scene/Component/Camera.h"
 #include "Scene/Component/Renderable.h"
 #include "Scene/Component/Transform.h"
+#include "Scene/Component/RigidBody.h"
 
 void Script_Interface::Register(Context * context, asIScriptEngine * script_engine)
 {
@@ -19,7 +20,9 @@ void Script_Interface::Register(Context * context, asIScriptEngine * script_engi
     RegisterTimer();
     RegisterInput();
     RegisterTransform();
-    RegisterActor();
+	RegisterRigidBody();
+	RegisterActor();
+	RegisterQuaternion();
 }
 
 void Script_Interface::RegisterEnumerations()
@@ -36,6 +39,7 @@ void Script_Interface::RegisterEnumerations()
     script_engine->RegisterEnumValue("ComponentType", "Renderable", static_cast<uint>(ComponentType::Renderable));
     script_engine->RegisterEnumValue("ComponentType", "Script", static_cast<uint>(ComponentType::Script));
     script_engine->RegisterEnumValue("ComponentType", "Transform", static_cast<uint>(ComponentType::Transform));
+	script_engine->RegisterEnumValue("ComponentType", "RigidBody", static_cast<uint>(ComponentType::RigidBody));
 
     // KeyCode
     script_engine->RegisterEnum("KeyCode");
@@ -79,6 +83,12 @@ void Script_Interface::RegisterEnumerations()
     script_engine->RegisterEnumValue("KeyCode", "KEY_Z", static_cast<unsigned long>(KeyCode::KEY_Z));
     script_engine->RegisterEnumValue("KeyCode", "KEY_SHIFT", static_cast<unsigned long>(KeyCode::KEY_SHIFT));
     script_engine->RegisterEnumValue("KeyCode", "KEY_CONTROL", static_cast<unsigned long>(KeyCode::KEY_CONTROL));
+	script_engine->RegisterEnumValue("KeyCode", "KEY_SPACE", static_cast<unsigned long>(KeyCode::KEY_SPACE));
+
+	// RigidBody Force Type
+	script_engine->RegisterEnum("ForceType");
+	script_engine->RegisterEnumValue("ForceType", "Force", static_cast<uint>(ForceType::Force));
+	script_engine->RegisterEnumValue("ForceType", "Impulse", static_cast<uint>(ForceType::Impulse));
 }
 
 void Script_Interface::RegisterTypes()
@@ -90,11 +100,13 @@ void Script_Interface::RegisterTypes()
     script_engine->RegisterObjectType("Timer", 0, asOBJ_REF | asOBJ_NOCOUNT);
     script_engine->RegisterObjectType("Actor", 0, asOBJ_REF | asOBJ_NOCOUNT);
     script_engine->RegisterObjectType("Transform", 0, asOBJ_REF | asOBJ_NOCOUNT);
-    script_engine->RegisterObjectType("Renderable", 0, asOBJ_REF | asOBJ_NOCOUNT);
+	script_engine->RegisterObjectType("RigidBody", 0, asOBJ_REF | asOBJ_NOCOUNT);
+	script_engine->RegisterObjectType("Renderable", 0, asOBJ_REF | asOBJ_NOCOUNT);
     script_engine->RegisterObjectType("Material", 0, asOBJ_REF | asOBJ_NOCOUNT);
     script_engine->RegisterObjectType("Camera", 0, asOBJ_REF | asOBJ_NOCOUNT);
     script_engine->RegisterObjectType("Vector2", sizeof(Vector2), asOBJ_VALUE | asOBJ_APP_CLASS | asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_COPY_CONSTRUCTOR | asOBJ_APP_CLASS_DESTRUCTOR);
     script_engine->RegisterObjectType("Vector3", sizeof(Vector3), asOBJ_VALUE | asOBJ_APP_CLASS | asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_COPY_CONSTRUCTOR | asOBJ_APP_CLASS_DESTRUCTOR);
+	script_engine->RegisterObjectType("Quaternion", sizeof(Quaternion), asOBJ_VALUE | asOBJ_APP_CLASS | asOBJ_APP_CLASS_CONSTRUCTOR | asOBJ_APP_CLASS_COPY_CONSTRUCTOR | asOBJ_APP_CLASS_DESTRUCTOR);
 }
 
 void Script_Interface::RegisterTimer()
@@ -115,35 +127,75 @@ void Script_Interface::RegisterInput()
 
 void Script_Interface::RegisterTransform()
 {
-    script_engine->RegisterObjectMethod("Transform", "Transform &opAssign(const Transform &in)", asMETHODPR(Transform, operator =, (const Transform&), Transform&), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "const Vector3& GetLocalScale()", asMETHOD(Transform, GetLocalScale), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "void SetLocalScale(const Vector3& in)", asMETHOD(Transform, SetLocalScale), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "const Vector3& GetLocalRotation()", asMETHOD(Transform, GetLocalRotation), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "void SetLocalRotation(const Vector3& in)", asMETHOD(Transform, SetLocalRotation), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "const Vector3& GetLocalTranslation()", asMETHOD(Transform, GetLocalTranslation), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "void SetLocalTranslation(const Vector3& in)", asMETHOD(Transform, SetLocalTranslation), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "const Vector3 GetScale()", asMETHOD(Transform, GetScale), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "void SetScale(const Vector3& in)", asMETHOD(Transform, SetScale), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "const Vector3 GetRotation()", asMETHOD(Transform, GetRotation), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "void SetRotation(const Vector3& in)", asMETHOD(Transform, SetRotation), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "const Vector3 GetTranslation()", asMETHOD(Transform, GetTranslation), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "void SetTranslation(const Vector3& in)", asMETHOD(Transform, SetTranslation), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "Transform& GetRoot()", asMETHOD(Transform, GetRoot), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "Transform& GetParent()", asMETHOD(Transform, GetParent), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Transform", "Actor& GetActor()", asMETHOD(Transform, GetActor), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "Transform &opAssign(const Transform &in)", asMETHODPR(Transform, operator =, (const Transform&), Transform&), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "const Vector3& GetLocalScale()", asMETHOD(Transform, GetLocalScale), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "void SetLocalScale(const Vector3& in)", asMETHOD(Transform, SetLocalScale), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "const Quaternion& GetLocalRotation()", asMETHOD(Transform, GetLocalRotation), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "void SetLocalRotation(const Quaternion& in)", asMETHOD(Transform, SetLocalRotation), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "const Vector3& GetLocalTranslation()", asMETHOD(Transform, GetLocalTranslation), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "void SetLocalTranslation(const Vector3& in)", asMETHOD(Transform, SetLocalTranslation), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "const Vector3 GetScale()", asMETHOD(Transform, GetScale), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "void SetScale(const Vector3& in)", asMETHOD(Transform, SetScale), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "const Quaternion GetRotation()", asMETHOD(Transform, GetRotation), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "void SetRotation(const Quaternion& in)", asMETHOD(Transform, SetRotation), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "const Vector3 GetTranslation()", asMETHOD(Transform, GetTranslation), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "void SetTranslation(const Vector3& in)", asMETHOD(Transform, SetTranslation), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "Transform& GetRoot()", asMETHOD(Transform, GetRoot), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "Transform& GetParent()", asMETHOD(Transform, GetParent), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "const Vector3 GetForward()", asMETHOD(Transform, GetForward), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "const Vector3 GetRight()", asMETHOD(Transform, GetRight), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "const Vector3 GetUp()", asMETHOD(Transform, GetUp), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Transform", "Actor& GetActor()", asMETHOD(Transform, GetActor), asCALL_THISCALL);
+}
+
+void Script_Interface::RegisterRigidBody()
+{
+	script_engine->RegisterObjectMethod("RigidBody", "RigidBody &opAssign(const RigidBody &in)", asMETHODPR(RigidBody, operator =, (const RigidBody&), RigidBody&), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const float& GetMass() const", asMETHOD(RigidBody, GetMass), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void SetMass(const float& in)", asMETHOD(RigidBody, SetMass), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const float& GetFriction() const", asMETHOD(RigidBody, GetFriction), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void SetFriction(const float& in)", asMETHOD(RigidBody, SetFriction), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const float& GetFrictionRolling() const", asMETHOD(RigidBody, GetFrictionRolling), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void SetFrictionRolling(const float& in)", asMETHOD(RigidBody, SetFrictionRolling), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const float& GetRestitution() const", asMETHOD(RigidBody, GetRestitution), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void SetRestitution(const float& in)", asMETHOD(RigidBody, SetRestitution), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const bool& IsUseGravity() const", asMETHOD(RigidBody, IsUseGravity), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void SetUseGravity(const bool& in)", asMETHOD(RigidBody, SetUseGravity), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const bool& IsKinematic() const", asMETHOD(RigidBody, IsKinematic), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void SetKinematic(const bool& in)", asMETHOD(RigidBody, SetKinematic), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const bool& IsHasSimulated() const", asMETHOD(RigidBody, IsHasSimulated), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void SetHasSimulated(const bool& in)", asMETHOD(RigidBody, SetHasSimulated), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const Vector3& GetGravity() const", asMETHOD(RigidBody, GetGravity), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void SetGravity(const Vector3& in)", asMETHOD(RigidBody, SetGravity), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const Vector3& GetCenterOfMass() const", asMETHOD(RigidBody, GetCenterOfMass), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void SetCenterOfMass(const Vector3& in)", asMETHOD(RigidBody, SetCenterOfMass), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const Vector3& GetPosition() const", asMETHOD(RigidBody, GetPosition), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void SetPosition(const Vector3& in)", asMETHOD(RigidBody, SetPosition), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const Quaternion GetRotation() const", asMETHOD(RigidBody, GetRotation), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void SetRotation(const Quaternion& in)", asMETHOD(RigidBody, SetRotation), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const bool& IsInWorld() const", asMETHOD(RigidBody, IsInWorld), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const Vector3& SetLinearVelocity() const", asMETHOD(RigidBody, SetLinearVelocity), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "const Vector3& SetAngularVelocity() const", asMETHOD(RigidBody, SetAngularVelocity), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void ApplyForce(const Vector3& in, const ForceType& in)", asMETHOD(RigidBody, ApplyForce), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void ApplyForceAtPosition(const Vector3& in, const Vector3& in, const ForceType& in)", asMETHOD(RigidBody, ApplyForceAtPosition), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void ApplyTorque(const Vector3& in, const ForceType& in)", asMETHOD(RigidBody, ApplyTorque), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void Activate() const", asMETHOD(RigidBody, Activate), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void Deactivate() const", asMETHOD(RigidBody, Deactivate), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("RigidBody", "void ClearForces() const", asMETHOD(RigidBody, ClearForces), asCALL_THISCALL);
 }
 
 void Script_Interface::RegisterActor()
 {
-    script_engine->RegisterObjectMethod("Actor", "Actor &opAssign(const Actor &in)", asMETHODPR(Actor, operator =, (const Actor&), Actor&), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Actor", "const int& GetID()", asMETHOD(Actor, GetID), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Actor", "const string& GetName()", asMETHOD(Actor, GetName), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Actor", "void SetName(const string& in)", asMETHOD(Actor, SetName), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Actor", "const bool& IsActive()", asMETHOD(Actor, IsActive), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Actor", "void SetIsActive(const bool& in)", asMETHOD(Actor, SetIsActive), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Actor", "Transform &GetTransform()", asMETHOD(Actor, GetTransform_Raw), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Actor", "Camera &GetCamera()", asMETHOD(Actor, GetComponent<Camera>), asCALL_THISCALL);
-    script_engine->RegisterObjectMethod("Actor", "Renderable &GetRenderable()", asMETHOD(Actor, GetComponent<Renderable>), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "Actor &opAssign(const Actor &in)", asMETHODPR(Actor, operator =, (const Actor&), Actor&), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "const int& GetID()", asMETHOD(Actor, GetID), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "const string& GetName()", asMETHOD(Actor, GetName), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "void SetName(const string& in)", asMETHOD(Actor, SetName), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "const bool& IsActive()", asMETHOD(Actor, IsActive), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "void SetIsActive(const bool& in)", asMETHOD(Actor, SetIsActive), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "Transform &GetTransform()", asMETHOD(Actor, GetTransform_Raw), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "Camera &GetCamera()", asMETHOD(Actor, GetComponent<Camera>), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "Renderable &GetRenderable()", asMETHOD(Actor, GetComponent<Renderable>), asCALL_THISCALL);
+	script_engine->RegisterObjectMethod("Actor", "RigidBody &GetRigidBody()", asMETHOD(Actor, GetComponent<RigidBody>), asCALL_THISCALL);
 }
 
 void ConstructorVector2(Vector2* other)
@@ -263,4 +315,49 @@ void Script_Interface::RegisterVector3()
     script_engine->RegisterObjectProperty("Vector3", "float x", asOFFSET(Vector3, x));
     script_engine->RegisterObjectProperty("Vector3", "float y", asOFFSET(Vector3, y));
     script_engine->RegisterObjectProperty("Vector3", "float z", asOFFSET(Vector3, z));
+}
+
+void ConstructorQuaternion(Quaternion* self)
+{
+	new(self) Quaternion(0, 0, 0, 0);
+}
+
+void CopyConstructorQuaternion(const Quaternion& other, Quaternion* self)
+{
+	new(self) Quaternion(other.x, other.y, other.z, other.w);
+}
+
+void ConstructorQuaternionFloats(float x, float y, float z, float w, Quaternion* self)
+{
+	new(self) Quaternion(x, y, z, w);
+}
+
+void DestructQuaternion(Quaternion* self)
+{
+	self->~Quaternion();
+}
+
+static Quaternion& QuaternionAssignment(const Quaternion& other, Quaternion* self)
+{
+	return *self = other;
+}
+
+static const Quaternion MyQuaternionFromEulerAngle(const Vector3& other)
+{
+	return Quaternion::QuaternionFromEulerAngle(other);
+}
+
+void Script_Interface::RegisterQuaternion()
+{
+	script_engine->RegisterObjectBehaviour("Quaternion", asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(ConstructorQuaternion), asCALL_CDECL_OBJLAST);
+	script_engine->RegisterObjectBehaviour("Quaternion", asBEHAVE_CONSTRUCT, "void f(const Quaternion &in)", asFUNCTION(CopyConstructorQuaternion), asCALL_CDECL_OBJLAST);
+	script_engine->RegisterObjectBehaviour("Quaternion", asBEHAVE_CONSTRUCT, "void f(float, float, float, float)", asFUNCTION(ConstructorQuaternionFloats), asCALL_CDECL_OBJLAST);
+	script_engine->RegisterObjectBehaviour("Quaternion", asBEHAVE_DESTRUCT, "void f()", asFUNCTION(DestructQuaternion), asCALL_CDECL_OBJLAST);
+	script_engine->RegisterObjectMethod("Quaternion", "Quaternion &opAssign(const Quaternion &in)", asFUNCTION(QuaternionAssignment), asCALL_CDECL_OBJLAST);
+	script_engine->RegisterObjectMethod("Quaternion", "const Vector3 ToEulerAngle() const", asMETHOD(Quaternion, ToEulerAngle), asCALL_THISCALL);
+	script_engine->RegisterGlobalFunction("const Quaternion MyQuaternionFromEulerAngle(const Vector3& in)", asFUNCTION(MyQuaternionFromEulerAngle), asCALL_CDECL);
+	script_engine->RegisterObjectProperty("Quaternion", "float x", asOFFSET(Quaternion, x));
+	script_engine->RegisterObjectProperty("Quaternion", "float y", asOFFSET(Quaternion, y));
+	script_engine->RegisterObjectProperty("Quaternion", "float z", asOFFSET(Quaternion, z));
+	script_engine->RegisterObjectProperty("Quaternion", "float w", asOFFSET(Quaternion, w));
 }

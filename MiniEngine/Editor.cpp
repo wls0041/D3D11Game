@@ -42,6 +42,7 @@ Editor::Editor()
 
 	Editor_Helper::Get().Initialize(context);
 	Icon_Provider::Get().Initialize(context);
+	Editor_Script::Get().Initialize(context);
 
 	widgets.emplace_back(std::make_unique<Widget_MenuBar>(context));
 	_Editor::menu_bar = widgets.back().get();

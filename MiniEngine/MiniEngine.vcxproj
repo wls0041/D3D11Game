@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="Editor.cpp" />
     <ClCompile Include="Helper\Editor_Helper.cpp" />
+    <ClCompile Include="Helper\Editor_Script.cpp" />
     <ClCompile Include="Helper\FileDialog.cpp" />
     <ClCompile Include="Helper\Icon_Provider.cpp" />
     <ClCompile Include="Imgui\ImGuizmo.cpp">
@@ -214,6 +215,7 @@
     <ClInclude Include="Editor.h" />
     <ClInclude Include="Helper\DragDropEvent.h" />
     <ClInclude Include="Helper\Editor_Helper.h" />
+    <ClInclude Include="Helper\Editor_Script.h" />
     <ClInclude Include="Helper\FileDialog.h" />
     <ClInclude Include="Helper\Icon_Provider.h" />
     <ClInclude Include="Imgui\ImGuizmo.h" />
