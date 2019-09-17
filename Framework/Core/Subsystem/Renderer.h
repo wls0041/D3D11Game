@@ -37,11 +37,17 @@ enum RenderBufferType : uint
 	Render_Buffer_Shadows,
 };
 
+enum class DebugType : uint {
+
+};
+
 enum class ShaderType : uint
 {
 	VS_GBUFFER,
 	VS_POST_PROCESS,
 	PS_TEXTURE,
+	PS_DEBUG_NORMAL,
+	PS_DEBUG_DEPTH,
 	VPS_COLOR,
 };
 
@@ -107,11 +113,15 @@ private:
 	void PassGBuffer();
 	
 	void PassLine(std::shared_ptr<class Texture> &out);
+	void PassDebug(std::shared_ptr<class Texture> &out);
 
 private:
 	class Graphics *graphics;
 
 	std::shared_ptr<class Grid> grid;
+	std::shared_ptr<class VertexBuffer> screen_vertex_buffer;
+	std::shared_ptr<class IndexBuffer> screen_index_buffer;
+
 	std::shared_ptr<class Camera> camera;
 	std::shared_ptr<class CommandList> command_list;
 

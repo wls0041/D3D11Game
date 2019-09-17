@@ -22,4 +22,5 @@ public:
 	static void CreateSphere(Geometry<struct VertexTextureNormalTangentBlend> &geometry);
 	static void CreateQuad(Geometry<struct VertexTextureNormalTangentBlend> &geometry);
 	static void CreateScreenQuad(Geometry<struct VertexTextureNormalTangentBlend> &geometry);
+	static void CreateScreenQuad(Geometry<struct VertexTexture> &geometry, const uint &width, const uint &height);
 };

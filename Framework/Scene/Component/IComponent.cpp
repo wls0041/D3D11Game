@@ -6,6 +6,7 @@
 #include "Script.h"
 #include "RigidBody.h"
 #include "Collider.h"
+#include "Light.h"
 #include "Scene/Actor.h"
 
 IComponent::IComponent(Context * context, Actor * actor, Transform * transform)
@@ -55,3 +56,4 @@ REGISTER_COMPONENT_TYPE(Renderable, ComponentType::Renderable)
 REGISTER_COMPONENT_TYPE(Script,     ComponentType::Script)
 REGISTER_COMPONENT_TYPE(RigidBody,  ComponentType::RigidBody)
 REGISTER_COMPONENT_TYPE(Collider,   ComponentType::Collider)
+REGISTER_COMPONENT_TYPE(Light,		ComponentType::Light)

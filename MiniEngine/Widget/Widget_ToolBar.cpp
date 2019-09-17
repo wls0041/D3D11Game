@@ -3,6 +3,8 @@
 
 Widget_ToolBar::Widget_ToolBar(Context * context)
     : IWidget(context)
+	, render_option_alpha(0.0f)
+	, is_show_render_option(false)
 {
     title = "ToolBar";
     window_flags |=
@@ -49,11 +51,35 @@ void Widget_ToolBar::Render()
         ImGui::GetStyle().Colors[Engine::IsFlagsEnabled(EngineFlags_Game) ? ImGuiCol_ButtonActive : ImGuiCol_Button]
     );
 
-    if (Icon_Provider::Get().ImageButton(IconType::Button_Play, 20.0f))
-        Engine::FlagsToggle(EngineFlags_Game);
+    if (Icon_Provider::Get().ImageButton(IconType::Button_Play, 20.0f)) Engine::FlagsToggle(EngineFlags_Game);
 
     ImGui::PopStyleColor();
 
     //Option Button
+	ImGui::SameLine();
+	ImGui::PushStyleColor
+	(
+		ImGuiCol_Button,
+		ImGui::GetStyle().Colors[is_show_render_option ? ImGuiCol_ButtonActive : ImGuiCol_Button]
+	);
 
+	if (Icon_Provider::Get().ImageButton(IconType::Component_Option, 20.0f)) is_show_render_option = true;
+
+	ImGui::PopStyleColor();
+	ImGui::PopStyleVar();
+
+	if (is_show_render_option) ShowRenderOptions();
+}
+
+void Widget_ToolBar::ShowRenderOptions()
+{
+	ImGui::PushStyleVar(ImGuiStyleVar_Alpha, render_option_alpha);
+	ImGui::Begin("Render Options", &is_show_render_option, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoDocking);
+	{
+		ImGui::TextUnformatted("Opacity");
+		ImGui::SameLine();
+		ImGui::SliderFloat("##Opacity", &render_option_alpha, 0.1f, 1.0f, "%.1f");
+	}
+	ImGui::End();
+	ImGui::PopStyleVar();
 }

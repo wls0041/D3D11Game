@@ -34,7 +34,7 @@ const bool Renderer::Initialize()
 
 auto Renderer::GetFrameResource() -> ID3D11ShaderResourceView *
 {
-	auto render_target = render_textures[RenderTargetType::GBuffer_Normal];
+	auto render_target = render_textures[RenderTargetType::Final];
 	return render_target ? render_target->GetShaderResourceView() : nullptr;
 }
 
@@ -156,6 +156,16 @@ void Renderer::CreateRenderTextures() //RTT. 최소 크기가 4임.
 		return;
 	}
 
+	//Screen Quad
+	Geometry<VertexTexture> screen_quad;
+	Geometry_Generator::CreateScreenQuad(screen_quad, width, height);
+
+	screen_vertex_buffer = std::make_shared<VertexBuffer>(context);
+	screen_vertex_buffer->Create(screen_quad.GetVertices());
+
+	screen_index_buffer = std::make_shared<IndexBuffer>(context);
+	screen_index_buffer->Create(screen_quad.GetIndices());
+
 	//GBuffer
 	render_textures[RenderTargetType::GBuffer_Albedo]	= std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 1, RTV | SRV);
 	render_textures[RenderTargetType::GBuffer_Normal]	= std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, RTV | SRV);
@@ -186,6 +196,16 @@ void Renderer::CreateShaders()
 	ps_texture->AddDefine("PASS_TEXTURE");
 	ps_texture->AddShader<PixelShader>(shader_directory + "PostProcess.hlsl");
 	shaders[ShaderType::PS_TEXTURE] = ps_texture;
+
+	auto ps_debug_normal = std::make_shared<Shader>(context);
+	ps_debug_normal->AddDefine("DEBUG_NORMAL");
+	ps_debug_normal->AddShader<PixelShader>(shader_directory + "PostProcess.hlsl");
+	shaders[ShaderType::PS_DEBUG_NORMAL] = ps_debug_normal;
+
+	auto ps_debug_depth = std::make_shared<Shader>(context);
+	ps_debug_depth->AddDefine("DEBUG_DEPTH");
+	ps_debug_depth->AddShader<PixelShader>(shader_directory + "PostProcess.hlsl");
+	shaders[ShaderType::PS_DEBUG_DEPTH] = ps_debug_depth;
 
 	//vertex_pixel shader
 	auto vps_color = std::make_shared<Shader>(context);

@@ -14,6 +14,7 @@ void Renderer::PassMain()
 	{
 		PassGBuffer();
 		PassLine(render_textures[RenderTargetType::GBuffer_Albedo]);
+		PassDebug(render_textures[RenderTargetType::Final]);
 	}
 	command_list->End();
 	command_list->Submit();
@@ -208,6 +209,79 @@ void Renderer::PassLine(std::shared_ptr<class Texture>& out)
 		}
 	}
 
+	command_list->End();
+	command_list->Submit();
+}
+
+void Renderer::PassDebug(std::shared_ptr<class Texture>& out)
+{
+	if (debug_buffer_type == Render_Buffer_None) return;
+
+	std::shared_ptr<Texture> texture;
+	ShaderType shader_type;
+
+	switch (debug_buffer_type)
+	{
+	case Render_Buffer_Albedo:
+	{
+		texture = render_textures[RenderTargetType::GBuffer_Albedo];
+		shader_type = ShaderType::PS_TEXTURE;
+		break; 
+	}
+	case Render_Buffer_Normal:
+	{
+		texture = render_textures[RenderTargetType::GBuffer_Normal];
+		shader_type = ShaderType::PS_DEBUG_NORMAL;
+		break;
+	}
+	case Render_Buffer_Material:
+		break;
+	case Render_Buffer_Diffuse:
+		break;
+	case Render_Buffer_Specular:
+		break;
+	case Render_Buffer_Velocity:
+		break;
+	case Render_Buffer_Depth:
+	{
+		texture = render_textures[RenderTargetType::GBuffer_Depth];
+		shader_type = ShaderType::PS_DEBUG_DEPTH;
+		break;
+	}
+	case Render_Buffer_SSAO:
+		break;
+	case Render_Buffer_SSR:
+		break;
+	case Render_Buffer_Bloom:
+		break;
+	case Render_Buffer_Shadows:
+		break;
+	default:
+		break;
+	}
+
+	const auto &vertex_shader = shaders[ShaderType::VS_POST_PROCESS];
+	const auto &pixel_shader = shaders[shader_type];
+	if (!vertex_shader || !pixel_shader) return;
+
+	command_list->Begin("PassDebug");
+
+	UpdateGlobalBuffer(out->GetWidth(), out->GetHeight(), post_process_view_proj);
+
+	command_list->SetDepthStencilState(depth_stencil_disabled_state);
+
+	command_list->SetRenderTarget(out);
+	command_list->SetViewport(out->GetViewport());
+	command_list->SetVertexBuffer(screen_vertex_buffer);
+	command_list->SetIndexBuffer(screen_index_buffer);
+	command_list->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	command_list->SetInputLayout(vertex_shader->GetInputLayout());
+	command_list->SetVertexShader(vertex_shader);
+	command_list->SetPixelShader(pixel_shader);
+	command_list->SetConstantBuffer(0, ShaderScope::Global, global_buffer);
+	command_list->SetShaderResource(0, ShaderScope::PS, texture);
+	command_list->DrawIndexed(screen_index_buffer->GetCount(), screen_index_buffer->GetOffset(), screen_vertex_buffer->GetOffset());
+		
 	command_list->End();
 	command_list->Submit();
 }

@@ -1,6 +1,7 @@
 #include "Framework.h"
 #include "Light.h"
 #include "Transform.h"
+#include "Camera.h"
 
 Light::Light(Context * context, Actor * actor, Transform * transform)
 	: IComponent(context, actor, transform)
@@ -30,6 +31,24 @@ void Light::OnStart()
 
 void Light::OnUpdate()
 {
+	if (last_light_position != transform->GetTranslation() || last_light_rotation != transform->GetRotation()) {
+		last_light_position = transform->GetTranslation();
+		last_light_rotation = transform->GetRotation();
+
+		is_update = true;
+	}
+
+	if (light_type == LightType::Directional) {
+		if (auto camera = renderer->GetCamera()) {
+			if (last_camera_position != camera->GetTransform()->GetTranslation()) {
+				last_camera_position = camera->GetTransform()->GetTranslation();
+				is_update = true;
+			}
+		}
+	}
+
+	if (!is_update) return;
+	//TODO :
 }
 
 void Light::OnStop()
@@ -45,7 +64,7 @@ void Light::SetLightType(const LightType & type)
 {
 	light_type = type;
 	is_update = true;
-	is_cast_shadow = light_type == LightType::Direction;
+	is_cast_shadow = light_type == LightType::Directional;
 
 	//TODO : Create Shadow Map
 }

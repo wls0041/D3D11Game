@@ -10,4 +10,10 @@ public:
     void Begin() override;
     void Render() override;
 
+private:
+	void ShowRenderOptions();
+
+private:
+	float render_option_alpha;
+	bool is_show_render_option;
 };

@@ -3,6 +3,7 @@
 #include "Actor.h"
 #include "./Component/Camera.h"
 #include "./Component/Transform.h"
+#include "./Component/Light.h"
 
 Scene::Scene(Context * context)
 	: context(context)
@@ -12,6 +13,7 @@ Scene::Scene(Context * context)
 {
 	renderer = context->GetSubsystem<Renderer>();
 	CreateCamera();
+	CreateDirectionalLight();
 }
 
 Scene::~Scene()
@@ -87,4 +89,18 @@ auto Scene::CreateCamera() -> std::shared_ptr<class Actor>
 	camera->AddComponent<Camera>();
 
 	return camera;
+}
+
+auto Scene::CreateDirectionalLight() -> std::shared_ptr<class Actor>
+{
+	auto light = CreateActor();
+	light->SetName("Directional Light");
+	light->GetTransform()->SetRotation(Quaternion::QuaternionFromEulerAngle(Vector3(30.0f, 0.0f, 0.0f)));
+	light->GetTransform()->SetTranslation(Vector3(0.0f, 10.0f, -5.0f));
+
+	auto component = light->AddComponent<Light>();
+	component->SetLightType(LightType::Directional);
+	component->SetIntensity(1.5f);
+
+	return light;
 }

@@ -5,7 +5,7 @@
 
 enum class LightType : uint
 {
-	Direction,
+	Directional,
 	Point,
 	Spot,
 };

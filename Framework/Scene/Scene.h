@@ -27,7 +27,8 @@ public:
 	void Update();
 
 private:
-	auto CreateCamera()->std::shared_ptr<class Actor>;
+	auto CreateCamera() -> std::shared_ptr<class Actor>;
+	auto CreateDirectionalLight() -> std::shared_ptr<class Actor>;
 
 private:
 	class Context* context;

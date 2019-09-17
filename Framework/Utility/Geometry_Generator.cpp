@@ -16,6 +16,20 @@ void Geometry_Generator::CreateScreenQuad(Geometry<struct VertexTextureNormalTan
 {
 }
 
+void Geometry_Generator::CreateScreenQuad(Geometry<struct VertexTexture>& geometry, const uint &width, const uint &height) //화면 전체크기가 아닌 resolution기준이어야 해서 따로 크기 받음
+{
+	const auto half_width = width * 0.5f;
+	const auto half_height = height * 0.5f;
+
+	geometry.AddVertex(VertexTexture({ half_width, -half_height, 0.0f }, { 0.0f, 1.0f }));
+	geometry.AddVertex(VertexTexture({ half_width, +half_height, 0.0f }, { 0.0f, 0.0f }));
+	geometry.AddVertex(VertexTexture({ half_width, -half_height, 0.0f }, { 1.0f, 1.0f }));
+	geometry.AddVertex(VertexTexture({ half_width, +half_height, 0.0f }, { 1.0f, 0.0f }));
+
+	geometry.AddIndex(0); geometry.AddIndex(1); geometry.AddIndex(2);
+	geometry.AddIndex(2); geometry.AddIndex(1); geometry.AddIndex(3);
+}
+
 void Geometry_Generator::CreateCube(Geometry<struct VertexTexture>& geometry)
 {
 	//front
