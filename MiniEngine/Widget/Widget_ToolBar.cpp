@@ -1,6 +1,27 @@
 #include "stdafx.h"
 #include "Widget_ToolBar.h"
 
+namespace ToolBar_Data
+{
+	static std::vector<std::string> debug_buffers
+	{
+		"None",
+		"Albedo",
+		"Normal",
+		"Material",
+		"Diffuse",
+		"Specular",
+		"Velocity",
+		"Depth",
+		"SSAO",
+		"SSR",
+		"Bloom",
+		"Shadows",
+	};
+	static std::string select_debug_buffer = debug_buffers[0];
+	static int select_index = 0;
+}
+
 Widget_ToolBar::Widget_ToolBar(Context * context)
     : IWidget(context)
 	, render_option_alpha(1.0f)
@@ -78,6 +99,28 @@ void Widget_ToolBar::ShowRenderOptions()
 		ImGui::TextUnformatted("Opacity");
 		ImGui::SameLine();
 		ImGui::SliderFloat("##Opacity", &render_option_alpha, 0.1f, 1.0f, "%.1f");
+
+		if (ImGui::CollapsingHeader("Debug", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			//Debug Buffers
+			if (ImGui::BeginCombo("Buffers", ToolBar_Data::select_debug_buffer.c_str()))
+			{
+				for (auto i = 0; i < ToolBar_Data::debug_buffers.size(); i++)
+				{
+					const auto is_selected = ToolBar_Data::select_debug_buffer == ToolBar_Data::debug_buffers[i];
+					if (ImGui::Selectable(ToolBar_Data::debug_buffers[i].c_str(), is_selected))
+					{
+						ToolBar_Data::select_debug_buffer = ToolBar_Data::debug_buffers[i];
+						ToolBar_Data::select_index = static_cast<int>(i);
+					}
+
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+			Editor_Helper::Get().renderer->SetDebugBufferType(static_cast<RenderBufferType>(ToolBar_Data::select_index));
+		}
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();

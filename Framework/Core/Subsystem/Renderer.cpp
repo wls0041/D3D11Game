@@ -219,13 +219,69 @@ void Renderer::CreateConstantBuffers()
     global_buffer->Create<GLOBAL_DATA>();
 }
 
+void Renderer::CreateSamplerStates()
+{
+	compare_depth = std::make_shared<SamplerState>(context);
+	compare_depth->Create
+	(
+		D3D11_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT,
+		D3D11_TEXTURE_ADDRESS_CLAMP,
+		D3D11_COMPARISON_GREATER
+	);
+
+	point_clamp = std::make_shared<SamplerState>(context);
+	point_clamp->Create
+	(
+		D3D11_FILTER_MIN_MAG_MIP_POINT,
+		D3D11_TEXTURE_ADDRESS_CLAMP,
+		D3D11_COMPARISON_ALWAYS
+	);
+
+	bilinear_clamp = std::make_shared<SamplerState>(context);
+	bilinear_clamp->Create
+	(
+		D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT,
+		D3D11_TEXTURE_ADDRESS_CLAMP,
+		D3D11_COMPARISON_ALWAYS
+	);
+
+	bilinear_wrap = std::make_shared<SamplerState>(context);
+	bilinear_wrap->Create
+	(
+		D3D11_FILTER_MIN_MAG_LINEAR_MIP_POINT,
+		D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_COMPARISON_ALWAYS
+	);
+
+	trilinear_clamp = std::make_shared<SamplerState>(context);
+	trilinear_clamp->Create
+	(
+		D3D11_FILTER_MIN_MAG_MIP_LINEAR,
+		D3D11_TEXTURE_ADDRESS_CLAMP,
+		D3D11_COMPARISON_ALWAYS
+	);
+
+	anisotropic_wrap = std::make_shared<SamplerState>(context);
+	anisotropic_wrap->Create
+	(
+		D3D11_FILTER_ANISOTROPIC,
+		D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_COMPARISON_ALWAYS
+	);
+}
+
 void Renderer::CreateDepthStencilStates()
 {
+	/*
+	is_reverse_z->true이면 비선형 값이라는 뜻
+	가까운 곳에서 대부분의 데이터량을 사용하고 멀어질 수록 정밀도가 낮아짐.
+	그게 어느 기준을 기점으로 급격한 차이를 보이는 비선형적 구조인데, 이를 z를 역수로 취함으로서 균일하게 낮아지도록 함.(추후 설명)
+	*/
 	depth_stencil_enabled_state = std::make_shared<DepthStencilState>(context);
-	depth_stencil_enabled_state->Create(true);
+	depth_stencil_enabled_state->Create(true, is_reverse_z ? D3D11_COMPARISON_GREATER_EQUAL : D3D11_COMPARISON_LESS_EQUAL);
 
 	depth_stencil_disabled_state = std::make_shared<DepthStencilState>(context);
-	depth_stencil_disabled_state->Create(true);
+	depth_stencil_disabled_state->Create(true, is_reverse_z ? D3D11_COMPARISON_GREATER_EQUAL : D3D11_COMPARISON_LESS_EQUAL);
 }
 
 void Renderer::UpdateGlobalBuffer(const uint & width, const uint & height, const Matrix & world_view_proj)

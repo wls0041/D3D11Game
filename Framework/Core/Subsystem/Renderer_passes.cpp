@@ -13,7 +13,7 @@ void Renderer::PassMain()
 	command_list->Begin("PassMain");
 	{
 		PassGBuffer();
-		PassLine(render_textures[RenderTargetType::GBuffer_Albedo]);
+		//PassLine(render_textures[RenderTargetType::GBuffer_Albedo]);
 		PassDebug(render_textures[RenderTargetType::Final]);
 	}
 	command_list->End();
@@ -35,7 +35,7 @@ void Renderer::PassGBuffer()
 			command_list->ClearRenderTarget(normal_texture);
 			command_list->ClearRenderTarget(material_texture);
 			command_list->ClearRenderTarget(velocity_texture);
-			command_list->ClearDepthStencilTarget(depth_texture, D3D11_CLEAR_DEPTH, 1.0f); //depth는 렌더타겟이 없음. 1.0 - 추후 값 수정할 것임. z축 바뀔 때 뒤집힘
+			command_list->ClearDepthStencilTarget(depth_texture, D3D11_CLEAR_DEPTH, GetClearDepth()); //depth는 렌더타겟이 없음. 1.0 - 추후 값 수정할 것임. z축 바뀔 때 뒤집힘
 			command_list->End();
 			command_list->Submit();
 			return;
@@ -99,11 +99,12 @@ void Renderer::PassGBuffer()
 			command_list->DrawIndexed(mesh->GetIndexBuffer()->GetCount(), mesh->GetIndexBuffer()->GetOffset(), mesh->GetVertexBuffer()->GetOffset());
 		};
 
+		command_list->SetDepthStencilState(depth_stencil_enabled_state);
 		command_list->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		command_list->SetRenderTargets(render_targets, depth_texture->GetDepthStencilView());
 		command_list->SetViewport(albedo_texture->GetViewport());
 		command_list->ClearRenderTargets(render_targets);
-		command_list->ClearDepthStencilTarget(depth_texture, D3D11_CLEAR_DEPTH, 1.0f);
+		command_list->ClearDepthStencilTarget(depth_texture, D3D11_CLEAR_DEPTH, GetClearDepth());
 		command_list->SetVertexShader(vertex_shader);
 		command_list->SetInputLayout(vertex_shader->GetInputLayout());
 		command_list->SetConstantBuffer(0, ShaderScope::Global, global_buffer);

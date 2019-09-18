@@ -82,6 +82,9 @@ public:
 	auto GetResolution() const -> const Vector2& { return resolution; }
 	void SetResolution(const uint &width, const uint &height);
 
+	auto GetDebugBufferType() const -> const RenderBufferType& { return debug_buffer_type; }
+	void SetDebugBufferType(const RenderBufferType& type) { this->debug_buffer_type = type; }
+
 	void AcquireRenderables(class Scene* scene);
 	void SortRenderables(std::vector<class Actor*> *actors);
 
@@ -99,9 +102,13 @@ private:
 	void CreateRenderTextures();
 	void CreateShaders();
 	void CreateConstantBuffers();
+	void CreateSamplerStates();
 	void CreateDepthStencilStates();
 
 	void UpdateGlobalBuffer(const uint& width, const uint& height, const Matrix& world_view_proj = Matrix::Identity);
+
+	auto GetClearDepth() const -> const float { return is_reverse_z ? 0.0f : 1.0f; }
+
 
 private:
 	void PassMain();
@@ -150,6 +157,14 @@ private:
 
 	//Constant Buffer
 	std::shared_ptr<class ConstantBuffer> global_buffer;
+
+	//Sampler State
+	std::shared_ptr<class SamplerState> compare_depth;
+	std::shared_ptr<class SamplerState> point_clamp;
+	std::shared_ptr<class SamplerState> bilinear_clamp;
+	std::shared_ptr<class SamplerState> bilinear_wrap;
+	std::shared_ptr<class SamplerState> trilinear_clamp;
+	std::shared_ptr<class SamplerState> anisotropic_wrap;
 
 	//Depth Stencil State
 	std::shared_ptr<class DepthStencilState> depth_stencil_enabled_state;

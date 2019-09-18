@@ -186,6 +186,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClInclude Include="Core\D3D11\ShaderStage\ConstantBuffer.h" />
     <ClInclude Include="Core\D3D11\ShaderStage\IShaderStage.h" />
     <ClInclude Include="Core\D3D11\ShaderStage\PixelShader.h" />
+    <ClInclude Include="Core\D3D11\ShaderStage\SamplerState.h" />
     <ClInclude Include="Core\D3D11\ShaderStage\VertexShader.h" />
     <ClInclude Include="Core\Engine.h" />
     <ClInclude Include="Core\EventSystem\EventSystem.h" />
@@ -258,6 +259,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Core\D3D11\ShaderStage\ConstantBuffer.cpp" />
     <ClCompile Include="Core\D3D11\ShaderStage\IShaderStage.cpp" />
     <ClCompile Include="Core\D3D11\ShaderStage\PixelShader.cpp" />
+    <ClCompile Include="Core\D3D11\ShaderStage\SamplerState.cpp" />
     <ClCompile Include="Core\D3D11\ShaderStage\VertexShader.cpp" />
     <ClCompile Include="Core\Engine.cpp" />
     <ClCompile Include="Core\Subsystem\Graphics.cpp" />
