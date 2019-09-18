@@ -3,7 +3,7 @@
 
 Widget_ToolBar::Widget_ToolBar(Context * context)
     : IWidget(context)
-	, render_option_alpha(0.0f)
+	, render_option_alpha(1.0f)
 	, is_show_render_option(false)
 {
     title = "ToolBar";
@@ -38,7 +38,6 @@ void Widget_ToolBar::Begin()
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 5.0f));
     ImGui::Begin(title.c_str(), &is_visible, window_flags);
-	ImGui::PopStyleVar();
 }
 
 void Widget_ToolBar::Render()

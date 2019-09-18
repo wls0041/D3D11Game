@@ -37,10 +37,6 @@ enum RenderBufferType : uint
 	Render_Buffer_Shadows,
 };
 
-enum class DebugType : uint {
-
-};
-
 enum class ShaderType : uint
 {
 	VS_GBUFFER,
