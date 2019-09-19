@@ -25,6 +25,7 @@
     <ClCompile Include="Helper\FileDialog.cpp" />
     <ClCompile Include="Widget\Widget_ToolBar.cpp" />
     <ClCompile Include="Helper\Editor_Script.cpp" />
+    <ClCompile Include="Helper\ColorPicker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -54,5 +55,6 @@
     <ClInclude Include="Helper\DragDropEvent.h" />
     <ClInclude Include="Widget\Widget_ToolBar.h" />
     <ClInclude Include="Helper\Editor_Script.h" />
+    <ClInclude Include="Helper\ColorPicker.h" />
   </ItemGroup>
 </Project>

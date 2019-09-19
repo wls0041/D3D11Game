@@ -78,6 +78,8 @@
     <ClInclude Include="Math\BoundBox.h" />
     <ClInclude Include="Scene\Component\Light.h" />
     <ClInclude Include="Core\D3D11\ShaderStage\SamplerState.h" />
+    <ClInclude Include="Core\D3D11\RSStage\RasterizerState.h" />
+    <ClInclude Include="Core\D3D11\OMStage\BlendState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Framework.cpp" />
@@ -144,5 +146,10 @@
     <ClCompile Include="Math\BoundBox.cpp" />
     <ClCompile Include="Scene\Component\Light.cpp" />
     <ClCompile Include="Core\D3D11\ShaderStage\SamplerState.cpp" />
+    <ClCompile Include="Core\D3D11\RSStage\RasterizerState.cpp" />
+    <ClCompile Include="Core\D3D11\OMStage\BlendState.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="Core\D3D11\OMStage\Woo.natvis" />
   </ItemGroup>
 </Project>

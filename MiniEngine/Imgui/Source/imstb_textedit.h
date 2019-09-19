@@ -1,14 +1,15 @@
-// [ImGui] this is a slightly modified version of stb_textedit.h 1.12. Those changes would need to be pushed into nothings/stb
-// [ImGui] - 2018-06: fixed undo/redo after pasting large amount of text (over 32 kb). Redo will still fail when undo buffers are exhausted, but text won't be corrupted (see nothings/stb issue #620)
-// [ImGui] - 2018-06: fix in stb_textedit_discard_redo (see https://github.com/nothings/stb/issues/321)
-// [ImGui] - fixed some minor warnings
+// [DEAR IMGUI] 
+// This is a slightly modified version of stb_textedit.h 1.13. 
+// Those changes would need to be pushed into nothings/stb:
+// - Fix in stb_textedit_discard_redo (see https://github.com/nothings/stb/issues/321)
+// Grep for [DEAR IMGUI] to find the changes.
 
-// stb_textedit.h - v1.12  - public domain - Sean Barrett
+// stb_textedit.h - v1.13  - public domain - Sean Barrett
 // Development of this library was sponsored by RAD Game Tools
 //
 // This C header file implements the guts of a multi-line text-editing
-// widget; you implement display, word-wrapping, and low-level std::string
-// insertion/deletion, and stb_textedit will std::map user inputs into
+// widget; you implement display, word-wrapping, and low-level string
+// insertion/deletion, and stb_textedit will map user inputs into
 // insertions & deletions, plus updates to the cursor position,
 // selection state, and undo state.
 //
@@ -34,6 +35,7 @@
 //
 // VERSION HISTORY
 //
+//   1.13 (2019-02-07) fix bug in undo size management
 //   1.12 (2018-01-29) user can change STB_TEXTEDIT_KEYTYPE, fix redo to avoid crash
 //   1.11 (2017-03-03) fix HOME on last line, dragging off single-line textfield
 //   1.10 (2016-10-25) supress warnings about casting away const with -Wcast-qual
@@ -74,7 +76,7 @@
 //   If you do not define STB_TEXTEDIT_IMPLEMENTATION before including this,
 //   it will operate in "header file" mode. In this mode, it declares a
 //   single public symbol, STB_TexteditState, which encapsulates the current
-//   state of a text widget (except for the std::string, which you will store
+//   state of a text widget (except for the string, which you will store
 //   separately).
 //
 //   To compile in this mode, you must define STB_TEXTEDIT_CHARTYPE to a
@@ -105,9 +107,9 @@
 //   need to provide your own APIs in the same file which will access the
 //   static functions.
 //
-//   The basic concept is that you provide a "std::string" object which
+//   The basic concept is that you provide a "string" object which
 //   behaves like an array of characters. stb_textedit uses indices to
-//   refer to positions in the std::string, implicitly representing positions
+//   refer to positions in the string, implicitly representing positions
 //   in the displayed textedit. This is true for both plain text and
 //   rich text; even with rich text stb_truetype interacts with your
 //   code as if there was an array of all the displayed characters.
@@ -121,10 +123,10 @@
 //
 // Symbols you must define for implementation mode:
 //
-//    STB_TEXTEDIT_STRING               the type of object representing a std::string being edited,
+//    STB_TEXTEDIT_STRING               the type of object representing a string being edited,
 //                                      typically this is a wrapper object with other data you need
 //
-//    STB_TEXTEDIT_STRINGLEN(obj)       the length of the std::string (ideally O(1))
+//    STB_TEXTEDIT_STRINGLEN(obj)       the length of the string (ideally O(1))
 //    STB_TEXTEDIT_LAYOUTROW(&r,obj,n)  returns the results of laying out a line of characters
 //                                        starting from character #n (see discussion below)
 //    STB_TEXTEDIT_GETWIDTH(obj,n,i)    returns the pixel delta from the xpos of the i'th character
@@ -206,7 +208,7 @@
 //    int  stb_textedit_paste(STB_TEXTEDIT_STRING *str, STB_TexteditState *state, STB_TEXTEDIT_CHARTYPE *text, int len)
 //    void stb_textedit_key(STB_TEXTEDIT_STRING *str, STB_TexteditState *state, STB_TEXEDIT_KEYTYPE key)
 //
-//    Each of these functions potentially updates the std::string and updates the
+//    Each of these functions potentially updates the string and updates the
 //    state.
 //
 //      initialize_state:
@@ -225,7 +227,7 @@
 //      cut:
 //          call this to delete the current selection; returns true if there was
 //          one. you should FIRST copy the current selection to the system paste buffer.
-//          (To copy, just copy the current selection out of the std::string yourself.)
+//          (To copy, just copy the current selection out of the string yourself.)
 //     
 //      paste:
 //          call this to paste text at the current cursor point or over the current
@@ -322,7 +324,7 @@ typedef struct
    //
 
    int cursor;
-   // position of the text cursor within the std::string
+   // position of the text cursor within the string
 
    int select_start;          // selection start point
    int select_end;
@@ -563,14 +565,13 @@ static void stb_textedit_find_charpos(StbFindState *find, STB_TEXTEDIT_STRING *s
 
    // now scan to find xpos
    find->x = r.x0;
-   i = 0;
    for (i=0; first+i < n; ++i)
       find->x += STB_TEXTEDIT_GETWIDTH(str, first, i);
 }
 
 #define STB_TEXT_HAS_SELECTION(s)   ((s)->select_start != (s)->select_end)
 
-// make the selection/cursor state valid if client altered the std::string
+// make the selection/cursor state valid if client altered the string
 static void stb_textedit_clamp(STB_TEXTEDIT_STRING *str, STB_TexteditState *state)
 {
    int n = STB_TEXTEDIT_STRINGLEN(str);
@@ -693,7 +694,7 @@ static void stb_textedit_prep_selection_at_cursor(STB_TexteditState *state)
 static int stb_textedit_cut(STB_TEXTEDIT_STRING *str, STB_TexteditState *state)
 {
    if (STB_TEXT_HAS_SELECTION(state)) {
-      stb_textedit_delete_selection(str,state); // implicity clamps
+      stb_textedit_delete_selection(str,state); // implicitly clamps
       state->has_preferred_x = 0;
       return 1;
    }
@@ -745,7 +746,7 @@ retry:
                   state->has_preferred_x = 0;
                }
             } else {
-               stb_textedit_delete_selection(str,state); // implicity clamps
+               stb_textedit_delete_selection(str,state); // implicitly clamps
                if (STB_TEXTEDIT_INSERTCHARS(str, state->cursor, &ch, 1)) {
                   stb_text_makeundo_insert(state, state->cursor, 1);
                   ++state->cursor;
@@ -1133,7 +1134,14 @@ static void stb_textedit_discard_redo(StbUndoState *state)
                state->undo_rec[i].char_storage += n;
       }
       // now move all the redo records towards the end of the buffer; the first one is at 'redo_point'
-      STB_TEXTEDIT_memmove(state->undo_rec + state->redo_point+1, state->undo_rec + state->redo_point, (size_t) ((STB_TEXTEDIT_UNDOSTATECOUNT - state->redo_point)*sizeof(state->undo_rec[0])));
+      // {DEAR IMGUI]
+      size_t move_size = (size_t)((STB_TEXTEDIT_UNDOSTATECOUNT - state->redo_point - 1) * sizeof(state->undo_rec[0]));
+      const char* buf_begin = (char*)state->undo_rec; (void)buf_begin;
+      const char* buf_end   = (char*)state->undo_rec + sizeof(state->undo_rec); (void)buf_end;
+      IM_ASSERT(((char*)(state->undo_rec + state->redo_point)) >= buf_begin);
+      IM_ASSERT(((char*)(state->undo_rec + state->redo_point + 1) + move_size) <= buf_end);
+      STB_TEXTEDIT_memmove(state->undo_rec + state->redo_point+1, state->undo_rec + state->redo_point, move_size);
+
       // now move redo_point to point to the new one
       ++state->redo_point;
    }

@@ -102,6 +102,8 @@ typedef unsigned int uint;
 #include "./Core/D3D11/ShaderStage/PixelShader.h"
 #include "./Core/D3D11/ShaderStage/ConstantBuffer.h"
 #include "./Core/D3D11/ShaderStage/SamplerState.h"
+#include "./Core/D3D11/RSStage/RasterizerState.h"
+#include "./Core/D3D11/OMStage/BlendState.h"
 #include "./Core/D3D11/OMStage/DepthStencilState.h"
 
 //Shader

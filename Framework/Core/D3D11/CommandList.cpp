@@ -54,6 +54,8 @@ void Command::Clear()
 	viewport = { 0 };
 
 	blend_state = nullptr;
+	blend_factor = 0.0f;
+
 	depth_stencil_state = nullptr;
 
 	render_targets.clear();
@@ -257,20 +259,20 @@ void CommandList::SetShaderResources(const uint & slot, const ShaderScope & stag
 	cmd.shader_resources = shader_resources;
 }
 
-//void CommandList::SetSamplerState(const uint & slot, const ShaderScope & scope, SamplerState * sampler_state)
-//{
-//    auto& cmd = GetCommand();
-//    cmd.command_type = CommandType::SetSampler;
-//    cmd.sampler_slot = slot;
-//    cmd.sampler_shader_scope = scope;
-//    cmd.sampler_count++;
-//    cmd.samplers.emplace_back(sampler_state ? sampler_state->GetResource() : nullptr);
-//}
+void CommandList::SetSamplerState(const uint & slot, const ShaderScope & scope, SamplerState * sampler_state)
+{
+	auto& cmd = GetCommand();
+	cmd.command_type = CommandType::SetSamplerState;
+	cmd.sampler_slot = slot;
+	cmd.sampler_shader_scope = scope;
+	cmd.sampler_count++;
+	cmd.samplers.emplace_back(sampler_state ? sampler_state->GetResource() : nullptr);
+}
 
-//void CommandList::SetSamplerState(const uint & slot, const ShaderScope & stage, const std::shared_ptr<SamplerState>& sampler_state)
-//{
-//    SetSamplerState(slot, stage, sampler_state.get());
-//}
+void CommandList::SetSamplerState(const uint & slot, const ShaderScope & stage, const std::shared_ptr<SamplerState>& sampler_state)
+{
+	SetSamplerState(slot, stage, sampler_state.get());
+}
 
 void CommandList::SetSamplerStates(const uint & slot, const ShaderScope & stage, const std::vector<ID3D11SamplerState*>& sampler_states)
 {
@@ -289,29 +291,30 @@ void CommandList::SetViewport(const D3D11_VIEWPORT & viewport)
 	cmd.viewport = viewport;
 }
 
-//void CommandList::SetRasterizerState(RasterizerState * rasterizer_state)
-//{
-//    auto& cmd = GetCommand();
-//    cmd.command_type = CommandType::SetRasterizerState;
-//    cmd.rasterizer_state = rasterizer_state ? rasterizer_state->GetResource() : nullptr;
-//}
-//
-//void CommandList::SetRasterizerState(const std::shared_ptr<RasterizerState>& rasterizer_state)
-//{
-//    SetRasterizerState(rasterizer_state.get());
-//}
-//
-//void CommandList::SetBlendState(BlendState * blend_state)
-//{
-//    auto& cmd = GetCommand();
-//    cmd.command_type = CommandType::SetBlendState;
-//    cmd.blend_state = blend_state ? blend_state->GetResource() : nullptr;
-//}
-//
-//void CommandList::SetBlendState(const std::shared_ptr<BlendState>& blend_state)
-//{
-//    SetBlendState(blend_state.get());
-//}
+void CommandList::SetRasterizerState(RasterizerState * rasterizer_state)
+{
+	auto& cmd = GetCommand();
+	cmd.command_type = CommandType::SetRasterizerState;
+	cmd.rasterizer_state = rasterizer_state ? rasterizer_state->GetResource() : nullptr;
+}
+
+void CommandList::SetRasterizerState(const std::shared_ptr<RasterizerState>& rasterizer_state)
+{
+	SetRasterizerState(rasterizer_state.get());
+}
+
+void CommandList::SetBlendState(BlendState * blend_state)
+{
+	auto& cmd = GetCommand();
+	cmd.command_type = CommandType::SetBlendState;
+	cmd.blend_state = blend_state ? blend_state->GetResource() : nullptr;
+	cmd.blend_factor = blend_state ? blend_state->GetFactor() : 0.0f;
+}
+
+void CommandList::SetBlendState(const std::shared_ptr<BlendState>& blend_state)
+{
+	SetBlendState(blend_state.get());
+}
 
 void CommandList::SetDepthStencilState(DepthStencilState * depth_stencil_state)
 {

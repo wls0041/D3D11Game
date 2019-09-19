@@ -28,6 +28,10 @@ const bool Renderer::Initialize()
 	CreateRenderTextures();
 	CreateShaders();
 	CreateConstantBuffers();
+	CreateSamplerStates();
+	CreateRasterzierStates();
+	CreateBlendStates();
+	CreateDepthStencilStates();
 
 	return true;
 }
@@ -270,6 +274,42 @@ void Renderer::CreateSamplerStates()
 	);
 }
 
+void Renderer::CreateRasterzierStates()
+{
+	cull_back_solid = std::make_shared<RasterizerState>(context);
+	cull_back_solid->Create(D3D11_CULL_BACK, D3D11_FILL_SOLID);
+
+	cull_front_solid = std::make_shared<RasterizerState>(context);
+	cull_front_solid->Create(D3D11_CULL_FRONT, D3D11_FILL_SOLID);
+
+	cull_none_solid = std::make_shared<RasterizerState>(context);
+	cull_none_solid->Create(D3D11_CULL_NONE, D3D11_FILL_SOLID);
+
+	cull_back_wireframe = std::make_shared<RasterizerState>(context);
+	cull_back_wireframe->Create(D3D11_CULL_BACK, D3D11_FILL_WIREFRAME);
+
+	cull_front_wireframe = std::make_shared<RasterizerState>(context);
+	cull_front_wireframe->Create(D3D11_CULL_FRONT, D3D11_FILL_WIREFRAME);
+
+	cull_none_wireframe = std::make_shared<RasterizerState>(context);
+	cull_none_wireframe->Create(D3D11_CULL_NONE, D3D11_FILL_WIREFRAME);
+}
+
+void Renderer::CreateBlendStates()
+{
+	blend_enabled = std::make_shared<BlendState>(context);
+	blend_enabled->Create(true);
+
+	blend_disabled = std::make_shared<BlendState>(context);
+	blend_disabled->Create(false);
+
+	blend_color_add = std::make_shared<BlendState>(context);
+	blend_color_add->Create(true, D3D11_BLEND_ONE, D3D11_BLEND_ONE);
+
+	blend_bloom = std::make_shared<BlendState>(context);
+	blend_bloom->Create(true, D3D11_BLEND_ONE, D3D11_BLEND_ONE, D3D11_BLEND_OP_ADD, D3D11_BLEND_ONE, D3D11_BLEND_ONE, D3D11_BLEND_OP_ADD, 0.5f);
+}
+
 void Renderer::CreateDepthStencilStates()
 {
 	/*
@@ -306,4 +346,40 @@ void Renderer::UpdateGlobalBuffer(const uint & width, const uint & height, const
     gpu_buffer->view_proj_ortho     = post_process_view_proj;
 
     global_buffer->Unmap();
+}
+
+auto Renderer::GetRasterizerState(const D3D11_CULL_MODE & cull_mode, const D3D11_FILL_MODE & fill_mode) -> const std::shared_ptr<class RasterizerState>&
+{
+	switch (cull_mode)
+	{
+	case D3D11_CULL_NONE:
+	{
+		switch (fill_mode)
+		{
+		case D3D11_FILL_WIREFRAME:  return cull_none_wireframe;
+		case D3D11_FILL_SOLID:      return cull_none_solid;
+		}
+		break;
+	}
+	case D3D11_CULL_FRONT:
+	{
+		switch (fill_mode)
+		{
+		case D3D11_FILL_WIREFRAME:  return cull_front_wireframe;
+		case D3D11_FILL_SOLID:      return cull_front_solid;
+		}
+		break;
+	}
+	case D3D11_CULL_BACK:
+	{
+		switch (fill_mode)
+		{
+		case D3D11_FILL_WIREFRAME:  return cull_back_wireframe;
+		case D3D11_FILL_SOLID:      return cull_back_solid;
+		}
+		break;
+	}
+	}
+
+	return cull_back_solid;
 }

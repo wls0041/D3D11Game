@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="Helper\ColorPicker.cpp" />
     <ClCompile Include="Helper\Editor_Helper.cpp" />
     <ClCompile Include="Helper\Editor_Script.cpp" />
     <ClCompile Include="Helper\FileDialog.cpp" />
@@ -213,6 +214,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Editor.h" />
+    <ClInclude Include="Helper\ColorPicker.h" />
     <ClInclude Include="Helper\DragDropEvent.h" />
     <ClInclude Include="Helper\Editor_Helper.h" />
     <ClInclude Include="Helper\Editor_Script.h" />

@@ -1627,7 +1627,7 @@ namespace ImGuizmo
              movePlanNormal[i].Normalize();
           }
             // pickup plan
-            gContext.mTranslationPlan = BuildPlan(gContext.mModel.v.position, movePlanNormal[type - MOVE_X]);
+            gContext.mTranslationPlan = BuildPlan(gContext.mModel.v.position, movePlanNormal[MOVE_XY]); //type - MOVE_X
             const float len = IntersectRayPlane(gContext.mRayOrigin, gContext.mRayVector, gContext.mTranslationPlan);
             gContext.mTranslationPlanOrigin = gContext.mRayOrigin + gContext.mRayVector * len;
             gContext.mMatrixOrigin = gContext.mModel.v.position;

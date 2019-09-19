@@ -103,11 +103,14 @@ private:
 	void CreateShaders();
 	void CreateConstantBuffers();
 	void CreateSamplerStates();
+	void CreateRasterzierStates();
+	void CreateBlendStates();
 	void CreateDepthStencilStates();
 
 	void UpdateGlobalBuffer(const uint& width, const uint& height, const Matrix& world_view_proj = Matrix::Identity);
 
 	auto GetClearDepth() const -> const float { return is_reverse_z ? 0.0f : 1.0f; }
+	auto GetRasterizerState(const D3D11_CULL_MODE& cull_mode, const D3D11_FILL_MODE& fill_mode = D3D11_FILL_SOLID) -> const std::shared_ptr<class RasterizerState>&;
 
 
 private:
@@ -165,6 +168,20 @@ private:
 	std::shared_ptr<class SamplerState> bilinear_wrap;
 	std::shared_ptr<class SamplerState> trilinear_clamp;
 	std::shared_ptr<class SamplerState> anisotropic_wrap;
+
+	//Rasterizer State
+	std::shared_ptr<class RasterizerState> cull_back_solid;
+	std::shared_ptr<class RasterizerState> cull_front_solid;
+	std::shared_ptr<class RasterizerState> cull_none_solid;
+	std::shared_ptr<class RasterizerState> cull_back_wireframe;
+	std::shared_ptr<class RasterizerState> cull_front_wireframe;
+	std::shared_ptr<class RasterizerState> cull_none_wireframe;
+
+	//Blend State
+	std::shared_ptr<class BlendState> blend_enabled;
+	std::shared_ptr<class BlendState> blend_disabled;
+	std::shared_ptr<class BlendState> blend_color_add;
+	std::shared_ptr<class BlendState> blend_bloom;
 
 	//Depth Stencil State
 	std::shared_ptr<class DepthStencilState> depth_stencil_enabled_state;

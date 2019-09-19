@@ -12,8 +12,8 @@ void Renderer::PassMain()
 {
 	command_list->Begin("PassMain");
 	{
-		PassGBuffer();
-		//PassLine(render_textures[RenderTargetType::GBuffer_Albedo]);
+		PassGBuffer();        
+		PassLine(render_textures[RenderTargetType::Final]);
 		PassDebug(render_textures[RenderTargetType::Final]);
 	}
 	command_list->End();
@@ -71,8 +71,6 @@ void Renderer::PassGBuffer()
 			const auto &mesh= renderable->GetMesh();
 			if (!mesh || !mesh->GetVertexBuffer() || !mesh->GetIndexBuffer()) return;
 			
-			//TODO : Rasterizer State
-
 			if (current_mesh_id != mesh->GetResourceID()) {
 				command_list->SetVertexBuffer(mesh->GetVertexBuffer());
 				command_list->SetIndexBuffer(mesh->GetIndexBuffer());
@@ -85,6 +83,7 @@ void Renderer::PassGBuffer()
 			}
 
 			if (current_material_id != material->GetResourceID()) {
+				command_list->SetRasterizerState(GetRasterizerState(material->GetCullMode()));
 				command_list->SetShaderResources(0, ShaderScope::PS, material->GetTextureShaderResources());
 				
 				material->UpdateConstantBuffer(); //Material에 만들어 놓은 roughtness, metallic 등의 요소 업데이트
@@ -99,6 +98,7 @@ void Renderer::PassGBuffer()
 			command_list->DrawIndexed(mesh->GetIndexBuffer()->GetCount(), mesh->GetIndexBuffer()->GetOffset(), mesh->GetVertexBuffer()->GetOffset());
 		};
 
+		command_list->SetBlendState(blend_enabled);
 		command_list->SetDepthStencilState(depth_stencil_enabled_state);
 		command_list->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		command_list->SetRenderTargets(render_targets, depth_texture->GetDepthStencilView());
@@ -108,12 +108,12 @@ void Renderer::PassGBuffer()
 		command_list->SetVertexShader(vertex_shader);
 		command_list->SetInputLayout(vertex_shader->GetInputLayout());
 		command_list->SetConstantBuffer(0, ShaderScope::Global, global_buffer);
-	
+		command_list->SetSamplerState(0, ShaderScope::PS, anisotropic_wrap);
+
 		for (const auto &actor : renderables[RenderableType::Opaque])
 			draw_actor(actor);
 
-		//TODO : blend state 만들고 처리
-
+		command_list->SetBlendState(blend_color_add);
 		for (const auto &actor : renderables[RenderableType::Transparent])
 			draw_actor(actor);
 	}
@@ -129,11 +129,14 @@ void Renderer::PassLine(std::shared_ptr<class Texture>& out)
 
 	command_list->Begin("PassLine");
 
+	command_list->SetRasterizerState(cull_back_wireframe);
+	command_list->SetBlendState(blend_disabled);
 	command_list->SetViewport(out->GetViewport());
 	command_list->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 	command_list->SetVertexShader(shader);
 	command_list->SetPixelShader(shader);
 	command_list->SetInputLayout(shader->GetInputLayout());
+	command_list->SetSamplerState(0, ShaderScope::PS, point_clamp);
 
 	//depth enabled
 	command_list->SetDepthStencilState(depth_stencil_enabled_state);
@@ -269,6 +272,8 @@ void Renderer::PassDebug(std::shared_ptr<class Texture>& out)
 
 	UpdateGlobalBuffer(out->GetWidth(), out->GetHeight(), post_process_view_proj);
 
+	command_list->SetRasterizerState(cull_back_solid);
+	command_list->SetBlendState(blend_disabled);
 	command_list->SetDepthStencilState(depth_stencil_disabled_state);
 
 	command_list->SetRenderTarget(out);
@@ -281,6 +286,7 @@ void Renderer::PassDebug(std::shared_ptr<class Texture>& out)
 	command_list->SetPixelShader(pixel_shader);
 	command_list->SetConstantBuffer(0, ShaderScope::Global, global_buffer);
 	command_list->SetShaderResource(0, ShaderScope::PS, texture);
+	command_list->SetSamplerState(0, ShaderScope::PS, bilinear_clamp);
 	command_list->DrawIndexed(screen_index_buffer->GetCount(), screen_index_buffer->GetOffset(), screen_vertex_buffer->GetOffset());
 		
 	command_list->End();

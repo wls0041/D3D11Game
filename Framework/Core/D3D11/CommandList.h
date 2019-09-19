@@ -75,6 +75,8 @@ struct Command final
 	D3D11_VIEWPORT viewport;
 
 	ID3D11BlendState* blend_state;
+	float blend_factor;
+
 	ID3D11DepthStencilState* depth_stencil_state;
 
 	std::vector<ID3D11RenderTargetView*> render_targets;
@@ -132,17 +134,17 @@ public:
 	void SetShaderResource(const uint& slot, const ShaderScope& stage, const std::shared_ptr<Texture>& texture);
 	void SetShaderResources(const uint& slot, const ShaderScope& stage, const std::vector<ID3D11ShaderResourceView*>& shader_resources);
 
-	//void SetSamplerState(const uint& slot, const ShaderScope& stage, SamplerState* sampler_state);
-	//void SetSamplerState(const uint& slot, const ShaderScope& stage, const std::shared_ptr<SamplerState>& sampler_state);
+	void SetSamplerState(const uint& slot, const ShaderScope& stage, SamplerState* sampler_state);
+	void SetSamplerState(const uint& slot, const ShaderScope& stage, const std::shared_ptr<SamplerState>& sampler_state);
 	void SetSamplerStates(const uint& slot, const ShaderScope& stage, const std::vector<ID3D11SamplerState*>& sampler_states);
 
 	void SetViewport(const D3D11_VIEWPORT& viewport);
 
-	//void SetRasterizerState(RasterizerState* rasterizer_state);
-	//void SetRasterizerState(const std::shared_ptr<RasterizerState>& rasterizer_state);
+	void SetRasterizerState(RasterizerState* rasterizer_state);
+	void SetRasterizerState(const std::shared_ptr<RasterizerState>& rasterizer_state);
 
-	//void SetBlendState(BlendState* blend_state);
-	//void SetBlendState(const std::shared_ptr<BlendState>& blend_state);
+	void SetBlendState(BlendState* blend_state);
+	void SetBlendState(const std::shared_ptr<BlendState>& blend_state);
 
 	void SetDepthStencilState(DepthStencilState* depth_stencil_state);
 	void SetDepthStencilState(const std::shared_ptr<DepthStencilState>& depth_stencil_state);
