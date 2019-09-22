@@ -22,4 +22,7 @@ private:
 	void ShowAddComponentButton();
 	void ShowComponentPopup();
 	void AddComponentDragDrop();
+
+private:
+	std::unique_ptr<ColorPicker> material_color_picker;
 };

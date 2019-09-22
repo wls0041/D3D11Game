@@ -81,13 +81,9 @@ auto Material::GetTextureShaderResources() -> std::vector<ID3D11ShaderResourceVi
 
 void Material::SetTexture(const TextureType & type, const std::shared_ptr<Texture> &texture)
 {
-	if (!texture)
-	{
-		LOG_ERROR("Invalid parameter. texture is nullptr");
-		return;
-	}
+	if (texture) textures[type] = texture;
+	else textures.erase(type);
 
-	textures[type] = texture;
 	SetStandardShader();
 }
 

@@ -13,8 +13,8 @@ namespace Inspector
 	static float column = 140.0f;
 	static float max_width = 100.0f;
 	static std::shared_ptr<IComponent> copied_component;
-
-	inline void ComponentMenuOption(const std::string& id, const std::shared_ptr<IComponent>& component, const bool& removable)
+	
+ 	inline void ComponentMenuOption(const std::string& id, const std::shared_ptr<IComponent>& component, const bool& removable)
 	{
 		if (ImGui::BeginPopup(id.c_str()))
 		{
@@ -56,7 +56,7 @@ namespace Inspector
 		{
 			ImGui::SameLine(ImGui::GetWindowContentRegionWidth() * 0.973f);
 			ImGui::SetCursorPosY(original_pen_y + 1.5f);
-			if (Icon_Provider::Get().ImageButton(name.c_str(), IconType::Component_Option, 12.0f))
+			if (Icon_Provider::Get().ImageButton(name.c_str(), IconType::Button_Option, 12.0f))
 			{
 				Inspector::menu_id = name;
 				ImGui::OpenPopup(Inspector::menu_id.c_str());
@@ -78,7 +78,8 @@ namespace Inspector
 Widget_Inspector::Widget_Inspector(Context * context)
 	: IWidget(context)
 {
-	title = "Inspector";
+	title = "Inspector";   
+	material_color_picker = std::make_unique<ColorPicker>("Material Color Picker");
 }
 
 void Widget_Inspector::Render()
@@ -176,10 +177,45 @@ void Widget_Inspector::ShowScript(std::shared_ptr<class Script>& script)
 
 void Widget_Inspector::ShowRenderable(std::shared_ptr<class Renderable>& renderable)
 {
+	if (!renderable)
+		return;
+
+	auto mesh = renderable->GetMesh();
+	auto material = renderable->GetMaterial();
+
+	if (Inspector::ComponentBegin("Renderable", IconType::Component_Renderable, renderable))
+	{
+		auto& mesh_name = mesh ? mesh->GetResourceName() : NOT_ASSIGNED_STR;
+		auto& material_name = material ? material->GetResourceName() : NOT_ASSIGNED_STR;
+
+		//Mesh
+		ImGui::TextUnformatted("Mesh");
+		ImGui::SameLine(140.0f);
+		ImGui::TextUnformatted(mesh_name.c_str());
+
+		//Material
+		ImGui::TextUnformatted("Material");
+		ImGui::SameLine(140.0f);
+		ImGui::TextUnformatted(material_name.c_str());
+		ImGui::SameLine();
+	}
+	Inspector::ComponentEnd();
+
+	ShowMaterial(material);
 }
 
 void Widget_Inspector::ShowMaterial(std::shared_ptr<class Material>& material)
 {
+	if (!material)
+		return;
+
+	if (Inspector::ComponentBegin("RigidBody", IconType::Component_Material, nullptr, false))
+	{
+		auto tiling = material->GetTiling();
+		auto offset = material->GetOffset();
+
+	}
+	Inspector::ComponentEnd();
 }
 
 void Widget_Inspector::ShowRigidBody(std::shared_ptr<class RigidBody>& rigid_body)

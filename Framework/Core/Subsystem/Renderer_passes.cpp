@@ -121,6 +121,18 @@ void Renderer::PassGBuffer()
 	command_list->Submit();
 }
 
+void Renderer::PassLight()
+{
+}
+
+void Renderer::PassComposition(std::shared_ptr<class Texture>& out)
+{
+}
+
+void Renderer::PassPostComposition(std::shared_ptr<class Texture>& in, std::shared_ptr<class Texture>& out)
+{
+}
+
 void Renderer::PassLine(std::shared_ptr<class Texture>& out)
 {
 	const auto& shader = shaders[ShaderType::VPS_COLOR];

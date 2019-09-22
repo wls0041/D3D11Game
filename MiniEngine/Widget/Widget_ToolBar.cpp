@@ -83,7 +83,7 @@ void Widget_ToolBar::Render()
 		ImGui::GetStyle().Colors[is_show_render_option ? ImGuiCol_ButtonActive : ImGuiCol_Button]
 	);
 
-	if (Icon_Provider::Get().ImageButton(IconType::Component_Option, 20.0f)) is_show_render_option = true;
+	if (Icon_Provider::Get().ImageButton(IconType::Button_Option, 20.0f)) is_show_render_option = true;
 
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar();

@@ -117,7 +117,10 @@ private:
 	void PassMain();
 
 	void PassGBuffer();
-	
+	void PassLight();
+	void PassComposition(std::shared_ptr<class Texture>& out);
+	void PassPostComposition(std::shared_ptr<class Texture>& in, std::shared_ptr<class Texture>& out);
+
 	void PassLine(std::shared_ptr<class Texture> &out);
 	void PassDebug(std::shared_ptr<class Texture> &out);
 

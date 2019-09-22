@@ -30,11 +30,11 @@ Editor::Editor()
 	ImGui::CreateContext();
 
 	auto& io = ImGui::GetIO();
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; //tab으로 창 넘어갈 수 있게 하는 등의 기능
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; //tab으로 창 넘어갈 수 있게 하는 등의 기능zz
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-	io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcon;
-	io.ConfigResizeWindowsFromEdges = true; //window창 크기 조절
+	io.ConfigWindowsResizeFromEdges = true;
+	io.ConfigViewportsNoTaskBarIcon = true; //window창 크기 조절
 
 	ImGui_ImplWin32_Init(Settings::Get().GetWindowHandle());
 	ImGui_ImplDX11_Init(graphics->GetDevice(), graphics->GetDeviceContext());
@@ -137,7 +137,7 @@ void Editor::BeginDockspace()
 
 	if (!ImGui::DockBuilderGetNode(id)) {
 		ImGui::DockBuilderRemoveNode(id);
-		ImGui::DockBuilderAddNode(id, ImGui::GetMainViewport()->Size);
+		ImGui::DockBuilderAddNode(id, ImGuiDockNodeFlags_None);
 
 		auto main = id;
 		auto right = ImGui::DockBuilderSplitNode(main, ImGuiDir_Right, 0.4f, nullptr, &main);
@@ -154,7 +154,7 @@ void Editor::BeginDockspace()
 		ImGui::DockBuilderFinish(id);
 	}
 
-	ImGui::DockSpace(id, ImVec2(0, 0), ImGuiDockNodeFlags_PassthruDockspace);
+	ImGui::DockSpace(id, ImVec2(0, 0), ImGuiDockNodeFlags_PassthruCentralNode);
 }
 
 void Editor::EndDockspace()

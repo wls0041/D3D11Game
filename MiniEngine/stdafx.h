@@ -11,3 +11,4 @@
 #include "Helper/Icon_Provider.h"
 #include "Helper/DragDropEvent.h"
 #include "Helper/Editor_Script.h"
+#include "Helper/ColorPicker.h"

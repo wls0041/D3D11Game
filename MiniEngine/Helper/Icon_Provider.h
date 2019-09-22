@@ -2,23 +2,24 @@
 
 enum class IconType : uint
 {
-    Component_Option,
-    Component_Camera,
-    Component_Transform,
+	Component_Camera,
+	Component_Transform,
 	Component_Renderable,
 	Component_RigidBody,
 	Component_Collider,
 	Component_Material,
 	Component_Script,
-    Console_Info,
-    Console_Warning,
-    Console_Error,
-    Button_Play,
-    Button_Stop,
-    Button_Pause,
-    Thumbnail_Folder,
-    Thumbnail_File,
-    Thumbnail_Custom,
+	Console_Info,
+	Console_Warning,
+	Console_Error,
+	Button_Option,
+	Button_Play,
+	Button_Stop,
+	Button_Pause,
+	Button_Remove,
+	Thumbnail_Folder,
+	Thumbnail_File,
+	Thumbnail_Custom,
 };
 
 struct Thumbnail
