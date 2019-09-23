@@ -50,3 +50,15 @@ struct TRANSFORM_DATA final
 	Matrix wvp_previous;
 };
 
+struct LIGHT_DATA final
+{
+	Vector3 color;
+	float intensity;
+	Vector3 position;
+	float range;
+	Vector3 direction;
+	float angle;
+	float bias;
+	float normal_bias;
+	float padding[2];
+};

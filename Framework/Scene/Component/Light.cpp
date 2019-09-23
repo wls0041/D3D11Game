@@ -95,3 +95,30 @@ void Light::SetCastShadow(const bool & is_cast_shadow)
     this->is_cast_shadow = is_cast_shadow;
     //TODO : Create Shadow Map
 }
+
+void Light::UpdateConstantBuffer()
+{
+	if (!gpu_buffer)
+	{
+		gpu_buffer = std::make_shared<ConstantBuffer>(context);
+		gpu_buffer->Create<LIGHT_DATA>();
+	}
+
+	auto gpu_data = gpu_buffer->Map<LIGHT_DATA>();
+	if (!gpu_data)
+	{
+		LOG_ERROR("Failed to map buffer");
+		return;
+	}
+
+	gpu_data->color = color;
+	gpu_data->intensity = intensity;
+	gpu_data->position = transform->GetTranslation();
+	gpu_data->range = range;
+	gpu_data->direction = GetDirection();
+	gpu_data->angle = angle_radian;
+	gpu_data->bias = bias;
+	gpu_data->normal_bias = normal_bias;
+
+	gpu_buffer->Unmap();
+}

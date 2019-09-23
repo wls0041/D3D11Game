@@ -7,6 +7,7 @@
 #include "../../Scene/Component/Camera.h"
 #include "../../Scene/Component/Transform.h"
 #include "../../Scene/Component/Renderable.h"
+#include "Scene/Component/Light.h"
 
 Renderer::Renderer(Context * context)
 	: ISubsystem(context)
@@ -73,11 +74,28 @@ void Renderer::AcquireRenderables(Scene * scene)
 	for (const auto &actor : actors)
 	{
 		if (!actor) continue;
+
+		auto renderable_component = actor->GetComponent<Renderable>();
+		auto light_component = actor->GetComponent<Light>();
+		auto camera_component = actor->GetComponent<Camera>();
+
 		auto component_renderable = actor->GetComponent<Renderable>();
 		auto component_camera = actor->GetComponent<Camera>();
 
 		if (component_renderable)
 			renderables[RenderableType::Opaque].emplace_back(actor.get());
+
+		if (light_component)
+		{
+			renderables[RenderableType::Light].emplace_back(actor.get());
+
+			switch (light_component->GetLightType())
+			{
+			case LightType::Directional:    renderables[RenderableType::Directional_Light].emplace_back(actor.get());   break;
+			case LightType::Point:          renderables[RenderableType::Point_Light].emplace_back(actor.get());         break;
+			case LightType::Spot:           renderables[RenderableType::Spot_Light].emplace_back(actor.get());          break;
+			}
+		}
 
 		if (component_camera) { //scene_camera 용
 			renderables[RenderableType::Camera].emplace_back(actor.get());
@@ -171,15 +189,22 @@ void Renderer::CreateRenderTextures() //RTT. 최소 크기가 4임.
 	screen_index_buffer->Create(screen_quad.GetIndices());
 
 	//GBuffer
-	render_textures[RenderTargetType::GBuffer_Albedo]	= std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 1, RTV | SRV);
-	render_textures[RenderTargetType::GBuffer_Normal]	= std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, RTV | SRV);
-	render_textures[RenderTargetType::GBuffer_Material]	= std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 1, RTV | SRV);
-	render_textures[RenderTargetType::GBuffer_Velocity]	= std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R16G16_FLOAT, 1, RTV | SRV);
-	render_textures[RenderTargetType::GBuffer_Depth]	= std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_D32_FLOAT, 1, DSV | SRV);
+	render_textures[RenderTargetType::GBuffer_Albedo] = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 1, RTV | SRV);
+	render_textures[RenderTargetType::GBuffer_Normal] = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, RTV | SRV);
+	render_textures[RenderTargetType::GBuffer_Material] = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 1, RTV | SRV);
+	render_textures[RenderTargetType::GBuffer_Velocity] = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R16G16_FLOAT, 1, RTV | SRV);
+	render_textures[RenderTargetType::GBuffer_Depth] = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_D32_FLOAT, 1, DSV | SRV);
 
-	//final
-	auto final_render_texture = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, RTV | SRV);
-	render_textures[RenderTargetType::Final] = final_render_texture;
+	//Light
+	render_textures[RenderTargetType::Light_Diffuse] = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, RTV | SRV); //diffuse rgba32 -- 좀 더 깔끔한 출력을 위해 변경
+	render_textures[RenderTargetType::Light_Specular] = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, RTV | SRV);
+
+	//Composition
+	render_textures[RenderTargetType::Composition] = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, RTV | SRV);
+	render_textures[RenderTargetType::Composition_Previous] = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, RTV | SRV);
+
+	//Final
+	render_textures[RenderTargetType::Final] = std::make_shared<Texture2D>(context, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, RTV | SRV);
 }
 
 void Renderer::CreateShaders()
@@ -210,6 +235,25 @@ void Renderer::CreateShaders()
 	ps_debug_depth->AddDefine("DEBUG_DEPTH");
 	ps_debug_depth->AddShader<PixelShader>(shader_directory + "PostProcess.hlsl");
 	shaders[ShaderType::PS_DEBUG_DEPTH] = ps_debug_depth;
+
+	auto ps_directional_light = std::make_shared<Shader>(context);
+	ps_directional_light->AddDefine("DIRECTIONAL");
+	ps_directional_light->AddShader<PixelShader>(shader_directory + "Light.hlsl");
+	shaders[ShaderType::PS_DIRECTIONAL_LIGHT] = ps_directional_light;
+
+	auto ps_spot_light = std::make_shared<Shader>(context);
+	ps_spot_light->AddDefine("SPOT");
+	ps_spot_light->AddShader<PixelShader>(shader_directory + "Light.hlsl");
+	shaders[ShaderType::PS_SPOT_LIGHT] = ps_spot_light;
+
+	auto ps_point_light = std::make_shared<Shader>(context);
+	ps_point_light->AddDefine("POINT");
+	ps_point_light->AddShader<PixelShader>(shader_directory + "Light.hlsl");
+	shaders[ShaderType::PS_POINT_LIGHT] = ps_point_light;
+
+	auto ps_composition = std::make_shared<Shader>(context);
+	ps_composition->AddShader<PixelShader>(shader_directory + "Composition.hlsl");
+	shaders[ShaderType::PS_COMPOSITION] = ps_composition;
 
 	//vertex_pixel shader
 	auto vps_color = std::make_shared<Shader>(context);
@@ -269,7 +313,7 @@ void Renderer::CreateSamplerStates()
 	anisotropic_wrap->Create
 	(
 		D3D11_FILTER_ANISOTROPIC,
-		D3D11_TEXTURE_ADDRESS_WRAP,
+		D3D11_TEXTURE_ADDRESS_CLAMP,
 		D3D11_COMPARISON_ALWAYS
 	);
 }

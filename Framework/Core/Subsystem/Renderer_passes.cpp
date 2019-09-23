@@ -1,12 +1,13 @@
 #include "Framework.h"
 #include "Renderer.h"
-#include "../D3D11/CommandList.h"
-#include "../../Scene/Scene.h"
-#include "../../Scene/Actor.h"
-#include "../../Scene/Component/Camera.h"
-#include "../../Scene/Component/Transform.h"
-#include "../../Scene/Component/Renderable.h"
+#include "Core/D3D11/CommandList.h"
 #include "Gizmo/Grid.h"
+#include "Scene/Scene.h"
+#include "Scene/Actor.h"
+#include "Scene/Component/Camera.h"
+#include "Scene/Component/Transform.h"
+#include "Scene/Component/Renderable.h"
+#include "Scene/Component/Light.h"
 
 void Renderer::PassMain()
 {
@@ -123,14 +124,169 @@ void Renderer::PassGBuffer()
 
 void Renderer::PassLight()
 {
+    const auto& vertex_shader               = shaders[ShaderType::VS_POST_PROCESS];
+    const auto& directional_light_shader    = shaders[ShaderType::PS_DIRECTIONAL_LIGHT];
+    const auto& spot_light_shader           = shaders[ShaderType::PS_SPOT_LIGHT];
+    const auto& point_light_shader          = shaders[ShaderType::PS_POINT_LIGHT];
+    
+    if (!vertex_shader || !directional_light_shader || !spot_light_shader || !point_light_shader)
+        return;
+
+    auto& diffuse_texture   = render_textures[RenderTargetType::Light_Diffuse];
+    auto& specular_texture  = render_textures[RenderTargetType::Light_Specular];
+
+    const std::vector<ID3D11RenderTargetView*> render_targets //vector - shader에서 해당 부분의 이미지를 2장 찍기 때문
+    {
+        diffuse_texture->GetRenderTargetView(),
+        specular_texture->GetRenderTargetView(),
+    };
+
+    const std::vector<ID3D11SamplerState*> sampler_states
+    {
+        point_clamp->GetResource(),
+        compare_depth->GetResource(),
+        bilinear_clamp->GetResource(),
+    };
+
+    command_list->Begin("PassLight");
+
+    command_list->SetRasterizerState(cull_back_solid);
+    command_list->SetBlendState(blend_color_add);
+    command_list->SetDepthStencilState(depth_stencil_disabled_state);
+    command_list->ClearRenderTargets(render_targets);
+    command_list->SetRenderTargets(render_targets);
+    command_list->SetViewport(diffuse_texture->GetViewport());
+    command_list->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    command_list->SetVertexBuffer(screen_vertex_buffer);
+    command_list->SetIndexBuffer(screen_index_buffer);
+    command_list->SetInputLayout(vertex_shader->GetInputLayout());
+    command_list->SetVertexShader(vertex_shader);
+    command_list->SetSamplerStates(0, ShaderScope::PS, sampler_states);
+
+    UpdateGlobalBuffer(diffuse_texture->GetWidth(), diffuse_texture->GetHeight());
+
+    auto draw_light = [this, &directional_light_shader, &spot_light_shader, &point_light_shader](const RenderableType& type)
+    {
+        if (renderables[type].empty())
+            return;
+
+        std::shared_ptr<Shader> shader;
+
+        switch (type)
+        {
+        case RenderableType::Directional_Light: shader = directional_light_shader;  break;
+        case RenderableType::Spot_Light:        shader = spot_light_shader;         break;
+        case RenderableType::Point_Light:       shader = point_light_shader;        break;
+        }
+
+        for (const auto& actor : renderables[type])
+        {
+            Light* light = actor->GetComponent<Light>().get();
+
+            if (!light)
+                break;
+
+            const std::vector<ID3D11ShaderResourceView*> shader_resources
+            {
+                render_textures[RenderTargetType::GBuffer_Normal]->GetShaderResourceView(),
+                render_textures[RenderTargetType::GBuffer_Material]->GetShaderResourceView(),
+                render_textures[RenderTargetType::GBuffer_Depth]->GetShaderResourceView(),
+            };
+
+            light->UpdateConstantBuffer();
+
+            const std::vector<ID3D11Buffer*> constant_buffers
+            {
+                global_buffer->GetResource(),
+                light->GetConstantBuffer()->GetResource(),
+            };
+
+            command_list->SetPixelShader(shader);
+            command_list->SetConstantBuffers(0, ShaderScope::Global, constant_buffers);
+            command_list->SetShaderResources(0, ShaderScope::PS, shader_resources);
+            command_list->DrawIndexed(screen_index_buffer->GetCount(), screen_index_buffer->GetOffset(), screen_vertex_buffer->GetOffset());
+            command_list->Submit();
+        }
+    };
+
+    draw_light(RenderableType::Directional_Light);
+    draw_light(RenderableType::Spot_Light);
+    draw_light(RenderableType::Point_Light);
+
+    command_list->End();
+    command_list->Submit();
 }
 
-void Renderer::PassComposition(std::shared_ptr<class Texture>& out)
+void Renderer::PassComposition(std::shared_ptr<class Texture>& out)// 2개의 light를 결합 후처리
 {
+    const auto& vertex_shader   = shaders[ShaderType::VS_POST_PROCESS];
+    const auto& pixel_shader    = shaders[ShaderType::PS_COMPOSITION];
+
+    if (!vertex_shader || !pixel_shader)
+        return;
+
+    command_list->Begin("PassComposition");
+
+    UpdateGlobalBuffer(out->GetWidth(), out->GetHeight());
+
+    const std::vector<ID3D11ShaderResourceView*> shader_resources
+    {
+        render_textures[RenderTargetType::GBuffer_Albedo]->GetShaderResourceView(),
+        render_textures[RenderTargetType::GBuffer_Normal]->GetShaderResourceView(),
+        render_textures[RenderTargetType::GBuffer_Depth]->GetShaderResourceView(),
+        render_textures[RenderTargetType::GBuffer_Material]->GetShaderResourceView(),
+        render_textures[RenderTargetType::Light_Diffuse]->GetShaderResourceView(),
+        render_textures[RenderTargetType::Light_Specular]->GetShaderResourceView(),
+    };
+
+    const std::vector<ID3D11SamplerState*> sampler_states
+    {
+        bilinear_clamp->GetResource(),
+        trilinear_clamp->GetResource(),
+        point_clamp->GetResource(),
+    };
+
+    command_list->SetRasterizerState(cull_back_solid);
+    command_list->SetBlendState(blend_disabled);
+    command_list->SetDepthStencilState(depth_stencil_disabled_state);
+    command_list->SetRenderTarget(out);
+    command_list->SetViewport(out->GetViewport());
+    command_list->SetVertexBuffer(screen_vertex_buffer);
+    command_list->SetIndexBuffer(screen_index_buffer);
+    command_list->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    command_list->SetInputLayout(vertex_shader->GetInputLayout());
+    command_list->SetVertexShader(vertex_shader);
+    command_list->SetPixelShader(pixel_shader);
+    command_list->SetConstantBuffer(0, ShaderScope::Global, global_buffer);
+    command_list->SetShaderResources(0, ShaderScope::PS, shader_resources);
+    command_list->SetSamplerStates(0, ShaderScope::PS, sampler_states);
+    command_list->DrawIndexed(screen_index_buffer->GetCount(), screen_index_buffer->GetOffset(), screen_vertex_buffer->GetOffset());
+
+    command_list->End();
+    command_list->Submit();
 }
 
 void Renderer::PassPostComposition(std::shared_ptr<class Texture>& in, std::shared_ptr<class Texture>& out)
 {
+    const auto& vertex_shader = shaders[ShaderType::VS_POST_PROCESS];
+
+    if (!vertex_shader)
+        return;
+
+    command_list->Begin("PassPostComposition");
+
+    command_list->SetRasterizerState(cull_back_solid);
+    command_list->SetDepthStencilState(depth_stencil_disabled_state);
+    command_list->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    command_list->SetVertexBuffer(screen_vertex_buffer);
+    command_list->SetIndexBuffer(screen_index_buffer);
+    command_list->SetInputLayout(vertex_shader->GetInputLayout());
+    command_list->SetVertexShader(vertex_shader);
+
+    //TODO : post process
+
+    command_list->End();
+    command_list->Submit();
 }
 
 void Renderer::PassLine(std::shared_ptr<class Texture>& out)

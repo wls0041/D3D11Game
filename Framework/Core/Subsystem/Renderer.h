@@ -44,6 +44,10 @@ enum class ShaderType : uint
 	PS_TEXTURE,
 	PS_DEBUG_NORMAL,
 	PS_DEBUG_DEPTH,
+	PS_DIRECTIONAL_LIGHT,
+	PS_SPOT_LIGHT,
+	PS_POINT_LIGHT,
+	PS_COMPOSITION,
 	VPS_COLOR,
 };
 
@@ -54,6 +58,10 @@ enum class RenderTargetType : uint
 	GBuffer_Material,
 	GBuffer_Velocity,
 	GBuffer_Depth,
+	Light_Diffuse,
+	Light_Specular,
+	Composition,
+	Composition_Previous,
 	Final,
 };
 
@@ -62,6 +70,10 @@ enum class RenderableType : uint
 	Opaque,
 	Transparent,
 	Camera,
+	Light,
+	Directional_Light,
+	Spot_Light,
+	Point_Light,
 };
 
 class Renderer final : public ISubsystem

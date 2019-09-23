@@ -25,6 +25,9 @@ public:
 	void OnUpdate() override;
 	void OnStop() override;
 
+	//======================================================================================
+	// [Property]
+	//======================================================================================
 	auto GetDirection() const->Vector3;
 
 	auto GetLightType() const -> const LightType& { return light_type; }
@@ -51,6 +54,12 @@ public:
 	auto IsCastShadow() const -> const bool& { return is_cast_shadow; }
 	void SetCastShadow(const bool& is_cast_shadow);
 
+	//======================================================================================
+	// [Constant Buffer]
+	//======================================================================================
+	auto GetConstantBuffer() const -> const std::shared_ptr<ConstantBuffer>& { return gpu_buffer; }
+	void UpdateConstantBuffer();
+
 private:
 	class Renderer* renderer;
 
@@ -69,4 +78,6 @@ private:
 
 	std::array<Matrix, 6> views;
 	std::array<Matrix, 6> projections;
+
+	std::shared_ptr<ConstantBuffer> gpu_buffer;
 };
