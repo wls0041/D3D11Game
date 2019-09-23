@@ -48,6 +48,7 @@ enum class ShaderType : uint
 	PS_SPOT_LIGHT,
 	PS_POINT_LIGHT,
 	PS_COMPOSITION,
+	PS_GAMMA_CORRECTION,
 	VPS_COLOR,
 };
 
@@ -135,6 +136,8 @@ private:
 
 	void PassLine(std::shared_ptr<class Texture> &out);
 	void PassDebug(std::shared_ptr<class Texture> &out);
+
+	void PassGammaCorrection(std::shared_ptr<class Texture>& in, std::shared_ptr<class Texture>& out);
 
 private:
 	class Graphics *graphics;

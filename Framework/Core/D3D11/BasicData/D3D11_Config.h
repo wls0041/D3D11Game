@@ -25,8 +25,7 @@ struct GLOBAL_DATA final
 	float camera_far;
 	Vector2 resolution;
 	Vector3 camera_position; //크기 범위를 안맞추면 데이터가 잘려서 밀려 들어가 제대로 저장되지 않을 수 있음.
-
-	float padding;
+	float directional_light_intensity;
 };
 
 struct MATERIAL_DATA final

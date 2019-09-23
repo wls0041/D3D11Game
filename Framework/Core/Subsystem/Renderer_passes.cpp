@@ -13,7 +13,18 @@ void Renderer::PassMain()
 {
 	command_list->Begin("PassMain");
 	{
-		PassGBuffer();        
+		PassGBuffer();              
+		PassLight();
+		PassComposition(render_textures[RenderTargetType::Composition]);
+
+		PassPostComposition
+		(
+			render_textures[RenderTargetType::Composition],
+			render_textures[RenderTargetType::Final]
+		);
+
+		render_textures[RenderTargetType::Composition].swap(render_textures[RenderTargetType::Composition_Previous]);
+
 		PassLine(render_textures[RenderTargetType::Final]);
 		PassDebug(render_textures[RenderTargetType::Final]);
 	}
@@ -285,6 +296,8 @@ void Renderer::PassPostComposition(std::shared_ptr<class Texture>& in, std::shar
 
     //TODO : post process
 
+	PassGammaCorrection(in, out);
+
     command_list->End();
     command_list->Submit();
 }
@@ -459,4 +472,29 @@ void Renderer::PassDebug(std::shared_ptr<class Texture>& out)
 		
 	command_list->End();
 	command_list->Submit();
+}
+
+void Renderer::PassGammaCorrection(std::shared_ptr<class Texture>& in, std::shared_ptr<class Texture>& out)
+{
+	const auto& pixel_shader = shaders[ShaderType::PS_GAMMA_CORRECTION];
+	if (!pixel_shader)
+		return;
+
+	command_list->Begin("PassGammaCorrection");
+
+	UpdateGlobalBuffer(out->GetWidth(), out->GetHeight());
+
+	command_list->ClearShaderResources(ShaderScope::PS);
+	command_list->SetBlendState(blend_disabled);
+	command_list->SetRenderTarget(out);
+	command_list->SetViewport(out->GetViewport());
+	command_list->SetPixelShader(pixel_shader);
+	command_list->SetConstantBuffer(0, ShaderScope::Global, global_buffer);
+	command_list->SetShaderResource(0, ShaderScope::PS, in);
+	command_list->SetSamplerState(0, ShaderScope::PS, point_clamp);
+	command_list->DrawIndexed(screen_index_buffer->GetCount(), screen_index_buffer->GetOffset(), screen_vertex_buffer->GetOffset());
+
+	command_list->End();
+	command_list->Submit();
+
 }

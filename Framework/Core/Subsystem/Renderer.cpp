@@ -255,6 +255,11 @@ void Renderer::CreateShaders()
 	ps_composition->AddShader<PixelShader>(shader_directory + "Composition.hlsl");
 	shaders[ShaderType::PS_COMPOSITION] = ps_composition;
 
+	auto ps_gamma_correction = std::make_shared<Shader>(context);
+	ps_gamma_correction->AddDefine("GAMMA_CORRECTION");
+	ps_gamma_correction->AddShader<PixelShader>(shader_directory + "PostProcess.hlsl");
+	shaders[ShaderType::PS_GAMMA_CORRECTION] = ps_gamma_correction;
+
 	//vertex_pixel shader
 	auto vps_color = std::make_shared<Shader>(context);
 	vps_color->AddShader<VertexShader>(shader_directory + "Color.hlsl");
@@ -377,17 +382,25 @@ void Renderer::UpdateGlobalBuffer(const uint & width, const uint & height, const
         return;
     }
 
-    gpu_buffer->world_view_proj     = world_view_proj;
-    gpu_buffer->view                = camera_view;
-    gpu_buffer->proj                = camera_proj;
-    gpu_buffer->view_proj           = camera_view_proj;
-    gpu_buffer->view_proj_inverse   = camera_view_proj_inverse;
-    gpu_buffer->camera_position     = camera_position;
-    gpu_buffer->camera_near         = camera_near;
-    gpu_buffer->camera_far          = camera_far;
-    gpu_buffer->resolution          = Vector2(static_cast<float>(width), static_cast<float>(height));
-    gpu_buffer->proj_ortho          = post_process_proj;
-    gpu_buffer->view_proj_ortho     = post_process_view_proj;
+	float directional_light_intensity = 0.0f;
+	if (auto& actor = renderables[RenderableType::Directional_Light].front())
+	{
+		if (auto& light = actor->GetComponent<Light>())
+			directional_light_intensity = light->GetIntensity();
+	}
+
+	gpu_buffer->world_view_proj = world_view_proj;
+	gpu_buffer->view = camera_view;
+	gpu_buffer->proj = camera_proj;
+	gpu_buffer->view_proj = camera_view_proj;
+	gpu_buffer->view_proj_inverse = camera_view_proj_inverse;
+	gpu_buffer->camera_position = camera_position;
+	gpu_buffer->camera_near = camera_near;
+	gpu_buffer->camera_far = camera_far;
+	gpu_buffer->resolution = Vector2(static_cast<float>(width), static_cast<float>(height));
+	gpu_buffer->proj_ortho = post_process_proj;
+	gpu_buffer->view_proj_ortho = post_process_view_proj;
+	gpu_buffer->directional_light_intensity = directional_light_intensity;
 
     global_buffer->Unmap();
 }
