@@ -271,6 +271,7 @@ copy /Y "$(OutDir)$(ProjectName).pdb" "..\..\_Libraries\Lib_x86\"</Command>
     <ClCompile Include="Core\Subsystem\Physics.cpp" />
     <ClCompile Include="Core\Subsystem\Renderer.cpp" />
     <ClCompile Include="Core\Subsystem\Renderer_passes.cpp" />
+    <ClCompile Include="Core\Subsystem\Renderer_Resources.cpp" />
     <ClCompile Include="Core\Subsystem\ResourceManager.cpp" />
     <ClCompile Include="Core\Subsystem\SceneManager.cpp" />
     <ClCompile Include="Core\Subsystem\Scripting.cpp" />

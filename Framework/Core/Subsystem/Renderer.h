@@ -44,6 +44,7 @@ enum class ShaderType : uint
 	PS_TEXTURE,
 	PS_DEBUG_NORMAL,
 	PS_DEBUG_DEPTH,
+	PS_DEBUG_LIGHT,
 	PS_DIRECTIONAL_LIGHT,
 	PS_SPOT_LIGHT,
 	PS_POINT_LIGHT,
@@ -135,7 +136,7 @@ private:
 	void PassGBuffer();
 	void PassLight();
 	void PassComposition(std::shared_ptr<class Texture>& out);
-	void PassPostComposition(std::shared_ptr<class Texture>& in, std::shared_ptr<class Texture>& out);
+	void PassPostProcess(std::shared_ptr<class Texture>& in, std::shared_ptr<class Texture>& out);
 
 	void PassLine(std::shared_ptr<class Texture> &out);
 	void PassDebug(std::shared_ptr<class Texture> &out);

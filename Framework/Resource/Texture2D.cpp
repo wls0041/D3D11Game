@@ -247,7 +247,7 @@ const bool Texture2D::CreateGpuResource()
             graphics->GetDevice(),
             texture,
             &render_target_view,
-            buffer_format,
+			format,
             array_size
         );
 
@@ -302,7 +302,7 @@ const bool Texture2D::CreateGpuResource()
             graphics->GetDevice(),
             texture,
             &unordered_access_view,
-            buffer_format,
+			format,
             array_size
         );
 

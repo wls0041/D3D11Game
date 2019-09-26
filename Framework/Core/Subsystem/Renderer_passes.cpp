@@ -17,7 +17,7 @@ void Renderer::PassMain()
 		PassLight();
 		PassComposition(render_textures[RenderTargetType::Composition]);
 
-		PassPostComposition
+		PassPostProcess
 		(
 			render_textures[RenderTargetType::Composition],
 			render_textures[RenderTargetType::Final]
@@ -110,7 +110,8 @@ void Renderer::PassGBuffer()
 			command_list->DrawIndexed(mesh->GetIndexBuffer()->GetCount(), mesh->GetIndexBuffer()->GetOffset(), mesh->GetVertexBuffer()->GetOffset());
 		};
 
-		command_list->SetBlendState(blend_enabled);
+		command_list->SetRasterizerState(cull_back_solid);
+		command_list->SetBlendState(blend_disabled);
 		command_list->SetDepthStencilState(depth_stencil_enabled_state);
 		command_list->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		command_list->SetRenderTargets(render_targets, depth_texture->GetDepthStencilView());
@@ -277,14 +278,14 @@ void Renderer::PassComposition(std::shared_ptr<class Texture>& out)// 2°³ÀÇ ligh
     command_list->Submit();
 }
 
-void Renderer::PassPostComposition(std::shared_ptr<class Texture>& in, std::shared_ptr<class Texture>& out)
+void Renderer::PassPostProcess(std::shared_ptr<class Texture>& in, std::shared_ptr<class Texture>& out)
 {
     const auto& vertex_shader = shaders[ShaderType::VS_POST_PROCESS];
 
     if (!vertex_shader)
         return;
 
-    command_list->Begin("PassPostComposition");
+    command_list->Begin("PassPostProcess");
 
     command_list->SetRasterizerState(cull_back_solid);
     command_list->SetDepthStencilState(depth_stencil_disabled_state);
@@ -420,11 +421,23 @@ void Renderer::PassDebug(std::shared_ptr<class Texture>& out)
 		break;
 	}
 	case Render_Buffer_Material:
+	{
+		texture = render_textures[RenderTargetType::GBuffer_Material];
+		shader_type = ShaderType::PS_TEXTURE;
 		break;
+	}
 	case Render_Buffer_Diffuse:
+	{
+		texture = render_textures[RenderTargetType::Light_Diffuse];
+		shader_type = ShaderType::PS_DEBUG_LIGHT;
 		break;
+	}
 	case Render_Buffer_Specular:
+	{
+		texture = render_textures[RenderTargetType::Light_Specular];
+		shader_type = ShaderType::PS_DEBUG_LIGHT;
 		break;
+	}
 	case Render_Buffer_Velocity:
 		break;
 	case Render_Buffer_Depth:

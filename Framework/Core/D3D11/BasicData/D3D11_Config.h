@@ -19,8 +19,8 @@ struct GLOBAL_DATA final
 	Matrix proj;
 	Matrix proj_ortho;
 	Matrix view_proj;
-	Matrix view_proj_inverse;
 	Matrix view_proj_ortho;
+	Matrix view_proj_inverse;
 	float camera_near; 
 	float camera_far;
 	Vector2 resolution;
