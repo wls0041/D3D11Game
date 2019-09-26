@@ -14,11 +14,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR lpszCmdP
     Settings::Get().SetWindowHandle(Window::Handle);
     Settings::Get().SetWidth(static_cast<float>(Window::GetWidth()));
     Settings::Get().SetHeight(static_cast<float>(Window::GetHeight()));
+	Settings::Get().SetVsync(false);
 
     auto editor = std::make_unique<Editor>();
 
-	Window::Input_proc = Input::MouseProc;
+	Window::Input_proc  = Input::MouseProc;
 	Window::Editor_proc = ImGui_ImplWin32_WndProcHandler;
+	Window::Resize		= [&editor](const uint& width, const uint& height)
+	{
+		if (editor)
+			editor->Resize(width, height);
+	};
 
     while (Window::Update())
     {

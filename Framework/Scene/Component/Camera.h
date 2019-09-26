@@ -41,6 +41,7 @@ private:
     void UpdateProjectionMatrix();
 
 private:
+	class Renderer* renderer;
     class Input* input;
 
     ProjectionType projection_type;

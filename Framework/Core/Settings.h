@@ -22,12 +22,16 @@ public:
     auto GetHeight() const -> const float { return windowSize.y; }
     void SetHeight(const float& height) { this->windowSize.y = height; }
 
+	auto IsVsync() const -> const bool { return is_vsync; }
+	void SetVsync(const bool& is_vsync) { this->is_vsync = is_vsync; }
+
 private:
     Settings() = default;
     ~Settings() = default;
 
 private:
     HINSTANCE hInstance = nullptr;
-    HWND handle = nullptr;
-    Vector2 windowSize = Vector2(0, 0);
+    HWND handle         = nullptr;
+    Vector2 windowSize  = Vector2(0, 0);
+    bool is_vsync       = true;
 };

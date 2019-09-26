@@ -8,6 +8,7 @@ namespace Window
 
 	static std::function<LRESULT(HWND, uint, WPARAM, LPARAM)> Input_proc;
 	static std::function<LRESULT(HWND, uint, WPARAM, LPARAM)> Editor_proc; //imgui에서 쓸 용도
+	static std::function<void(const uint&, const uint&)> Resize;
 
     inline LRESULT CALLBACK WndProc
     (
@@ -25,6 +26,11 @@ namespace Window
 
         switch (message)
         {
+		case WM_DISPLAYCHANGE:
+		case WM_SIZE:
+			if (Resize != nullptr && wParam != SIZE_MINIMIZED)
+				Resize(LOWORD(lParam), HIWORD(lParam));
+			break;
         case WM_CLOSE:
         case WM_DESTROY:
             PostQuitMessage(0);
@@ -71,14 +77,23 @@ namespace Window
             WS_OVERLAPPEDWINDOW,
             CW_USEDEFAULT,
             CW_USEDEFAULT,
-            static_cast<int>(width),
-            static_cast<int>(height),
+			CW_USEDEFAULT,
+			CW_USEDEFAULT,
             nullptr,
             nullptr,
             instance,
             nullptr            
         );
         assert(Handle != nullptr);
+
+        RECT rect{ 0, 0, static_cast<long>(width), static_cast<long>(height) };
+
+        uint center_x = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
+        uint center_y = (GetSystemMetrics(SM_CYSCREEN) - height) / 2;
+
+        AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+
+        MoveWindow(Handle, center_x, center_y, rect.right - rect.left, rect.bottom - rect.top, TRUE);
     }
 
     inline void Show()

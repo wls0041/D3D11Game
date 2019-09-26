@@ -12,7 +12,8 @@ Camera::Camera(Context * context, Actor * actor, Transform * transform)
 	, drag(accelation * 0.8f)
 	, movement_speed(0, 0, 0)
 {
-	input = context->GetSubsystem<Input>();
+    renderer    = context->GetSubsystem<Renderer>();
+    input       = context->GetSubsystem<Input>();
 }
 
 void Camera::OnStart()
@@ -76,16 +77,20 @@ void Camera::UpdateViewMatrix()
 
 void Camera::UpdateProjectionMatrix()
 {
+	auto resolution = renderer->GetResolution();
+	auto zn = renderer->IsReverseZ() ? far_plane : near_plane;
+	auto zf = renderer->IsReverseZ() ? near_plane : far_plane;
+
 	auto resolution = Vector2(Settings::Get().GetWidth(), Settings::Get().GetHeight());
 
 	switch (projection_type)
 	{
 	case ProjectionType::Perspective:
-		proj = Matrix::PerspectiveFovLH(fov, resolution.x / resolution.y, near_plane, far_plane);
+		proj = Matrix::PerspectiveFovLH(fov, resolution.x / resolution.y, zn, zf);
 		break;
 
 	case ProjectionType::OrthoGraphics:
-		proj = Matrix::OrthoLH(resolution.x, resolution.y, near_plane, far_plane);
+		proj = Matrix::OrthoLH(resolution.x, resolution.y, zn, zf);
 		break;
 	}
 }

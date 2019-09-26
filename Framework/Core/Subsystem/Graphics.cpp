@@ -3,20 +3,13 @@
 
 Graphics::Graphics(Context * context)
 	: ISubsystem(context)
-	, device(nullptr)
-	, device_context(nullptr)
-	, swap_chain(nullptr)
-	, rtv(nullptr)
-	, dsv(nullptr)
-	, clear_color(0xFF555566)
 {
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 }
 
 Graphics::~Graphics()
 {
-	SAFE_RELEASE(dsv);
-	SAFE_RELEASE(rtv);
+	SAFE_RELEASE(render_target_view);
 	SAFE_RELEASE(device_context);
 	SAFE_RELEASE(device);
 	SAFE_RELEASE(swap_chain);
@@ -24,12 +17,130 @@ Graphics::~Graphics()
 
 auto Graphics::Initialize() -> const bool
 {
+	IDXGIFactory* factory = nullptr;
+	auto hr = CreateDXGIFactory
+	(
+		__uuidof(IDXGIFactory), // IID_IDXGIFactory
+		reinterpret_cast<void**>(&factory)
+	);
+	assert(SUCCEEDED(hr));
+
+	IDXGIAdapter* adapter = nullptr;
+	hr = factory->EnumAdapters(0, &adapter);
+	assert(SUCCEEDED(hr));
+
+	IDXGIOutput* adapter_output = nullptr;
+	hr = adapter->EnumOutputs(0, &adapter_output);
+	assert(SUCCEEDED(hr));
+
+	uint display_mode_count = 0;
+	hr = adapter_output->GetDisplayModeList
+	(
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		DXGI_ENUM_MODES_INTERLACED,
+		&display_mode_count,
+		nullptr
+	);
+	assert(SUCCEEDED(hr));
+
+	auto display_mode_list = new DXGI_MODE_DESC[display_mode_count];
+	hr = adapter_output->GetDisplayModeList
+	(
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		DXGI_ENUM_MODES_INTERLACED,
+		&display_mode_count,
+		display_mode_list
+	);
+	assert(SUCCEEDED(hr));
+
+	for (uint i = 0; i < display_mode_count; i++)
+	{
+		bool is_check = true;
+		is_check &= display_mode_list[i].Width == static_cast<uint>(Settings::Get().GetWidth());
+		is_check &= display_mode_list[i].Height == static_cast<uint>(Settings::Get().GetHeight());
+
+		if (is_check)
+		{
+			numerator = display_mode_list[i].RefreshRate.Numerator;
+			denominator = display_mode_list[i].RefreshRate.Denominator;
+		}
+	}
+
+	DXGI_ADAPTER_DESC adapter_desc;
+	hr = adapter->GetDesc(&adapter_desc);
+
+	gpu_memory_size = adapter_desc.DedicatedVideoMemory / 1024 / 1024;
+	gpu_description = adapter_desc.Description;
+
+	SAFE_DELETE_ARRAY(display_mode_list);
+	SAFE_RELEASE(adapter_output);
+	SAFE_RELEASE(adapter);
+	SAFE_RELEASE(factory);
+
+	std::cout << "Numerator        : " << numerator << std::endl;
+	std::cout << "Denominator      : " << denominator << std::endl;
+	std::cout << "GPU Memory Size  : " << gpu_memory_size << std::endl;
+	std::wcout << "GPU Description : " << gpu_description << std::endl;
+
+	CreateSwapChain();
+	Resize
+	(
+		static_cast<uint>(Settings::Get().GetWidth()),
+		static_cast<uint>(Settings::Get().GetHeight())
+	);
+
+	return true;
+}
+
+void Graphics::Resize(const uint & width, const uint & height)
+{
+	DeleteSurface();
+	{
+		auto hr = swap_chain->ResizeBuffers
+		(
+			0,
+			width,
+			height,
+			DXGI_FORMAT_UNKNOWN,
+			0
+		);
+		assert(SUCCEEDED(hr));
+	}
+	CreateRenderTargetView();
+	SetViewport(width, height);
+}
+
+void Graphics::SetViewport(const uint & width, const uint & height)
+{
+	viewport.TopLeftX = 0.0f;
+	viewport.TopLeftY = 0.0f;
+	viewport.Width = static_cast<float>(width);
+	viewport.Height = static_cast<float>(height);
+	viewport.MaxDepth = 1.0f;
+	viewport.MinDepth = 0.0f;
+}
+
+void Graphics::Begin()
+{
+	device_context->RSSetViewports(1, &viewport);
+	device_context->OMSetRenderTargets(1, &render_target_view, nullptr);
+	device_context->ClearRenderTargetView(render_target_view, clear_color);
+}
+
+void Graphics::End()
+{
+	auto hr = swap_chain->Present(Settings::Get().IsVsync() ? 1 : 0, 0);
+	assert(SUCCEEDED(hr));
+}
+
+void Graphics::CreateSwapChain()
+{
 	DXGI_SWAP_CHAIN_DESC desc;
 	ZeroMemory(&desc, sizeof(DXGI_SWAP_CHAIN_DESC));
 	desc.BufferDesc.Width = 0;
 	desc.BufferDesc.Height = 0;
-	desc.BufferDesc.RefreshRate.Numerator = 60;
-	desc.BufferDesc.RefreshRate.Denominator = 1;
+	desc.BufferDesc.RefreshRate.Numerator = Settings::Get().IsVsync() ? numerator : 0;
+	desc.BufferDesc.RefreshRate.Denominator = Settings::Get().IsVsync() ? denominator : 1;
 	desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
@@ -68,44 +179,12 @@ auto Graphics::Initialize() -> const bool
 		&device_context
 	);
 	assert(SUCCEEDED(hr));
-
-	CreateBackBuffer
-	(
-		static_cast<uint>(Settings::Get().GetWidth()),
-		static_cast<uint>(Settings::Get().GetHeight())
-	);
-
-	return true;
 }
 
-void Graphics::Begin()
+void Graphics::CreateRenderTargetView()
 {
-	device_context->RSSetViewports(1, &viewport);
-	device_context->OMSetRenderTargets(1, &rtv, dsv);
-	device_context->ClearRenderTargetView(rtv, clear_color);
-	device_context->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-}
-
-void Graphics::End()
-{
-	auto hr = swap_chain->Present(1, 0);
-	assert(SUCCEEDED(hr));
-}
-
-void Graphics::CreateBackBuffer(const uint & width, const uint & height)
-{
-	auto hr = swap_chain->ResizeBuffers
-	(
-		0,
-		width,
-		height,
-		DXGI_FORMAT_UNKNOWN,
-		0
-	);
-	assert(SUCCEEDED(hr));
-
 	ID3D11Texture2D* back_buffer = nullptr;
-	hr = swap_chain->GetBuffer
+	auto hr = swap_chain->GetBuffer
 	(
 		0,
 		__uuidof(ID3D11Texture2D),//IID_ID3D11Texture2D,
@@ -113,54 +192,8 @@ void Graphics::CreateBackBuffer(const uint & width, const uint & height)
 	);
 	assert(SUCCEEDED(hr));
 
-	hr = device->CreateRenderTargetView(back_buffer, nullptr, &rtv);
+	hr = device->CreateRenderTargetView(back_buffer, nullptr, &render_target_view);
 	assert(SUCCEEDED(hr));
 
 	SAFE_RELEASE(back_buffer);
-
-	viewport.TopLeftX = 0.0f;
-	viewport.TopLeftY = 0.0f;
-	viewport.Width = static_cast<float>(width);
-	viewport.Height = static_cast<float>(height);
-	viewport.MaxDepth = 1.0f;
-	viewport.MinDepth = 0.0f;
-
-	//=====================================================
-	ID3D11Texture2D* depth_stencil_buffer = nullptr;
-
-	D3D11_TEXTURE2D_DESC desc;
-	ZeroMemory(&desc, sizeof(D3D11_TEXTURE2D_DESC));
-	desc.Width = width;
-	desc.Height = height;
-	desc.MipLevels = 1;
-	desc.ArraySize = 1;
-	desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	desc.SampleDesc.Count = 1;
-	desc.SampleDesc.Quality = 0;
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-
-	hr = device->CreateTexture2D
-	(
-		&desc,
-		nullptr,
-		&depth_stencil_buffer
-	);
-	assert(SUCCEEDED(hr));
-
-	D3D11_DEPTH_STENCIL_VIEW_DESC dsv_desc;
-	ZeroMemory(&dsv_desc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
-	dsv_desc.Format = desc.Format;
-	dsv_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	dsv_desc.Texture2D.MipSlice = 0;
-
-	hr = device->CreateDepthStencilView
-	(
-		depth_stencil_buffer,
-		&dsv_desc,
-		&dsv
-	);
-	assert(SUCCEEDED(hr));
-
-	SAFE_RELEASE(depth_stencil_buffer);
 }

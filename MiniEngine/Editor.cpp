@@ -68,6 +68,11 @@ Editor::~Editor()
 
 void Editor::Resize(const uint & width, const uint & height)
 {
+	if (graphics)
+		graphics->Resize(width, height);
+
+	ImGui_ImplDX11_InvalidateDeviceObjects();
+	ImGui_ImplDX11_CreateDeviceObjects();
 }
 
 void Editor::Update()

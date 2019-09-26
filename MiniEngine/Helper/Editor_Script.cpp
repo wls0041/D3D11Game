@@ -26,10 +26,11 @@ namespace Editor_Script_Data
 
 void Editor_Script::Initialize(Context * context)
 {
-	this->context		= context;
-	this->path			= "";
-    this->new_name      = "";
-	this->is_visible	= false;
+    this->context           = context;
+    this->path              = "";
+    this->new_name          = "";
+    this->is_visible        = false;
+    this->is_script_update  = true;
 
 	SetScriptLanguage(ScriptLanguage::AngelScript);
 	//SetScript("./ImGui/TextEditor.cpp");
@@ -50,8 +51,23 @@ void Editor_Script::Render()
 			if (ImGui::BeginMenu("File"))
 			{
 				if (ImGui::MenuItem("New")) CreateNewScript();
-				if (ImGui::MenuItem("Open")) {}
+				if (ImGui::BeginMenu("Open"))
+				{
+					OpenScript(context->GetSubsystem<ResourceManager>()->GetAssetDirectory(AssetType::Script));
+
+					ImGui::EndMenu();
+				}
+
+				ImGui::Separator();
+
 				if (ImGui::MenuItem("Save")) SaveToScript();
+				if (ImGui::BeginMenu("Save as"))
+				{
+					if (ImGui::InputText("##Save as", &new_name, ImGuiInputTextFlags_EnterReturnsTrue))
+						SaveAsToScript();
+
+					ImGui::EndMenu();
+				}
 
 				ImGui::EndMenu();
 			}
@@ -264,18 +280,123 @@ void Editor_Script::SaveToScript()
 	out << temp;
 	out.flush();
 	out.close();
+
+	SetScript(path);
+
+	is_script_update = true;
+}
+
+void Editor_Script::OpenScript(const std::string & path)
+{
+	//fix - 유석
+	if (is_script_update)
+	{
+		script_items.clear();
+		script_items.shrink_to_fit();
+
+		auto files = FileSystem::GetFilesInDirectory(path);
+
+		for (const auto& file : files)
+			script_items.emplace_back(file, *(Icon_Provider::Get().Load(file)));
+
+		is_script_update = false;
+	}
+
+	if (ImGui::IsKeyDown(VK_F5))
+		is_script_update = true;
+
+	ImGui::BeginChild("##Script_Open", ImVec2(300.0f, 300.0f), false, ImGuiWindowFlags_HorizontalScrollbar);
+	{
+		int columns = static_cast<int>(ImGui::GetWindowContentRegionWidth() / 100.0f);
+		columns = columns < 1 ? 1 : columns;
+
+		ImGui::Columns(columns, nullptr, false);
+
+		for (auto& script_item : script_items)
+		{
+			//Thumnail
+			{
+				ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 0));
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+
+				if (Icon_Provider::Get().ImageButton(script_item.thumbnail, ImVec2(80.0f, 77.0f)))
+				{
+					const auto now = std::chrono::high_resolution_clock::now();
+					script_item.time_since_last_click = now - script_item.last_click_time;
+					script_item.last_click_time = now;
+
+					if (static_cast<float>(script_item.time_since_last_click.count()) < 500.0f)
+					{
+						this->path = script_item.path;
+						SetScript(this->path);
+					}
+				}
+
+				ImGui::PopStyleColor(2);
+			}
+
+			//Label
+			{
+				auto& g = *GImGui;
+				auto& style = ImGui::GetStyle();
+				const auto label_height = g.FontSize;
+
+				auto label_size = ImGui::CalcTextSize(script_item.label.c_str(), nullptr, true);
+				auto label_pos_min = ImGui::GetCursorScreenPos();
+				auto label_pos_max = ImVec2(label_pos_min.x + 90.0f, label_pos_min.y + 15.0f);
+
+				auto label_rect = ImRect
+				(
+					label_pos_min.x,
+					label_pos_max.y - label_height - style.FramePadding.y,
+					label_pos_max.x,
+					label_pos_max.y
+				);
+
+				ImGui::SetCursorScreenPos(ImVec2(label_rect.Min.x, label_rect.Min.y + 3.0f));
+
+				if (label_size.x <= 63.0f)
+				{
+					ImGui::SetCursorScreenPos(ImVec2(label_rect.Min.x + 20.0f, label_rect.Min.y));
+					ImGui::TextUnformatted(script_item.label.c_str());
+				}
+				else if (label_size.x >= 64.0f && label_size.x <= 85.0f)
+				{
+					ImGui::SetCursorScreenPos(ImVec2(label_rect.Min.x + 10.0f, label_rect.Min.y));
+					ImGui::TextUnformatted(script_item.label.c_str());
+				}
+				else
+				{
+					ImGui::SetCursorScreenPos(ImVec2(label_rect.Min.x - 20.0f, label_rect.Min.y + 30.0f));
+					ImGui::RenderTextClipped
+					(
+						label_rect.Min,
+						label_rect.Max,
+						script_item.label.c_str(),
+						nullptr,
+						&label_size,
+						ImVec2(0, 0),
+						&label_rect
+					);
+				}
+			}
+			ImGui::NextColumn();
+		}
+	}
+	ImGui::EndChild();
 }
 
 void Editor_Script::SaveAsToScript()
 {
 	//fix - 유석
-	std::string old_name = path;
-	path = "../../_Assets/Script/";
-
-	if (new_name.size() < 1)
+	if (new_name.size() < 1 || this->path.size() < 1)
 	{
+		new_name = "";
 		return;
 	}
+
+	std::string old_name = path;
+	path = "../../_Assets/Script/";
 
 	new_name = path + new_name + ".as";
 
@@ -296,4 +417,6 @@ void Editor_Script::SaveAsToScript()
 
 	path = old_name;
 	new_name = "";
+
+	is_script_update = true;
 }

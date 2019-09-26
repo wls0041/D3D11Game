@@ -95,6 +95,9 @@ public:
 	auto GetResolution() const -> const Vector2& { return resolution; }
 	void SetResolution(const uint &width, const uint &height);
 
+	auto IsReverseZ() const -> const bool& { return is_reverse_z; }
+	void SetReverseZ(const bool& is_reverse_z) { this->is_reverse_z = is_reverse_z; }
+
 	auto GetDebugBufferType() const -> const RenderBufferType& { return debug_buffer_type; }
 	void SetDebugBufferType(const RenderBufferType& type) { this->debug_buffer_type = type; }
 

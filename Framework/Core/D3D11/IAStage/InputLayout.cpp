@@ -114,6 +114,8 @@ void InputLayout::Create(ID3DBlob * blob)
 		static_cast<uint>(input_layout_descs.size()),
         blob
     );
+
+	SAFE_RELEASE(reflector);
 }
 
 void InputLayout::Clear()
